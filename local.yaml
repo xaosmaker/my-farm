@@ -1,0 +1,71 @@
+services:
+  farm-nginx:
+    container_name: "farm-nginx"
+    build:
+      context: .
+      dockerfile: docker/local/nginx/Dockerfile
+    volumes:
+      - ./docker/local/nginx/nginx.conf:/etc/nginx/nginx.conf:s
+    expose:
+      - 8080
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - "farm_nw"
+      - "local-nginx-net"
+
+  farm-orm:
+    container_name: "farm-orm"
+    build:
+      context: .
+      dockerfile: ./docker/local/orm/Dockerfile
+    expose:
+      - 8000
+
+    env_file:
+      - ./.local.env
+    networks:
+      - "farm_nw"
+      - farm_db_nw
+
+    command: "/py/bin/python3 manage.py runserver 0.0.0.0:8000"
+
+  farm-client:
+    build:
+      context: .
+      dockerfile: ./docker/local/client/Dockerfile
+    image: farm-client
+    container_name: farm-client
+    volumes:
+      - ./client:/client
+    expose:
+      - "3000"
+
+    networks:
+      - "farm_nw"
+    command: pnpm dev
+
+  farm-postgres-db:
+    build:
+      context: .
+      dockerfile: ./docker/local/postgres/Dockerfile
+    image: farm-postgres-db
+    container_name: farm-postgres-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - farm_postgres_db_data:/var/lib/postgresql/data
+    env_file:
+      - ./.local.env
+    networks:
+      - farm_db_nw
+networks:
+  farm_nw:
+  farm_db_nw:
+  local-nginx-net:
+    external: true
+
+volumes:
+  farm_postgres_db_data: {}
