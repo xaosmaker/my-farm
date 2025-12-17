@@ -23,6 +23,8 @@ services:
       dockerfile: ./docker/local/orm/Dockerfile
     expose:
       - 8000
+    volumes:
+      - ./orm:/orm
 
     env_file:
       - ./.local.env

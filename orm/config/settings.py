@@ -49,6 +49,8 @@ CORE_APPS = [
     "core_apps.supplies",
     "core_apps.user",
     "core_apps.weather",
+    "core_apps.company",
+    "core_apps.userProfile",
 ]
 INSTALLED_APPS = DJANGO_APPS + CORE_APPS
 
