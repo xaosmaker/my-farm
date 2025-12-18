@@ -1,0 +1,15 @@
+version: "2"
+sql:
+    - queries: "sql/queries"
+      database:
+          uri: ${DB_URL}
+      schema: "sql/schema.sql"
+      engine: "postgresql"
+      analyzer:
+          database: true
+      strict_function_checks: true
+      strict_order_by: true
+      gen:
+          go:
+              out: "internal/db"
+              sql_package: "pgx/v5"

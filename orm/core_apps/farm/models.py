@@ -14,9 +14,10 @@ class Farm(BaseModel):
         related_name="fk_farm_company",
     )
 
-    address = models.CharField(null=True, blank=True)
+    farm_address = models.CharField(null=True, blank=True)
 
     class Meta:
+        db_table = "farm"
         unique_together = ("farm_name", "farm_company")
 
     def __str__(self) -> str:

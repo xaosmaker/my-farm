@@ -17,6 +17,9 @@ class UserProfile(BaseModel):
         Company, on_delete=models.SET_NULL, null=True, blank=True
     )
 
+    class Meta:
+        db_table = "user_profile"
+
     def __str__(self):
         user = cast(User, self.user)
         return f"User Profile {user.email}"
