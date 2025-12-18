@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 django = "*"
 psycopg = {extras = ["binary"], version = "*"}
+argon2-cffi = "*"
 
 [dev-packages]
 
