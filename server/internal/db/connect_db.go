@@ -14,6 +14,7 @@ func ConnectDb(ctx context.Context) *pgxpool.Pool {
 		log.Fatal("DB_URL enviroment variable is not set")
 	}
 	pool, err := pgxpool.New(ctx, env)
+
 	if err != nil {
 		log.Fatal("Cannot Create db pool:", err)
 	}

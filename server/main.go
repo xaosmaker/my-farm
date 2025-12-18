@@ -2,27 +2,28 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
-
+	"github.com/xaosmaker/server/internal/config"
 	"github.com/xaosmaker/server/internal/db"
+	"github.com/xaosmaker/server/internal/er"
+	"github.com/xaosmaker/server/internal/users"
+	"log"
+	"net/http"
 )
 
 func main() {
+	config.CheckEnvs()
+
 	ctx := context.Background()
 	conn := db.ConnectDb(ctx)
 	defer conn.Close()
 
-	Q := db.New(conn)
+	mux := http.NewServeMux()
+	mux.Handle("/api/", http.StripPrefix("/api", users.UserMux(conn)))
+	mux.HandleFunc("/", er.FieldErrors(400, nil))
 
-	user, err := Q.GetAllUsers(ctx)
-	if err != nil {
-		log.Fatal(err)
-
+	server := &http.Server{
+		Addr:    ":8090",
+		Handler: mux,
 	}
-	us := user[0]
-	us.Password = "****"
-	fmt.Println(us, 12)
-
-	fmt.Println("hello from server")
+	log.Fatal(server.ListenAndServe())
 }
