@@ -1,4 +1,4 @@
-package users_handlers
+package auth
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func (q UserQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
+func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	type userValidation struct {
 		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required,min=1"`
@@ -20,6 +20,7 @@ func (q UserQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&fields)
 	if err := utils.ValidateFields(fields); err != nil {
+		fmt.Println("Error validating fields", err)
 		er.FieldErrors(400, err)(w, r)
 		return
 	}
@@ -30,7 +31,7 @@ func (q UserQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(401, []string{"Invalid Credentials"})(w, r)
 		return
 	}
-	if !utils.ComparePassword(user.Password, fields.Password) {
+	if !ComparePassword(user.Password, fields.Password) {
 		er.GeneralError(401, []string{"Invalid Credentials"})(w, r)
 		return
 	}
@@ -39,7 +40,7 @@ func (q UserQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	if key == "" {
 		log.Fatal("JWT_KEY env is not assigned")
 	}
-	jwt, err := utils.MakeJwt(fmt.Sprintf("%d", user.ID), key, time.Hour)
+	jwt, err := MakeJwt(fmt.Sprintf("%d", user.ID), key, time.Hour)
 	if err != nil {
 		fmt.Println("Failed to generate jwt token: ", err)
 		er.GeneralError(401, []string{"Failed To Generate JWT Token"})(w, r)
