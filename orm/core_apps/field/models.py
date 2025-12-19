@@ -17,6 +17,7 @@ class FarmField(BaseModel):
     field_epsg_4326_boundary = models.JSONField(null=True, blank=True)
     field_area_in_meters = models.FloatField()
     field_location = models.JSONField(null=True, blank=True)
+    is_owned = models.BooleanField(default=False)
 
     class Meta:
         db_table = "farm_field"

@@ -42,15 +42,15 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 CORE_APPS = [
-    "core_apps.activities",
     "core_apps.common",
     "core_apps.farm",
     "core_apps.field",
-    "core_apps.supplies",
     "core_apps.user",
-    "core_apps.weather",
-    "core_apps.company",
-    "core_apps.userProfile",
+    # "core_apps.supplies",
+    # "core_apps.activities",
+    # "core_apps.weather",
+    # "core_apps.company",
+    # "core_apps.userProfile",
 ]
 INSTALLED_APPS = DJANGO_APPS + CORE_APPS
 

@@ -10,7 +10,7 @@ import (
 )
 
 const getAllUsers = `-- name: GetAllUsers :many
-select password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active from "user"
+select password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active, farm_id from "user"
 `
 
 func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
@@ -34,6 +34,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.EditedAt,
 			&i.IsStaff,
 			&i.IsActive,
+			&i.FarmID,
 		); err != nil {
 			return nil, err
 		}
@@ -46,7 +47,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const getUserBYId = `-- name: GetUserBYId :one
-SELECT password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active FROM "user"
+SELECT password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active, farm_id FROM "user"
 WHERE id = $1
 `
 
@@ -65,12 +66,13 @@ func (q *Queries) GetUserBYId(ctx context.Context, id int64) (User, error) {
 		&i.EditedAt,
 		&i.IsStaff,
 		&i.IsActive,
+		&i.FarmID,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active FROM "user"
+SELECT password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active, farm_id FROM "user"
 WHERE email = $1
 `
 
@@ -89,6 +91,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.EditedAt,
 		&i.IsStaff,
 		&i.IsActive,
+		&i.FarmID,
 	)
 	return i, err
 }

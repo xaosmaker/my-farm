@@ -26,13 +26,6 @@ type AuthPermission struct {
 	Codename      string
 }
 
-type Company struct {
-	ID          int64
-	CreatedAt   pgtype.Timestamptz
-	EditedAt    pgtype.Timestamptz
-	CompanyName string
-}
-
 type DjangoAdminLog struct {
 	ID            int32
 	ActionTime    pgtype.Timestamptz
@@ -64,12 +57,10 @@ type DjangoSession struct {
 }
 
 type Farm struct {
-	ID            int64
-	CreatedAt     pgtype.Timestamptz
-	EditedAt      pgtype.Timestamptz
-	FarmName      string
-	FarmAddress   pgtype.Text
-	FarmCompanyID int64
+	ID        int64
+	CreatedAt pgtype.Timestamptz
+	EditedAt  pgtype.Timestamptz
+	FarmName  string
 }
 
 type FarmField struct {
@@ -82,6 +73,7 @@ type FarmField struct {
 	FieldAreaInMeters     float64
 	FieldLocation         []byte
 	FarmFieldID           int64
+	IsOwned               bool
 }
 
 type FarmFieldSoilProperty struct {
@@ -107,20 +99,13 @@ type User struct {
 	EditedAt    pgtype.Timestamptz
 	IsStaff     bool
 	IsActive    bool
+	FarmID      pgtype.Int8
 }
 
 type UserGroup struct {
 	ID      int64
 	UserID  int64
 	GroupID int32
-}
-
-type UserProfile struct {
-	ID        int64
-	CreatedAt pgtype.Timestamptz
-	EditedAt  pgtype.Timestamptz
-	CompanyID pgtype.Int8
-	UserID    int64
 }
 
 type UserUserPermission struct {
