@@ -5,12 +5,18 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/xaosmaker/server/internal/er"
 )
 
 func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/login") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		val, err := GetCookie(r, "access")
 		if err != nil {
 			fmt.Println("auth Error", err)

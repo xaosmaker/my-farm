@@ -26,7 +26,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:    ":8090",
-		Handler: mux,
+		Handler: authQ.AuthMiddleware(mux),
 	}
 	log.Fatal(server.ListenAndServe())
 }
