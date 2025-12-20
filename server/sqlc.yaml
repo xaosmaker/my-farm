@@ -11,5 +11,6 @@ sql:
       strict_order_by: true
       gen:
           go:
+              emit_pointers_for_null_types: true
               out: "internal/db"
               sql_package: "pgx/v5"

@@ -29,11 +29,11 @@ type AuthPermission struct {
 type DjangoAdminLog struct {
 	ID            int32
 	ActionTime    pgtype.Timestamptz
-	ObjectID      pgtype.Text
+	ObjectID      *string
 	ObjectRepr    string
 	ActionFlag    int16
 	ChangeMessage string
-	ContentTypeID pgtype.Int4
+	ContentTypeID *int32
 	UserID        int64
 }
 
@@ -80,11 +80,11 @@ type FarmFieldSoilProperty struct {
 	ID              int64
 	CreatedAt       pgtype.Timestamptz
 	EditedAt        pgtype.Timestamptz
-	SoilPh          pgtype.Float8
-	SoilPhosphorous pgtype.Float8
-	SoilNitrogen    pgtype.Float8
-	SoilPotasium    pgtype.Float8
-	FarmFieldID     pgtype.Int8
+	SoilPh          *float64
+	SoilPhosphorous *float64
+	SoilNitrogen    *float64
+	SoilPotasium    *float64
+	FarmFieldID     *int64
 }
 
 type User struct {
@@ -99,7 +99,7 @@ type User struct {
 	EditedAt    pgtype.Timestamptz
 	IsStaff     bool
 	IsActive    bool
-	FarmID      pgtype.Int8
+	FarmID      *int64
 }
 
 type UserGroup struct {

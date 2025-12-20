@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
---\restrict KqvXow6gjgRjmCYPOz2meLHWpo8dv36ggzdmWMI0fe1qeNnVhmrWQ4cIa1y3p9r
+--\restrict HPpooYLvslvlDL50HSB2z8Jqab5afa9gkeW8DsO6LbOgzksPRyboOM5Q7ufTUfG
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
@@ -18,6 +18,59 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: create_farm(character varying, bigint); Type: PROCEDURE; Schema: public; Owner: xaosmaker
+--
+
+CREATE PROCEDURE public.create_farm(IN a character varying, IN b bigint)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE farmId INTEGER;
+
+BEGIN
+
+INSERT INTO "farm" (created_at,edited_at,farm_name)
+VALUES(
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP,
+    a
+  )RETURNING id INTO farmId ;
+
+UPDATE "user" SET farm_id=farmId
+  WHERE "user".id = b;
+
+END
+ $$;
+
+
+ALTER PROCEDURE public.create_farm(IN a character varying, IN b bigint) OWNER TO xaosmaker;
+
+--
+-- Name: create_farm2(character varying, bigint); Type: PROCEDURE; Schema: public; Owner: xaosmaker
+--
+
+CREATE PROCEDURE public.create_farm2(IN a character varying, IN b bigint)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE farm_id INTEGER;
+
+BEGIN
+
+INSERT INTO "farm" (created_at,edited_at,farm_name)
+VALUES(
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP,
+    a
+  )RETURNING created_at,edited_at,farm_name,id INTO farm_id ;
+UPDATE "user" SET farm=farm_id
+  WHERE "user".id = b;
+
+END
+ $$;
+
+
+ALTER PROCEDURE public.create_farm2(IN a character varying, IN b bigint) OWNER TO xaosmaker;
 
 SET default_tablespace = '';
 
@@ -769,5 +822,5 @@ ALTER TABLE ONLY public.user_user_permissions
 -- PostgreSQL database dump complete
 --
 
---\unrestrict KqvXow6gjgRjmCYPOz2meLHWpo8dv36ggzdmWMI0fe1qeNnVhmrWQ4cIa1y3p9r
+--\unrestrict HPpooYLvslvlDL50HSB2z8Jqab5afa9gkeW8DsO6LbOgzksPRyboOM5Q7ufTUfG
 

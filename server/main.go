@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"log"
+	"net/http"
+
 	"github.com/xaosmaker/server/internal/auth"
 	"github.com/xaosmaker/server/internal/config"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/er"
-	"log"
-	"net/http"
+	"github.com/xaosmaker/server/internal/farm"
 )
 
 func main() {
@@ -22,6 +24,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/users/login", authQ.LoginUser)
+	mux.Handle("/api/", http.StripPrefix("/api", farm.FarmRouter(conn)))
 	mux.HandleFunc("/", er.FieldErrors(400, nil))
 
 	server := &http.Server{

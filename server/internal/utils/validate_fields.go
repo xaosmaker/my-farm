@@ -1,12 +1,16 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"reflect"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
+
+type FieldErrors map[string]string
 
 func formatValidator(f validator.FieldError) string {
 	switch strings.ToLower(f.Tag()) {
@@ -19,8 +23,10 @@ func formatValidator(f validator.FieldError) string {
 		return fmt.Sprintf("%v length cant exceed %v", f.Field(), f.Param())
 	case "email":
 		return "Please provide a valid email"
+	case "alphanumspace":
+		return fmt.Sprintf("%v should contain only chars spaces and number", f.Field())
 	default:
-		return f.Error()
+		return fmt.Sprintf("format Validator uknown format %v", f.Error())
 	}
 
 }
@@ -66,4 +72,25 @@ func ValidateFields(s any) map[string]string {
 
 	return nil
 
+}
+
+func Decoder(r *http.Request, s any) error {
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&s)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func DecodeAndValidate(r *http.Request, s any) FieldErrors {
+	Decoder(r, s)
+	err := ValidateFields(s)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

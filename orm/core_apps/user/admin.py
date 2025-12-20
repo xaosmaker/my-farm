@@ -13,6 +13,7 @@ class UserAdmin(BaseUserAdmin):
         "is_active",
         "is_superuser",
         "created_at",
+        "farm",
     )
     readonly_fields = ("created_at", "edited_at", "last_login")
     fieldsets = (
@@ -25,6 +26,7 @@ class UserAdmin(BaseUserAdmin):
                     "is_staff",
                     "is_active",
                     "user_permissions",
+                    "farm",
                 )
             },
         ),
@@ -36,6 +38,7 @@ class UserAdmin(BaseUserAdmin):
             {
                 "classes": ["wide"],
                 "fields": (
+                    "farm",
                     "email",
                     "is_active",
                     "is_staff",
