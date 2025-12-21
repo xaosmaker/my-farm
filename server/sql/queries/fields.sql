@@ -1,7 +1,3 @@
--- name: GetAllFields :many
-select * from "farm_field";
-
-
 
 -- name: CreateField :one
 INSERT INTO "farm_field"(
@@ -41,3 +37,27 @@ UPDATE  "farm_field" SET
 WHERE id = $1
   RETURNING *;
 
+
+-- name: GetFieldByIdAndUser :one
+select * FROM "farm_field"
+WHERE "farm_field".id = sqlc.arg('farm_field_id') AND "farm_field".farm_field_id = (
+  SELECT id FROM "farm"
+  WHERE "farm".id = (
+    SELECT farm_id FROM "user"
+    WHERE "user".id = sqlc.arg('user_id')
+  )
+);
+
+-- name: DeleteField :exec
+DELETE FROM "farm_field"
+WHERE id = $1;
+
+-- name: GetAllFields :many
+select * FROM "farm_field"
+WHERE "farm_field".farm_field_id = (
+  SELECT id FROM "farm"
+  WHERE "farm".id = (
+    SELECT farm_id FROM "user"
+    WHERE "user".id = sqlc.arg('user_id')
+  )
+);

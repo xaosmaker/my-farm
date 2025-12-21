@@ -12,6 +12,7 @@ func fieldProtectedRouter(q handlers.FieldQueries) *chi.Mux {
 	r := chi.NewRouter()
 	r.Post("/", q.CreateField)
 	r.Patch("/{id}", q.UpdateField)
+	r.Delete("/{id}", q.DeleteField)
 	return r
 
 }
@@ -21,6 +22,8 @@ func FieldRouter(con *pgxpool.Pool) *chi.Mux {
 		DB: *db.New(con),
 	}
 	r := chi.NewRouter()
+	r.Get("/{id}", q.GetFieldById)
+	r.Get("/", q.GetAllFields)
 
 	r.Mount("/", fieldProtectedRouter(q))
 

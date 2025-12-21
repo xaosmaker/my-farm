@@ -12,6 +12,11 @@ import (
 )
 
 func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
+	user, err := utils.GetUserFromContext(r)
+	if err != nil {
+		er.GeneralError(401, "Login to continue")(w, r)
+		return
+	}
 	id := r.PathValue("id")
 	if id == "" {
 		fmt.Println("cant parse id from update fields")
@@ -22,6 +27,15 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("fail to parse the id of the Update Field url", err, nId)
 		er.GeneralError(400, "Enter A valid ID Should be Integer to cal the Patch Method")(w, r)
+	}
+
+	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+		FarmFieldID: nId,
+		UserID:      user.ID,
+	})
+	if err != nil {
+		er.GeneralError(400, "Farm Field does not exist")(w, r)
+		return
 	}
 
 	type updateFieldRequestParams struct {
@@ -54,7 +68,7 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 	data, err := q.DB.UpdateField(r.Context(), fiel)
 	if err != nil {
 		fmt.Println(err, "DB ErOOR")
-		er.GeneralError(400, err)(w, r)
+		er.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	jData, _ := json.Marshal(data)

@@ -70,12 +70,29 @@ func (q *Queries) CreateField(ctx context.Context, arg CreateFieldParams) (FarmF
 	return i, err
 }
 
-const getAllFields = `-- name: GetAllFields :many
-select id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned from "farm_field"
+const deleteField = `-- name: DeleteField :exec
+DELETE FROM "farm_field"
+WHERE id = $1
 `
 
-func (q *Queries) GetAllFields(ctx context.Context) ([]FarmField, error) {
-	rows, err := q.db.Query(ctx, getAllFields)
+func (q *Queries) DeleteField(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteField, id)
+	return err
+}
+
+const getAllFields = `-- name: GetAllFields :many
+select id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned FROM "farm_field"
+WHERE "farm_field".farm_field_id = (
+  SELECT id FROM "farm"
+  WHERE "farm".id = (
+    SELECT farm_id FROM "user"
+    WHERE "user".id = $1
+  )
+)
+`
+
+func (q *Queries) GetAllFields(ctx context.Context, userID int64) ([]FarmField, error) {
+	rows, err := q.db.Query(ctx, getAllFields, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -103,6 +120,40 @@ func (q *Queries) GetAllFields(ctx context.Context) ([]FarmField, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const getFieldByIdAndUser = `-- name: GetFieldByIdAndUser :one
+select id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned FROM "farm_field"
+WHERE "farm_field".id = $1 AND "farm_field".farm_field_id = (
+  SELECT id FROM "farm"
+  WHERE "farm".id = (
+    SELECT farm_id FROM "user"
+    WHERE "user".id = $2
+  )
+)
+`
+
+type GetFieldByIdAndUserParams struct {
+	FarmFieldID int64
+	UserID      int64
+}
+
+func (q *Queries) GetFieldByIdAndUser(ctx context.Context, arg GetFieldByIdAndUserParams) (FarmField, error) {
+	row := q.db.QueryRow(ctx, getFieldByIdAndUser, arg.FarmFieldID, arg.UserID)
+	var i FarmField
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.EditedAt,
+		&i.FieldName,
+		&i.FieldEpsg2100Boundary,
+		&i.FieldEpsg4326Boundary,
+		&i.FieldAreaInMeters,
+		&i.FieldLocation,
+		&i.FarmFieldID,
+		&i.IsOwned,
+	)
+	return i, err
 }
 
 const updateField = `-- name: UpdateField :one
