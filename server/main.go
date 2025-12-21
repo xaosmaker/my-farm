@@ -13,6 +13,7 @@ import (
 	"github.com/xaosmaker/server/internal/er"
 	"github.com/xaosmaker/server/internal/farm"
 	"github.com/xaosmaker/server/internal/field"
+	"github.com/xaosmaker/server/internal/middlewares"
 )
 
 func main() {
@@ -29,6 +30,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middlewares.TrailSlashErrorMiddleware)
 	r.Use(authQ.AuthMiddleware)
 	r.Post("/api/users/login", authQ.LoginUser)
 	r.Mount("/api/farms", farm.FarmRouter(conn))

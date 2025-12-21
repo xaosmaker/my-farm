@@ -104,3 +104,55 @@ func (q *Queries) GetAllFields(ctx context.Context) ([]FarmField, error) {
 	}
 	return items, nil
 }
+
+const updateField = `-- name: UpdateField :one
+UPDATE  "farm_field" SET
+  edited_at = CURRENT_TIMESTAMP,
+  field_name = COALESCE($2,field_name),
+  field_epsg_2100_boundary =
+          COALESCE($3,field_epsg_2100_boundary),
+  field_epsg_4326_boundary =
+          COALESCE($4,field_epsg_4326_boundary),
+  field_area_in_meters =COALESCE($5,field_area_in_meters),
+  field_location = COALESCE($6,field_location),
+  -- farm_field_id = COALESCE(sqlc.narg('farm_field_id'),farm_field_id),
+  is_owned = COALESCE($7,is_owned)
+WHERE id = $1
+  RETURNING id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned
+`
+
+type UpdateFieldParams struct {
+	ID                    int64
+	FieldName             *string
+	FieldEpsg2100Boundary *json.RawMessage
+	FieldEpsg4326Boundary *json.RawMessage
+	FieldAreaInMeters     *float64
+	FieldLocation         *json.RawMessage
+	IsOwned               *bool
+}
+
+func (q *Queries) UpdateField(ctx context.Context, arg UpdateFieldParams) (FarmField, error) {
+	row := q.db.QueryRow(ctx, updateField,
+		arg.ID,
+		arg.FieldName,
+		arg.FieldEpsg2100Boundary,
+		arg.FieldEpsg4326Boundary,
+		arg.FieldAreaInMeters,
+		arg.FieldLocation,
+		arg.IsOwned,
+	)
+	var i FarmField
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.EditedAt,
+		&i.FieldName,
+		&i.FieldEpsg2100Boundary,
+		&i.FieldEpsg4326Boundary,
+		&i.FieldAreaInMeters,
+		&i.FieldLocation,
+		&i.FarmFieldID,
+		&i.IsOwned,
+	)
+	return i, err
+}
