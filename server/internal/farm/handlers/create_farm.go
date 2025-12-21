@@ -1,4 +1,4 @@
-package farm_handlers
+package handlers
 
 import (
 	"encoding/json"

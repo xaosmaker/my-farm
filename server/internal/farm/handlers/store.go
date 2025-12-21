@@ -1,4 +1,4 @@
-package farm_handlers
+package handlers
 
 import "github.com/xaosmaker/server/internal/db"
 
