@@ -1,8 +1,17 @@
 version: "2"
+# overrides:
+#     go:
+#         overrides:
+#             - db_type: json
+#               nullable: true
+#               go_type: "*encoding/json.RawMessage"
+#             - db_type: jsonb
+#               nullable: true
+#               go_type: "*encoding/json.RawMessage"
 sql:
     - queries: "sql/queries"
       database:
-          uri: ${DB_URL}
+          uri: ${DB_URL_LOCAL}
       schema: "sql/schema.sql"
       engine: "postgresql"
       analyzer:
@@ -11,6 +20,13 @@ sql:
       strict_order_by: true
       gen:
           go:
+              overrides:
+                  - db_type: json
+                    nullable: true
+                    go_type: "*encoding/json.RawMessage"
+                  - db_type: jsonb
+                    nullable: true
+                    go_type: "*encoding/json.RawMessage"
               emit_pointers_for_null_types: true
               out: "internal/db"
               sql_package: "pgx/v5"

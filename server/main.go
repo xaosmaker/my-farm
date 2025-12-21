@@ -5,11 +5,14 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/xaosmaker/server/internal/auth"
 	"github.com/xaosmaker/server/internal/config"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/er"
 	"github.com/xaosmaker/server/internal/farm"
+	"github.com/xaosmaker/server/internal/field"
 )
 
 func main() {
@@ -22,14 +25,22 @@ func main() {
 		DB: *db.New(conn),
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/users/login", authQ.LoginUser)
-	mux.Handle("/api/", http.StripPrefix("/api", farm.FarmRouter(conn)))
-	mux.HandleFunc("/", er.FieldErrors(400, nil))
+	// mux := http.NewServeMux()
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(authQ.AuthMiddleware)
+	r.Post("/api/users/login", authQ.LoginUser)
+	r.Mount("/api/farms", farm.FarmRouter(conn))
+	r.Mount("/api/fields", field.FieldRouter(conn))
+	r.NotFound(er.GeneralError(404, "Route not Found"))
+	r.MethodNotAllowed(er.GeneralError(405, "Method not found "))
+	// mux.HandleFunc("/", er.GeneralError(400, []string{"Route Dont found"}))
 
 	server := &http.Server{
+
 		Addr:    ":8090",
-		Handler: authQ.AuthMiddleware(mux),
+		Handler: r,
 	}
 	log.Fatal(server.ListenAndServe())
 }

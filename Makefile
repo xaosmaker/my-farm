@@ -1,5 +1,8 @@
 run:
 	docker compose -f local.yaml up -d --remove-orphans
+
+run-watch:
+	docker compose -f local.yaml up --remove-orphans --watch
 build:
 	docker compose -f local.yaml build --no-cache
 

@@ -13,7 +13,7 @@ import (
 func (q FarmQeuries) CreateFarm(w http.ResponseWriter, r *http.Request) {
 
 	type FarmBody struct {
-		FarmName string `json:"farmName" validate:"alphanumspace"`
+		FarmName string `json:"farmName" validate:"required,alphanumspace"`
 	}
 	farmFields := FarmBody{}
 
@@ -31,7 +31,7 @@ func (q FarmQeuries) CreateFarm(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := utils.DecodeAndValidate(r, &farmFields); err != nil {
 		fmt.Println("Create farm errors ", err)
-		er.FieldErrors(400, err)(w, r)
+		er.GeneralError(400, err)(w, r)
 		return
 	}
 	farm, err := q.DB.CreateFarm(r.Context(), db.CreateFarmParams{FarmName: farmFields.FarmName, ID: user.ID})

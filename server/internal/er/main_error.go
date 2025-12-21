@@ -2,57 +2,40 @@ package er
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/xaosmaker/server/internal/utils"
 )
 
 type errorMessageString struct {
-	Status int      `json:"status"`
-	Errors []string `json:"errors"`
+	Status int `json:"status"`
+	Errors any `json:"errors"`
 }
 
-type errorMessageMap struct {
-	Status int                 `json:"status"`
-	Errors []map[string]string `json:"errors"`
-}
+func validateMessages(s any) any {
 
-func FieldErrors(statusCode int, messages map[string]string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		if messages == nil {
-			messages = map[string]string{
-				"error": "Something went wrong",
-			}
-		}
-
-		er := errorMessageMap{
-			Status: statusCode,
-			Errors: []map[string]string{messages},
-		}
-
-		w.WriteHeader(statusCode)
-		w.Header().Set("content-type", "application/json")
-		data, err := json.Marshal(er)
-		if err != nil {
-			log.Fatal("Cant Marshal General Purpose Error:", err)
-		}
-		w.Write(data)
-
+	switch t := s; t.(type) {
+	case string:
+		return []any{s}
+	case []string:
+		return s
+	case utils.FieldErrors:
+		return []utils.FieldErrors{s.(utils.FieldErrors)}
+	default:
+		return []string{"Something Went Wrong"}
 	}
 }
-func GeneralError(statusCode int, messages []string) http.HandlerFunc {
+
+func GeneralError(statusCode int, messages any) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		if messages == nil {
-			messages = []string{
-				"Something went wrong",
-			}
-		}
+		fmt.Println(r.URL.RawPath, r.URL.RawQuery, r.Method, "call")
 
 		er := errorMessageString{
 			Status: statusCode,
-			Errors: messages,
+			Errors: validateMessages(messages),
 		}
 
 		w.WriteHeader(statusCode)

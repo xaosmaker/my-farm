@@ -5,6 +5,8 @@
 package db
 
 import (
+	"encoding/json"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -68,10 +70,10 @@ type FarmField struct {
 	CreatedAt             pgtype.Timestamptz
 	EditedAt              pgtype.Timestamptz
 	FieldName             string
-	FieldEpsg2100Boundary []byte
-	FieldEpsg4326Boundary []byte
+	FieldEpsg2100Boundary *json.RawMessage
+	FieldEpsg4326Boundary *json.RawMessage
 	FieldAreaInMeters     float64
-	FieldLocation         []byte
+	FieldLocation         *json.RawMessage
 	FarmFieldID           int64
 	IsOwned               bool
 }

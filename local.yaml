@@ -16,6 +16,33 @@ services:
       - "farm_nw"
       - "local-nginx-net"
 
+  farm-server:
+    container_name: farm-server
+    build:
+      context: .
+      dockerfile: ./docker/local/server/Dockerfile
+    ports:
+      - "8090:8090"
+    expose:
+      - 8090
+    env_file:
+      - ./.local.env
+    # volumes:
+    #   - ./server:/server
+    # develop:
+    #   watch:
+    #    - action: sync + restartk
+    #
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./server
+          target: /server
+    networks:
+      - "farm_nw"
+      - farm_db_nw
+    command: go run .
+
   farm-orm:
     container_name: "farm-orm"
     build:

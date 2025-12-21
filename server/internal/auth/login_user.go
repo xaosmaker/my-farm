@@ -21,7 +21,7 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	decoder.Decode(&fields)
 	if err := utils.ValidateFields(fields); err != nil {
 		fmt.Println("Error validating fields", err)
-		er.FieldErrors(400, err)(w, r)
+		er.GeneralError(400, err)(w, r)
 		return
 	}
 
