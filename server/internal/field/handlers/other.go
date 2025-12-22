@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/er"
 	"github.com/xaosmaker/server/internal/utils"
@@ -97,12 +98,42 @@ func (q FieldQueries) GetAllFields(w http.ResponseWriter, r *http.Request) {
 		return
 
 	}
-	jData, err := json.Marshal(data)
+
+	type FarmFieldSend struct {
+		ID                    int64              `json:"id"`
+		CreatedAt             pgtype.Timestamptz `json:"createdAt"`
+		EditedAt              pgtype.Timestamptz `json:"editedAt"`
+		FieldName             string             `json:"fieldName"`
+		FieldEpsg2100Boundary *json.RawMessage   `json:"fieldEpsg2100Boundary"`
+		FieldEpsg4326Boundary *json.RawMessage   `json:"fieldEpsg4326Boundary"`
+		FieldAreaInMeters     float64            `json:"fieldAreaInMeters"`
+		FieldLocation         *json.RawMessage   `json:"fieldLocation"`
+		FarmFieldID           int64              `json:"farmFieldId"`
+		IsOwned               bool               `json:"isOwned"`
+	}
+	listData := []FarmFieldSend{}
+	for _, field := range data {
+		listData = append(listData, FarmFieldSend{
+			ID:                    field.ID,
+			CreatedAt:             field.CreatedAt,
+			EditedAt:              field.EditedAt,
+			FieldName:             field.FieldName,
+			FieldEpsg2100Boundary: field.FieldEpsg2100Boundary,
+			FieldEpsg4326Boundary: field.FieldEpsg4326Boundary,
+			FieldAreaInMeters:     field.FieldAreaInMeters,
+			FieldLocation:         field.FieldLocation,
+			FarmFieldID:           field.FarmFieldID,
+			IsOwned:               field.IsOwned,
+		})
+	}
+
+	jData, err := json.Marshal(listData)
 
 	if err != nil {
 		er.GeneralError(500, "Internal Server Error")
 		return
 	}
+
 	w.WriteHeader(200)
 	w.Write(jData)
 
