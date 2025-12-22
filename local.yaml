@@ -27,12 +27,6 @@ services:
       - 8090
     env_file:
       - ./.local.env
-    # volumes:
-    #   - ./server:/server
-    # develop:
-    #   watch:
-    #    - action: sync + restartk
-    #
     develop:
       watch:
         - action: sync+restart
@@ -71,6 +65,8 @@ services:
       - ./client:/client
     expose:
       - "3000"
+    env_file:
+      - ./.local.env
 
     networks:
       - "farm_nw"

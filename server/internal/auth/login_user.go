@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+const (
+	expires = time.Hour
+)
+
 func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	type userValidation struct {
 		Email    string `json:"email" validate:"required,email"`
@@ -40,7 +44,7 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	if key == "" {
 		log.Fatal("JWT_KEY env is not assigned")
 	}
-	jwt, err := MakeJwt(fmt.Sprintf("%d", user.ID), key, time.Hour)
+	jwt, err := MakeJwt(fmt.Sprintf("%d", user.ID), key, expires)
 	if err != nil {
 		fmt.Println("Failed to generate jwt token: ", err)
 		er.GeneralError(401, []string{"Failed To Generate JWT Token"})(w, r)
@@ -54,8 +58,39 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteStrictMode,
 		Secure:   true,
 		HttpOnly: true,
+		Expires:  time.Now().Add(expires),
 	}
 	http.SetCookie(w, &cookie)
+
+	type SendUser struct {
+		IsSuperuser bool    `json:"isSuperuser"`
+		ID          int64   `json:"id"`
+		Email       string  `json:"email"`
+		IsStaff     bool    `json:"isStaff"`
+		FarmID      *int64  `json:"farmId"`
+		FarmName    *string `json:"farmName"`
+	}
+
+	s := SendUser{
+		ID:          user.ID,
+		Email:       user.Email,
+		IsStaff:     user.IsStaff,
+		IsSuperuser: user.IsSuperuser,
+	}
+	farm, err := q.DB.GetFarm(r.Context(), user.ID)
+	if err == nil {
+		s.FarmID = &farm.ID
+		s.FarmName = &farm.FarmName
+
+	}
+
+	jUser, err := json.Marshal(s)
+
 	w.WriteHeader(200)
+	if err == nil {
+
+		w.Write(jUser)
+
+	}
 
 }
