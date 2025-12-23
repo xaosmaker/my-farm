@@ -46,7 +46,7 @@ CORE_APPS = [
     "core_apps.farm",
     "core_apps.field",
     "core_apps.user",
-    # "core_apps.supplies",
+    "core_apps.supplies",
     # "core_apps.activities",
     # "core_apps.weather",
     # "core_apps.company",
