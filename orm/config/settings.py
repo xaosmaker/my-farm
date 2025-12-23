@@ -41,17 +41,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-CORE_APPS = [
-    "core_apps.common",
-    "core_apps.farm",
-    "core_apps.field",
-    "core_apps.user",
-    "core_apps.supplies",
-    # "core_apps.activities",
-    # "core_apps.weather",
-    # "core_apps.company",
-    # "core_apps.userProfile",
-]
+CORE_APPS = ["ui"]
 INSTALLED_APPS = DJANGO_APPS + CORE_APPS
 
 MIDDLEWARE = [
@@ -150,4 +140,4 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-AUTH_USER_MODEL = "user.User"
+# AUTH_USER_MODEL = "user.User"
