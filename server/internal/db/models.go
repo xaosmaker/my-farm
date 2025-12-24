@@ -10,108 +10,98 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type AuthGroup struct {
-	ID   int32
-	Name string
-}
-
-type AuthGroupPermission struct {
-	ID           int64
-	GroupID      int32
-	PermissionID int32
-}
-
-type AuthPermission struct {
-	ID            int32
-	Name          string
-	ContentTypeID int32
-	Codename      string
-}
-
-type DjangoAdminLog struct {
-	ID            int32
-	ActionTime    pgtype.Timestamptz
-	ObjectID      *string
-	ObjectRepr    string
-	ActionFlag    int16
-	ChangeMessage string
-	ContentTypeID *int32
-	UserID        int64
-}
-
-type DjangoContentType struct {
-	ID       int32
-	AppLabel string
-	Model    string
-}
-
-type DjangoMigration struct {
-	ID      int64
-	App     string
-	Name    string
-	Applied pgtype.Timestamptz
-}
-
-type DjangoSession struct {
-	SessionKey  string
-	SessionData string
-	ExpireDate  pgtype.Timestamptz
-}
-
 type Farm struct {
 	ID        int64
+	Name      string
 	CreatedAt pgtype.Timestamptz
-	EditedAt  pgtype.Timestamptz
-	FarmName  string
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
 }
 
-type FarmField struct {
-	ID                    int64
-	CreatedAt             pgtype.Timestamptz
-	EditedAt              pgtype.Timestamptz
-	FieldName             string
-	FieldEpsg2100Boundary *json.RawMessage
-	FieldEpsg4326Boundary *json.RawMessage
-	FieldAreaInMeters     float64
-	FieldLocation         *json.RawMessage
-	FarmFieldID           int64
-	IsOwned               bool
+type Field struct {
+	ID               int64
+	Name             string
+	Epsg2100Boundary *json.RawMessage
+	Epsg4326Boundary *json.RawMessage
+	FieldLocation    *json.RawMessage
+	AreaInMeters     float64
+	IsOwned          bool
+	FarmID           int64
+	CreatedAt        pgtype.Timestamptz
+	UpdatedAt        pgtype.Timestamptz
+	DeletedAt        pgtype.Timestamptz
 }
 
-type FarmFieldSoilProperty struct {
+type Job struct {
+	ID          int64
+	JobType     string
+	Description *string
+	JobDate     pgtype.Timestamptz
+	FieldID     int64
+	CreatedAt   pgtype.Timestamptz
+	UpdatedAt   pgtype.Timestamptz
+	DeletedAt   pgtype.Timestamptz
+}
+
+type JobsObservation struct {
 	ID              int64
+	ObservationDate pgtype.Timestamptz
+	Observations    string
+	JobID           int64
 	CreatedAt       pgtype.Timestamptz
-	EditedAt        pgtype.Timestamptz
-	SoilPh          *float64
-	SoilPhosphorous *float64
-	SoilNitrogen    *float64
-	SoilPotasium    *float64
-	FarmFieldID     *int64
+	UpdatedAt       pgtype.Timestamptz
+	DeletedAt       pgtype.Timestamptz
+}
+
+type JobsSupply struct {
+	ID        int64
+	Quantity  float64
+	JobID     *int64
+	SupplyID  *int64
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
+}
+
+type SuppliesDetail struct {
+	ID          int64
+	BuyDate     pgtype.Timestamptz
+	Description string
+	SupplyID    int64
+	CreatedAt   pgtype.Timestamptz
+	UpdatedAt   pgtype.Timestamptz
+	DeletedAt   pgtype.Timestamptz
+}
+
+type SuppliesPrice struct {
+	ID        int64
+	Price     float64
+	Quantity  float64
+	BuyDate   pgtype.Timestamptz
+	SupplyID  int64
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
+}
+
+type Supply struct {
+	ID              int64
+	SupplyType      string
+	Nickname        *string
+	Name            string
+	MeasurementUnit string
+	FarmID          int64
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
+	DeletedAt       pgtype.Timestamptz
 }
 
 type User struct {
-	Password    string
-	LastLogin   pgtype.Timestamptz
-	IsSuperuser bool
-	ID          int64
-	Email       string
-	FirstName   string
-	LastName    string
-	CreatedAt   pgtype.Timestamptz
-	EditedAt    pgtype.Timestamptz
-	IsStaff     bool
-	IsActive    bool
-	FarmID      *int64
-}
-
-type UserGroup struct {
-	ID      int64
-	UserID  int64
-	GroupID int32
-}
-
-type UserUserPermission struct {
-	ID           int64
-	UserID       int64
-	PermissionID int32
+	ID        int64
+	Email     string
+	Password  string
+	FarmID    *int64
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
 }

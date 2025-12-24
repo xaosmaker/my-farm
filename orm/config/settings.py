@@ -41,7 +41,9 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-CORE_APPS = ["ui"]
+CORE_APPS = [
+    "ui",
+]
 INSTALLED_APPS = DJANGO_APPS + CORE_APPS
 
 MIDDLEWARE = [

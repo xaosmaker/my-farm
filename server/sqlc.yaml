@@ -12,7 +12,7 @@ sql:
     - queries: "sql/queries"
       database:
           uri: ${DB_URL_LOCAL}
-      schema: "sql/schema.sql"
+      schema: "sql/schemas"
       engine: "postgresql"
       analyzer:
           database: true

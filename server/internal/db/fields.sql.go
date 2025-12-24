@@ -11,67 +11,68 @@ import (
 )
 
 const createField = `-- name: CreateField :one
-INSERT INTO "farm_field"(
-  created_at,
-  edited_at, 
-  field_name,
-  field_epsg_2100_boundary, 
-  field_epsg_4326_boundary, 
-  field_area_in_meters, 
+INSERT INTO fields (
+  name,
+  epsg_2100_boundary, 
+  epsg_4326_boundary, 
   field_location, 
-  farm_field_id,
-  is_owned 
+  area_in_meters, 
+  is_owned,
+  farm_id,
+  created_at,
+  updated_at
 )VALUES(
-  CURRENT_TIMESTAMP,
-  CURRENT_TIMESTAMP,
   $1,
   $2,
   $3,
   $4,
   $5,
   $6,
-  $7
-  )RETURNING id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned
+  $7,
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP
+  )RETURNING id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at
 `
 
 type CreateFieldParams struct {
-	FieldName             string
-	FieldEpsg2100Boundary *json.RawMessage
-	FieldEpsg4326Boundary *json.RawMessage
-	FieldAreaInMeters     float64
-	FieldLocation         *json.RawMessage
-	FarmFieldID           int64
-	IsOwned               bool
+	Name             string
+	Epsg2100Boundary *json.RawMessage
+	Epsg4326Boundary *json.RawMessage
+	FieldLocation    *json.RawMessage
+	AreaInMeters     float64
+	IsOwned          bool
+	FarmID           int64
 }
 
-func (q *Queries) CreateField(ctx context.Context, arg CreateFieldParams) (FarmField, error) {
+func (q *Queries) CreateField(ctx context.Context, arg CreateFieldParams) (Field, error) {
 	row := q.db.QueryRow(ctx, createField,
-		arg.FieldName,
-		arg.FieldEpsg2100Boundary,
-		arg.FieldEpsg4326Boundary,
-		arg.FieldAreaInMeters,
+		arg.Name,
+		arg.Epsg2100Boundary,
+		arg.Epsg4326Boundary,
 		arg.FieldLocation,
-		arg.FarmFieldID,
+		arg.AreaInMeters,
 		arg.IsOwned,
+		arg.FarmID,
 	)
-	var i FarmField
+	var i Field
 	err := row.Scan(
 		&i.ID,
-		&i.CreatedAt,
-		&i.EditedAt,
-		&i.FieldName,
-		&i.FieldEpsg2100Boundary,
-		&i.FieldEpsg4326Boundary,
-		&i.FieldAreaInMeters,
+		&i.Name,
+		&i.Epsg2100Boundary,
+		&i.Epsg4326Boundary,
 		&i.FieldLocation,
-		&i.FarmFieldID,
+		&i.AreaInMeters,
 		&i.IsOwned,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const deleteField = `-- name: DeleteField :exec
-DELETE FROM "farm_field"
+DELETE FROM fields
 WHERE id = $1
 `
 
@@ -81,36 +82,37 @@ func (q *Queries) DeleteField(ctx context.Context, id int64) error {
 }
 
 const getAllFields = `-- name: GetAllFields :many
-select id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned FROM "farm_field"
-WHERE "farm_field".farm_field_id = (
-  SELECT id FROM "farm"
-  WHERE "farm".id = (
-    SELECT farm_id FROM "user"
-    WHERE "user".id = $1
+select id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at FROM fields
+WHERE deleted_at IS NULL AND fields.farm_id = (
+  SELECT id FROM farms
+  WHERE deleted_at IS NULL AND farms.id = (
+    SELECT farm_id FROM users
+    WHERE deleted_at IS NULL AND users.id = $1
   )
 )
 `
 
-func (q *Queries) GetAllFields(ctx context.Context, userID int64) ([]FarmField, error) {
+func (q *Queries) GetAllFields(ctx context.Context, userID int64) ([]Field, error) {
 	rows, err := q.db.Query(ctx, getAllFields, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []FarmField
+	var items []Field
 	for rows.Next() {
-		var i FarmField
+		var i Field
 		if err := rows.Scan(
 			&i.ID,
-			&i.CreatedAt,
-			&i.EditedAt,
-			&i.FieldName,
-			&i.FieldEpsg2100Boundary,
-			&i.FieldEpsg4326Boundary,
-			&i.FieldAreaInMeters,
+			&i.Name,
+			&i.Epsg2100Boundary,
+			&i.Epsg4326Boundary,
 			&i.FieldLocation,
-			&i.FarmFieldID,
+			&i.AreaInMeters,
 			&i.IsOwned,
+			&i.FarmID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -123,87 +125,88 @@ func (q *Queries) GetAllFields(ctx context.Context, userID int64) ([]FarmField, 
 }
 
 const getFieldByIdAndUser = `-- name: GetFieldByIdAndUser :one
-select id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned FROM "farm_field"
-WHERE "farm_field".id = $1 AND "farm_field".farm_field_id = (
-  SELECT id FROM "farm"
-  WHERE "farm".id = (
-    SELECT farm_id FROM "user"
-    WHERE "user".id = $2
+select id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at FROM fields
+WHERE deleted_at IS NULL AND fields.id = $1 AND fields.farm_id = (
+  SELECT id FROM farms
+  WHERE deleted_at IS NULL AND farms.id = (
+    SELECT farm_id FROM users
+    WHERE deleted_at IS NULL AND users.id = $2
   )
 )
 `
 
 type GetFieldByIdAndUserParams struct {
-	FarmFieldID int64
-	UserID      int64
+	FieldID int64
+	UserID  int64
 }
 
-func (q *Queries) GetFieldByIdAndUser(ctx context.Context, arg GetFieldByIdAndUserParams) (FarmField, error) {
-	row := q.db.QueryRow(ctx, getFieldByIdAndUser, arg.FarmFieldID, arg.UserID)
-	var i FarmField
+func (q *Queries) GetFieldByIdAndUser(ctx context.Context, arg GetFieldByIdAndUserParams) (Field, error) {
+	row := q.db.QueryRow(ctx, getFieldByIdAndUser, arg.FieldID, arg.UserID)
+	var i Field
 	err := row.Scan(
 		&i.ID,
-		&i.CreatedAt,
-		&i.EditedAt,
-		&i.FieldName,
-		&i.FieldEpsg2100Boundary,
-		&i.FieldEpsg4326Boundary,
-		&i.FieldAreaInMeters,
+		&i.Name,
+		&i.Epsg2100Boundary,
+		&i.Epsg4326Boundary,
 		&i.FieldLocation,
-		&i.FarmFieldID,
+		&i.AreaInMeters,
 		&i.IsOwned,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const updateField = `-- name: UpdateField :one
-UPDATE  "farm_field" SET
-  edited_at = CURRENT_TIMESTAMP,
-  field_name = COALESCE($2,field_name),
-  field_epsg_2100_boundary =
-          COALESCE($3,field_epsg_2100_boundary),
-  field_epsg_4326_boundary =
-          COALESCE($4,field_epsg_4326_boundary),
-  field_area_in_meters =COALESCE($5,field_area_in_meters),
+UPDATE  fields SET
+  updated_at = CURRENT_TIMESTAMP,
+  name = COALESCE($2,name),
+  epsg_2100_boundary =
+    COALESCE($3,epsg_2100_boundary),
+  epsg_4326_boundary =
+    COALESCE($4,epsg_4326_boundary),
+  area_in_meters =COALESCE($5,area_in_meters),
   field_location = COALESCE($6,field_location),
-  -- farm_field_id = COALESCE(sqlc.narg('farm_field_id'),farm_field_id),
   is_owned = COALESCE($7,is_owned)
 WHERE id = $1
-  RETURNING id, created_at, edited_at, field_name, field_epsg_2100_boundary, field_epsg_4326_boundary, field_area_in_meters, field_location, farm_field_id, is_owned
+  RETURNING id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at
 `
 
 type UpdateFieldParams struct {
-	ID                    int64
-	FieldName             *string
-	FieldEpsg2100Boundary *json.RawMessage
-	FieldEpsg4326Boundary *json.RawMessage
-	FieldAreaInMeters     *float64
-	FieldLocation         *json.RawMessage
-	IsOwned               *bool
+	ID               int64
+	Name             *string
+	Epsg2100Boundary *json.RawMessage
+	Epsg4326Boundary *json.RawMessage
+	AreaInMeters     *float64
+	FieldLocation    *json.RawMessage
+	IsOwned          *bool
 }
 
-func (q *Queries) UpdateField(ctx context.Context, arg UpdateFieldParams) (FarmField, error) {
+func (q *Queries) UpdateField(ctx context.Context, arg UpdateFieldParams) (Field, error) {
 	row := q.db.QueryRow(ctx, updateField,
 		arg.ID,
-		arg.FieldName,
-		arg.FieldEpsg2100Boundary,
-		arg.FieldEpsg4326Boundary,
-		arg.FieldAreaInMeters,
+		arg.Name,
+		arg.Epsg2100Boundary,
+		arg.Epsg4326Boundary,
+		arg.AreaInMeters,
 		arg.FieldLocation,
 		arg.IsOwned,
 	)
-	var i FarmField
+	var i Field
 	err := row.Scan(
 		&i.ID,
-		&i.CreatedAt,
-		&i.EditedAt,
-		&i.FieldName,
-		&i.FieldEpsg2100Boundary,
-		&i.FieldEpsg4326Boundary,
-		&i.FieldAreaInMeters,
+		&i.Name,
+		&i.Epsg2100Boundary,
+		&i.Epsg4326Boundary,
 		&i.FieldLocation,
-		&i.FarmFieldID,
+		&i.AreaInMeters,
 		&i.IsOwned,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }

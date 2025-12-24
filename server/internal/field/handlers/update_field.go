@@ -11,6 +11,15 @@ import (
 	"github.com/xaosmaker/server/internal/utils"
 )
 
+type updateFieldRequestParams struct {
+	Name             *string          `json:"name" validate:"excluded_if=fieldName alphanumspace"`
+	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"excluded_if=epsg210Boundary []"`
+	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"excluded_if=epsg4326Boundary []"`
+	AreaInMeters     *float64         `json:"areaInMeters" validate:"excluded_if=areaInMeters number"`
+	FieldLocation    *json.RawMessage `json:"fieldLocation" validate:"excluded_if=fieldLocation []"`
+	IsOwned          *bool            `json:"isOwned" validate:"excluded_if=isOwned boolean"`
+}
+
 func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 	user, err := utils.GetUserFromContext(r)
 	if err != nil {
@@ -30,23 +39,14 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		FarmFieldID: nId,
-		UserID:      user.ID,
+		FieldID: nId,
+		UserID:  user.ID,
 	})
 	if err != nil {
 		er.GeneralError(400, "Farm Field does not exist")(w, r)
 		return
 	}
 
-	type updateFieldRequestParams struct {
-		FieldName             *string          `json:"fieldName" validate:"excluded_if=fieldName alphanumspace"`
-		FieldEpsg2100Boundary *json.RawMessage `json:"fieldEpsg2100Boundary" validate:"excluded_if=fieldEpsg210Boundary []"`
-		FieldEpsg4326Boundary *json.RawMessage `json:"fieldEpsg4326Boundary" validate:"excluded_if=fieldEpsg4326Boundary []"`
-		FieldAreaInMeters     *float64         `json:"fieldAreaInMeters" validate:"excluded_if=fieldAreaInMeters number"`
-		FieldLocation         *json.RawMessage `json:"fieldLocation" validate:"excluded_if=fieldLocation []"`
-		FarmFieldID           int64
-		IsOwned               *bool `json:"isOwned" validate:"excluded_if=isOwned boolean"`
-	}
 	s := updateFieldRequestParams{}
 
 	if err := utils.DecodeAndValidate(r, &s); err != nil {
@@ -54,26 +54,24 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// FarmFieldID:           &s.FarmFieldID,
 	fiel := db.UpdateFieldParams{
-		ID:                    nId,
-		FieldName:             s.FieldName,
-		FieldEpsg2100Boundary: s.FieldEpsg2100Boundary,
-		FieldEpsg4326Boundary: s.FieldEpsg4326Boundary,
-		FieldAreaInMeters:     s.FieldAreaInMeters,
-		FieldLocation:         s.FieldLocation,
-		IsOwned:               s.IsOwned,
+		ID:               nId,
+		Name:             s.Name,
+		Epsg2100Boundary: s.Epsg2100Boundary,
+		Epsg4326Boundary: s.Epsg4326Boundary,
+		AreaInMeters:     s.AreaInMeters,
+		FieldLocation:    s.FieldLocation,
+		IsOwned:          s.IsOwned,
 	}
 
 	data, err := q.DB.UpdateField(r.Context(), fiel)
 	if err != nil {
 		fmt.Println(err, "DB ErOOR")
-		er.GeneralError(400, err.Error())(w, r)
+		er.GeneralError(400, "Name alredy Exists")(w, r)
 		return
 	}
-	jData, _ := json.Marshal(data)
+	jData, _ := json.Marshal([]fieldResponse{toFieldResponse(data)})
 	w.WriteHeader(201)
 	w.Write(jData)
-	fmt.Println(fiel)
 
 }

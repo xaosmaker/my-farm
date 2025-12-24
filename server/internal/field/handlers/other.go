@@ -2,13 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"net/http"
-	"strconv"
-
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/er"
 	"github.com/xaosmaker/server/internal/utils"
+	"net/http"
+	"strconv"
 )
 
 func (q FieldQueries) DeleteField(w http.ResponseWriter, r *http.Request) {
@@ -29,8 +27,8 @@ func (q FieldQueries) DeleteField(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		FarmFieldID: nId,
-		UserID:      user.ID,
+		FieldID: nId,
+		UserID:  user.ID,
 	})
 	if err != nil {
 
@@ -65,15 +63,15 @@ func (q FieldQueries) GetFieldById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		FarmFieldID: nId,
-		UserID:      user.ID,
+		FieldID: nId,
+		UserID:  user.ID,
 	})
 
 	if err != nil {
 		er.GeneralError(404, "No Field found")(w, r)
 		return
 	}
-	listData := []db.FarmField{data}
+	listData := []fieldResponse{toFieldResponse(data)}
 	jData, err := json.Marshal(listData)
 	if err != nil {
 		er.GeneralError(500, "Internal Server Error")
@@ -99,35 +97,12 @@ func (q FieldQueries) GetAllFields(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	type FarmFieldSend struct {
-		ID                    int64              `json:"id"`
-		CreatedAt             pgtype.Timestamptz `json:"createdAt"`
-		EditedAt              pgtype.Timestamptz `json:"editedAt"`
-		FieldName             string             `json:"fieldName"`
-		FieldEpsg2100Boundary *json.RawMessage   `json:"fieldEpsg2100Boundary"`
-		FieldEpsg4326Boundary *json.RawMessage   `json:"fieldEpsg4326Boundary"`
-		FieldAreaInMeters     float64            `json:"fieldAreaInMeters"`
-		FieldLocation         *json.RawMessage   `json:"fieldLocation"`
-		FarmFieldID           int64              `json:"farmFieldId"`
-		IsOwned               bool               `json:"isOwned"`
-	}
-	listData := []FarmFieldSend{}
+	listData := []fieldResponse{}
 	for _, field := range data {
-		listData = append(listData, FarmFieldSend{
-			ID:                    field.ID,
-			CreatedAt:             field.CreatedAt,
-			EditedAt:              field.EditedAt,
-			FieldName:             field.FieldName,
-			FieldEpsg2100Boundary: field.FieldEpsg2100Boundary,
-			FieldEpsg4326Boundary: field.FieldEpsg4326Boundary,
-			FieldAreaInMeters:     field.FieldAreaInMeters,
-			FieldLocation:         field.FieldLocation,
-			FarmFieldID:           field.FarmFieldID,
-			IsOwned:               field.IsOwned,
-		})
+		listData = append(listData, toFieldResponse(field))
 	}
 
-	jData, err := json.Marshal(listData)
+	jData, err := json.Marshal(data)
 
 	if err != nil {
 		er.GeneralError(500, "Internal Server Error")

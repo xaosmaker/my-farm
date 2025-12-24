@@ -11,6 +11,15 @@ import (
 	"github.com/xaosmaker/server/internal/utils"
 )
 
+type createFieldRequestParams struct {
+	Name             string           `json:"name" validate:"required,alphanumspace"`
+	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"excluded_if=fieldEpsg210Boundary []"`
+	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"excluded_if=fieldEpsg4326Boundary []"`
+	FieldLocation    *json.RawMessage `json:"fieldLocation" validate:"excluded_if=fieldLocation []"`
+	AreaInMeters     float64          `json:"areaInMeters" validate:"required,number"`
+	IsOwned          bool             `json:"isOwned" validate:"boolean"`
+}
+
 func (q FieldQueries) CreateField(w http.ResponseWriter, r *http.Request) {
 	user, _ := utils.GetUserFromContext(r)
 	farm, err := q.DB.GetFarm(r.Context(), user.ID)
@@ -19,15 +28,6 @@ func (q FieldQueries) CreateField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type createFieldRequestParams struct {
-		FieldName             string           `json:"fieldName" validate:"required,alphanumspace"`
-		FieldEpsg2100Boundary *json.RawMessage `json:"fieldEpsg2100Boundary" validate:"excluded_if=fieldEpsg210Boundary []"`
-		FieldEpsg4326Boundary *json.RawMessage `json:"fieldEpsg4326Boundary" validate:"excluded_if=fieldEpsg4326Boundary []"`
-		FieldAreaInMeters     float64          `json:"fieldAreaInMeters" validate:"required,number"`
-		FieldLocation         *json.RawMessage `json:"fieldLocation" validate:"excluded_if=fieldLocation []"`
-		FarmFieldID           int64
-		IsOwned               bool `json:"isOwned" validate:"boolean"`
-	}
 	fields := createFieldRequestParams{}
 
 	if err := utils.DecodeAndValidate(r, &fields); err != nil {
@@ -35,17 +35,15 @@ func (q FieldQueries) CreateField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// params := db.CreateFieldParams{
-	// 	FieldName:             fields.FieldName,
-	// 	FieldEpsg2100Boundary: fields.FieldEpsg2100Boundary,
-	// 	FieldEpsg4326Boundary: fields.FieldEpsg4326Boundary,
-	// 	FieldAreaInMeters:     fields.FieldAreaInMeters,
-	// 	FieldLocation:         fields.FieldLocation,
-	// 	FarmFieldID:           farm.ID,
-	// 	IsOwned:               fields.IsOwned,
-	// }
-	params := db.CreateFieldParams(fields)
-	params.FarmFieldID = farm.ID
+	params := db.CreateFieldParams{
+		Name:             fields.Name,
+		Epsg2100Boundary: fields.Epsg2100Boundary,
+		Epsg4326Boundary: fields.Epsg4326Boundary,
+		AreaInMeters:     fields.AreaInMeters,
+		FieldLocation:    fields.FieldLocation,
+		FarmID:           farm.ID,
+		IsOwned:          fields.IsOwned,
+	}
 
 	field, err := q.DB.CreateField(r.Context(), params)
 	if err != nil {
@@ -56,7 +54,7 @@ func (q FieldQueries) CreateField(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Println(err, "Error")
 	}
-	data, _ := json.Marshal(field)
+	data, _ := json.Marshal([]fieldResponse{toFieldResponse(field)})
 	w.WriteHeader(201)
 	w.Write(data)
 

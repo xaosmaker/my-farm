@@ -1,16 +1,14 @@
 -- name: GetFarm :one
-SELECT * 
-FROM "farm" 
-WHERE id = (
-SELECT farm_id FROM "user"
-where "user".id = $1
+SELECT *
+FROM farms
+WHERE deleted_at IS NULL AND id = (
+SELECT farm_id FROM users
+where deleted_at IS NULL AND users.id = $1
 );
-
-
 
 -- name: CreateFarm :one
 with ins_farm as (
-INSERT INTO "farm" (created_at,edited_at,farm_name)
+INSERT INTO farms (created_at,updated_at,name)
 VALUES(
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP,
@@ -19,14 +17,14 @@ VALUES(
 ),
 update_user as (
 
-UPDATE "user" SET farm_id=(select id from ins_farm)
-  WHERE "user".id = $2
+UPDATE users SET farm_id=(select id from ins_farm)
+  WHERE users.id = $2
 ) select * from ins_farm;
 
 -- name: UpdateFarm :one
-UPDATE "farm" 
+UPDATE farms
 SET 
-edited_at=CURRENT_TIMESTAMP,
-farm_name=COALESCE(sqlc.narg('farm_name') ,farm_name)
+updated_at=CURRENT_TIMESTAMP,
+name=COALESCE(sqlc.narg('farm_name') ,name)
 WHERE id=$2
-RETURNING * ;
+RETURNING *;

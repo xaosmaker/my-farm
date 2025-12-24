@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/er"
 	"github.com/xaosmaker/server/internal/utils"
 )
@@ -20,7 +19,7 @@ func (q FarmQeuries) GetFarm(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, "Farm Not Found")(w, r)
 		return
 	}
-	data, err := json.Marshal([]db.Farm{farm})
+	data, err := json.Marshal([]farmResponse{toFarmResponse(farm)})
 	if err != nil {
 		er.GeneralError(500, "Internal Server Error")(w, r)
 		return

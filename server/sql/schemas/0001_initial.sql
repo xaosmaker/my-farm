@@ -20,16 +20,19 @@ deleted_at TIMESTAMP WITH TIME ZONE DEFAUlT NULL,
 CONSTRAINT fk_farms_users
 FOREIGN KEY (farm_id)
 REFERENCES  farms(id)
-ON DELETE SET NULL,
-UNIQUE (email,deleted_at)
+ON DELETE SET NULL
 );
+
+CREATE UNIQUE INDEX unique_users_email_active
+ON users (email)
+WHERE deleted_at IS NULL;
 
 CREATE TABLE fields (
 id BIGINT UNIQUE NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 name varchar(255) NOT NULL,
 epsg_2100_boundary jsonb,
 epsg_4326_boundary jsonb,
-farm_location jsonb,
+field_location jsonb,
 area_in_meters FLOAT NOT NULL,
 is_owned BOOLEAN NOT NULL DEFAULT FALSE,
 farm_id BIGINT NOT NULL,
@@ -40,9 +43,12 @@ deleted_at TIMESTAMP WITH TIME ZONE DEFAUlT NULL,
 CONSTRAINT fk_farms_fields
 FOREIGN KEY (farm_id)
 REFERENCES farms(id)
-ON DELETE CASCADE,
-UNIQUE (name,farm_id,deleted_at)
+ON DELETE CASCADE
 );
+
+CREATE UNIQUE INDEX unique_fields_name_farm_id_active
+ON fields (name, farm_id)
+WHERE deleted_at IS NULL;
 
 CREATE TABLE supplies (
 id BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,

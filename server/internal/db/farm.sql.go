@@ -13,50 +13,52 @@ import (
 
 const createFarm = `-- name: CreateFarm :one
 with ins_farm as (
-INSERT INTO "farm" (created_at,edited_at,farm_name)
+INSERT INTO farms (created_at,updated_at,name)
 VALUES(
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP,
     $1
-  )RETURNING id, created_at, edited_at, farm_name 
+  )RETURNING id, name, created_at, updated_at, deleted_at 
 ),
 update_user as (
 
-UPDATE "user" SET farm_id=(select id from ins_farm)
-  WHERE "user".id = $2
-) select id, created_at, edited_at, farm_name from ins_farm
+UPDATE users SET farm_id=(select id from ins_farm)
+  WHERE users.id = $2
+) select id, name, created_at, updated_at, deleted_at from ins_farm
 `
 
 type CreateFarmParams struct {
-	FarmName string
-	ID       int64
+	Name string
+	ID   int64
 }
 
 type CreateFarmRow struct {
 	ID        int64
+	Name      string
 	CreatedAt pgtype.Timestamptz
-	EditedAt  pgtype.Timestamptz
-	FarmName  string
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
 }
 
 func (q *Queries) CreateFarm(ctx context.Context, arg CreateFarmParams) (CreateFarmRow, error) {
-	row := q.db.QueryRow(ctx, createFarm, arg.FarmName, arg.ID)
+	row := q.db.QueryRow(ctx, createFarm, arg.Name, arg.ID)
 	var i CreateFarmRow
 	err := row.Scan(
 		&i.ID,
+		&i.Name,
 		&i.CreatedAt,
-		&i.EditedAt,
-		&i.FarmName,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const getFarm = `-- name: GetFarm :one
-SELECT id, created_at, edited_at, farm_name 
-FROM "farm" 
-WHERE id = (
-SELECT farm_id FROM "user"
-where "user".id = $1
+SELECT id, name, created_at, updated_at, deleted_at
+FROM farms
+WHERE deleted_at IS NULL AND id = (
+SELECT farm_id FROM users
+where deleted_at IS NULL AND users.id = $1
 )
 `
 
@@ -65,20 +67,21 @@ func (q *Queries) GetFarm(ctx context.Context, id int64) (Farm, error) {
 	var i Farm
 	err := row.Scan(
 		&i.ID,
+		&i.Name,
 		&i.CreatedAt,
-		&i.EditedAt,
-		&i.FarmName,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const updateFarm = `-- name: UpdateFarm :one
-UPDATE "farm" 
+UPDATE farms
 SET 
-edited_at=CURRENT_TIMESTAMP,
-farm_name=COALESCE($1 ,farm_name)
+updated_at=CURRENT_TIMESTAMP,
+name=COALESCE($1 ,name)
 WHERE id=$2
-RETURNING id, created_at, edited_at, farm_name
+RETURNING id, name, created_at, updated_at, deleted_at
 `
 
 type UpdateFarmParams struct {
@@ -91,9 +94,10 @@ func (q *Queries) UpdateFarm(ctx context.Context, arg UpdateFarmParams) (Farm, e
 	var i Farm
 	err := row.Scan(
 		&i.ID,
+		&i.Name,
 		&i.CreatedAt,
-		&i.EditedAt,
-		&i.FarmName,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }

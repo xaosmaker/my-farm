@@ -9,8 +9,42 @@ import (
 	"context"
 )
 
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (
+created_at,
+updated_at,
+email,
+password
+)values(
+CURRENT_TIMESTAMP,
+CURRENT_TIMESTAMP,
+  $1,
+  $2
+)RETURNING id, email, password, farm_id, created_at, updated_at, deleted_at
+`
+
+type CreateUserParams struct {
+	Email    string
+	Password string
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Password)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const getAllUsers = `-- name: GetAllUsers :many
-select password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active, farm_id from "user"
+select id, email, password, farm_id, created_at, updated_at, deleted_at from users
 `
 
 func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
@@ -23,18 +57,13 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 	for rows.Next() {
 		var i User
 		if err := rows.Scan(
-			&i.Password,
-			&i.LastLogin,
-			&i.IsSuperuser,
 			&i.ID,
 			&i.Email,
-			&i.FirstName,
-			&i.LastName,
-			&i.CreatedAt,
-			&i.EditedAt,
-			&i.IsStaff,
-			&i.IsActive,
+			&i.Password,
 			&i.FarmID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -47,7 +76,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const getUserBYId = `-- name: GetUserBYId :one
-SELECT password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active, farm_id FROM "user"
+SELECT id, email, password, farm_id, created_at, updated_at, deleted_at FROM users
 WHERE id = $1
 `
 
@@ -55,24 +84,19 @@ func (q *Queries) GetUserBYId(ctx context.Context, id int64) (User, error) {
 	row := q.db.QueryRow(ctx, getUserBYId, id)
 	var i User
 	err := row.Scan(
-		&i.Password,
-		&i.LastLogin,
-		&i.IsSuperuser,
 		&i.ID,
 		&i.Email,
-		&i.FirstName,
-		&i.LastName,
-		&i.CreatedAt,
-		&i.EditedAt,
-		&i.IsStaff,
-		&i.IsActive,
+		&i.Password,
 		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT password, last_login, is_superuser, id, email, first_name, last_name, created_at, edited_at, is_staff, is_active, farm_id FROM "user"
+SELECT id, email, password, farm_id, created_at, updated_at, deleted_at FROM users
 WHERE email = $1
 `
 
@@ -80,18 +104,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
-		&i.Password,
-		&i.LastLogin,
-		&i.IsSuperuser,
 		&i.ID,
 		&i.Email,
-		&i.FirstName,
-		&i.LastName,
-		&i.CreatedAt,
-		&i.EditedAt,
-		&i.IsStaff,
-		&i.IsActive,
+		&i.Password,
 		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }

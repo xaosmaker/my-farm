@@ -13,29 +13,29 @@ class AuthGroup(models.Model):
 
     class Meta:
         managed = False
-        db_table = "auth_group"
+        db_table = 'auth_group'
 
 
 class AuthGroupPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-    permission = models.ForeignKey("AuthPermission", models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
 
     class Meta:
         managed = False
-        db_table = "auth_group_permissions"
-        unique_together = (("group", "permission"),)
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
 
 
 class AuthPermission(models.Model):
     name = models.CharField(max_length=255)
-    content_type = models.ForeignKey("DjangoContentType", models.DO_NOTHING)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
     codename = models.CharField(max_length=100)
 
     class Meta:
         managed = False
-        db_table = "auth_permission"
-        unique_together = (("content_type", "codename"),)
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
 
 
 class AuthUser(models.Model):
@@ -52,7 +52,7 @@ class AuthUser(models.Model):
 
     class Meta:
         managed = False
-        db_table = "auth_user"
+        db_table = 'auth_user'
 
 
 class AuthUserGroups(models.Model):
@@ -62,8 +62,8 @@ class AuthUserGroups(models.Model):
 
     class Meta:
         managed = False
-        db_table = "auth_user_groups"
-        unique_together = (("user", "group"),)
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
 
 
 class AuthUserUserPermissions(models.Model):
@@ -73,8 +73,8 @@ class AuthUserUserPermissions(models.Model):
 
     class Meta:
         managed = False
-        db_table = "auth_user_user_permissions"
-        unique_together = (("user", "permission"),)
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
 
 
 class DjangoAdminLog(models.Model):
@@ -83,14 +83,12 @@ class DjangoAdminLog(models.Model):
     object_repr = models.CharField(max_length=200)
     action_flag = models.SmallIntegerField()
     change_message = models.TextField()
-    content_type = models.ForeignKey(
-        "DjangoContentType", models.DO_NOTHING, blank=True, null=True
-    )
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
 
     class Meta:
         managed = False
-        db_table = "django_admin_log"
+        db_table = 'django_admin_log'
 
 
 class DjangoContentType(models.Model):
@@ -99,8 +97,8 @@ class DjangoContentType(models.Model):
 
     class Meta:
         managed = False
-        db_table = "django_content_type"
-        unique_together = (("app_label", "model"),)
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
 
 
 class DjangoMigrations(models.Model):
@@ -111,7 +109,7 @@ class DjangoMigrations(models.Model):
 
     class Meta:
         managed = False
-        db_table = "django_migrations"
+        db_table = 'django_migrations'
 
 
 class DjangoSession(models.Model):
@@ -121,7 +119,7 @@ class DjangoSession(models.Model):
 
     class Meta:
         managed = False
-        db_table = "django_session"
+        db_table = 'django_session'
 
 
 class Farms(models.Model):
@@ -133,7 +131,7 @@ class Farms(models.Model):
 
     class Meta:
         managed = False
-        db_table = "farms"
+        db_table = 'farms'
 
 
 class Fields(models.Model):
@@ -141,7 +139,7 @@ class Fields(models.Model):
     name = models.CharField(max_length=255)
     epsg_2100_boundary = models.JSONField(blank=True, null=True)
     epsg_4326_boundary = models.JSONField(blank=True, null=True)
-    farm_location = models.JSONField(blank=True, null=True)
+    field_location = models.JSONField(blank=True, null=True)
     area_in_meters = models.FloatField()
     is_owned = models.BooleanField()
     farm = models.ForeignKey(Farms, models.DO_NOTHING)
@@ -151,8 +149,8 @@ class Fields(models.Model):
 
     class Meta:
         managed = False
-        db_table = "fields"
-        unique_together = (("name", "farm", "deleted_at"),)
+        db_table = 'fields'
+        unique_together = (('name', 'farm', 'deleted_at'),)
 
 
 class GooseDbVersion(models.Model):
@@ -162,7 +160,7 @@ class GooseDbVersion(models.Model):
 
     class Meta:
         managed = False
-        db_table = "goose_db_version"
+        db_table = 'goose_db_version'
 
 
 class Jobs(models.Model):
@@ -177,7 +175,7 @@ class Jobs(models.Model):
 
     class Meta:
         managed = False
-        db_table = "jobs"
+        db_table = 'jobs'
 
 
 class JobsObservations(models.Model):
@@ -191,22 +189,22 @@ class JobsObservations(models.Model):
 
     class Meta:
         managed = False
-        db_table = "jobs_observations"
+        db_table = 'jobs_observations'
 
 
 class JobsSupplies(models.Model):
     id = models.BigAutoField(primary_key=True)
     quantity = models.FloatField()
     job = models.ForeignKey(Jobs, models.DO_NOTHING, blank=True, null=True)
-    supply = models.ForeignKey("Supplies", models.DO_NOTHING, blank=True, null=True)
+    supply = models.ForeignKey('Supplies', models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = "jobs_supplies"
-        unique_together = (("id", "supply", "deleted_at"),)
+        db_table = 'jobs_supplies'
+        unique_together = (('id', 'supply', 'deleted_at'),)
 
 
 class Supplies(models.Model):
@@ -222,8 +220,8 @@ class Supplies(models.Model):
 
     class Meta:
         managed = False
-        db_table = "supplies"
-        unique_together = (("name", "farm", "deleted_at"),)
+        db_table = 'supplies'
+        unique_together = (('name', 'farm', 'deleted_at'),)
 
 
 class SuppliesDetails(models.Model):
@@ -237,7 +235,7 @@ class SuppliesDetails(models.Model):
 
     class Meta:
         managed = False
-        db_table = "supplies_details"
+        db_table = 'supplies_details'
 
 
 class SuppliesPrices(models.Model):
@@ -252,7 +250,7 @@ class SuppliesPrices(models.Model):
 
     class Meta:
         managed = False
-        db_table = "supplies_prices"
+        db_table = 'supplies_prices'
 
 
 class Users(models.Model):
@@ -266,5 +264,5 @@ class Users(models.Model):
 
     class Meta:
         managed = False
-        db_table = "users"
-        unique_together = (("email", "deleted_at"),)
+        db_table = 'users'
+        unique_together = (('email', 'deleted_at'),)

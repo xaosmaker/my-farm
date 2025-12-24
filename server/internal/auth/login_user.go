@@ -3,12 +3,13 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/xaosmaker/server/internal/er"
-	"github.com/xaosmaker/server/internal/utils"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/xaosmaker/server/internal/er"
+	"github.com/xaosmaker/server/internal/utils"
 )
 
 const (
@@ -63,25 +64,19 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &cookie)
 
 	type SendUser struct {
-		IsSuperuser bool    `json:"isSuperuser"`
-		ID          int64   `json:"id"`
-		Email       string  `json:"email"`
-		IsStaff     bool    `json:"isStaff"`
-		FarmID      *int64  `json:"farmId"`
-		FarmName    *string `json:"farmName"`
+		ID       int64   `json:"id"`
+		Email    string  `json:"email"`
+		FarmID   *int64  `json:"farmId"`
+		FarmName *string `json:"farmName"`
 	}
-
 	s := SendUser{
-		ID:          user.ID,
-		Email:       user.Email,
-		IsStaff:     user.IsStaff,
-		IsSuperuser: user.IsSuperuser,
+		ID:    user.ID,
+		Email: user.Email,
 	}
 	farm, err := q.DB.GetFarm(r.Context(), user.ID)
 	if err == nil {
 		s.FarmID = &farm.ID
-		s.FarmName = &farm.FarmName
-
+		s.FarmName = &farm.Name
 	}
 
 	jUser, err := json.Marshal(s)
