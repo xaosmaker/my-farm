@@ -7,6 +7,8 @@ import (
 )
 
 func GetUserFromContext(r *http.Request) (db.User, error) {
+	// Here we asume the user exist from the middleware so the user error
+	// will never run
 	v := r.Context().Value("user")
 
 	if v != nil {

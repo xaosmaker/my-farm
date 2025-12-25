@@ -4,6 +4,7 @@ INSERT INTO fields (
   name,
   epsg_2100_boundary, 
   epsg_4326_boundary, 
+  map_location, 
   field_location, 
   area_in_meters, 
   is_owned,
@@ -14,6 +15,7 @@ INSERT INTO fields (
   $1,
   sqlc.narg('epsg_2100_boundary'),
   sqlc.narg('epsg_4326_boundary'),
+  sqlc.narg('map_location'),
   sqlc.narg('field_location'),
   $5,
   $6,
@@ -31,6 +33,7 @@ UPDATE  fields SET
   epsg_4326_boundary =
     COALESCE(sqlc.narg('epsg_4326_boundary'),epsg_4326_boundary),
   area_in_meters =COALESCE(sqlc.narg('area_in_meters'),area_in_meters),
+  map_location = COALESCE(sqlc.narg('map_location'),map_location),
   field_location = COALESCE(sqlc.narg('field_location'),field_location),
   is_owned = COALESCE(sqlc.narg('is_owned'),is_owned)
 WHERE id = $1

@@ -18,6 +18,9 @@ func validateMessages(s any) any {
 
 	switch t := s; t.(type) {
 	case string:
+		if s == "login" {
+			return []string{"Login to continue"}
+		}
 		return []any{s}
 	case []string:
 		return s
@@ -33,9 +36,17 @@ func GeneralError(statusCode int, messages any) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(r.URL.RawPath, r.URL.RawQuery, r.Method, "call")
 
+		var message any
+		if statusCode == 500 {
+			message = []string{"internal server error"}
+
+		} else {
+			message = validateMessages(messages)
+		}
+
 		er := errorMessageString{
 			Status: statusCode,
-			Errors: validateMessages(messages),
+			Errors: message,
 		}
 
 		w.WriteHeader(statusCode)

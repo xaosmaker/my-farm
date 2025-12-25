@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/er"
@@ -16,7 +17,8 @@ type updateFieldRequestParams struct {
 	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"excluded_if=epsg210Boundary []"`
 	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"excluded_if=epsg4326Boundary []"`
 	AreaInMeters     *float64         `json:"areaInMeters" validate:"excluded_if=areaInMeters number"`
-	FieldLocation    *json.RawMessage `json:"fieldLocation" validate:"excluded_if=fieldLocation []"`
+	MapLocation      *json.RawMessage `json:"mapLocation" validate:"excluded_if=fieldLocation []"`
+	FieldLocation    *string          `json:"fieldLocation" validate:"alphanumspace"`
 	IsOwned          *bool            `json:"isOwned" validate:"excluded_if=isOwned boolean"`
 }
 
@@ -61,13 +63,19 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 		Epsg4326Boundary: s.Epsg4326Boundary,
 		AreaInMeters:     s.AreaInMeters,
 		FieldLocation:    s.FieldLocation,
+		MapLocation:      s.MapLocation,
 		IsOwned:          s.IsOwned,
 	}
 
 	data, err := q.DB.UpdateField(r.Context(), fiel)
 	if err != nil {
-		fmt.Println(err, "DB ErOOR")
-		er.GeneralError(400, "Name alredy Exists")(w, r)
+		if strings.Contains(err.Error(), "23505") {
+
+			er.GeneralError(400, "Field already exists with this name")(w, r)
+			return
+		}
+
+		er.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	jData, _ := json.Marshal([]fieldResponse{toFieldResponse(data)})

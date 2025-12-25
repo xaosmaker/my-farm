@@ -23,7 +23,8 @@ type Field struct {
 	Name             string
 	Epsg2100Boundary *json.RawMessage
 	Epsg4326Boundary *json.RawMessage
-	FieldLocation    *json.RawMessage
+	MapLocation      *json.RawMessage
+	FieldLocation    *string
 	AreaInMeters     float64
 	IsOwned          bool
 	FarmID           int64

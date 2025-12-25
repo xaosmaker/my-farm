@@ -15,6 +15,7 @@ INSERT INTO fields (
   name,
   epsg_2100_boundary, 
   epsg_4326_boundary, 
+  map_location, 
   field_location, 
   area_in_meters, 
   is_owned,
@@ -26,22 +27,24 @@ INSERT INTO fields (
   $2,
   $3,
   $4,
+  $8,
   $5,
   $6,
   $7,
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP
-  )RETURNING id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at
+  )RETURNING id, name, epsg_2100_boundary, epsg_4326_boundary, map_location, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at
 `
 
 type CreateFieldParams struct {
 	Name             string
 	Epsg2100Boundary *json.RawMessage
 	Epsg4326Boundary *json.RawMessage
-	FieldLocation    *json.RawMessage
+	MapLocation      *json.RawMessage
 	AreaInMeters     float64
 	IsOwned          bool
 	FarmID           int64
+	FieldLocation    *string
 }
 
 func (q *Queries) CreateField(ctx context.Context, arg CreateFieldParams) (Field, error) {
@@ -49,10 +52,11 @@ func (q *Queries) CreateField(ctx context.Context, arg CreateFieldParams) (Field
 		arg.Name,
 		arg.Epsg2100Boundary,
 		arg.Epsg4326Boundary,
-		arg.FieldLocation,
+		arg.MapLocation,
 		arg.AreaInMeters,
 		arg.IsOwned,
 		arg.FarmID,
+		arg.FieldLocation,
 	)
 	var i Field
 	err := row.Scan(
@@ -60,6 +64,7 @@ func (q *Queries) CreateField(ctx context.Context, arg CreateFieldParams) (Field
 		&i.Name,
 		&i.Epsg2100Boundary,
 		&i.Epsg4326Boundary,
+		&i.MapLocation,
 		&i.FieldLocation,
 		&i.AreaInMeters,
 		&i.IsOwned,
@@ -82,7 +87,7 @@ func (q *Queries) DeleteField(ctx context.Context, id int64) error {
 }
 
 const getAllFields = `-- name: GetAllFields :many
-select id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at FROM fields
+select id, name, epsg_2100_boundary, epsg_4326_boundary, map_location, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at FROM fields
 WHERE deleted_at IS NULL AND fields.farm_id = (
   SELECT id FROM farms
   WHERE deleted_at IS NULL AND farms.id = (
@@ -106,6 +111,7 @@ func (q *Queries) GetAllFields(ctx context.Context, userID int64) ([]Field, erro
 			&i.Name,
 			&i.Epsg2100Boundary,
 			&i.Epsg4326Boundary,
+			&i.MapLocation,
 			&i.FieldLocation,
 			&i.AreaInMeters,
 			&i.IsOwned,
@@ -125,7 +131,7 @@ func (q *Queries) GetAllFields(ctx context.Context, userID int64) ([]Field, erro
 }
 
 const getFieldByIdAndUser = `-- name: GetFieldByIdAndUser :one
-select id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at FROM fields
+select id, name, epsg_2100_boundary, epsg_4326_boundary, map_location, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at FROM fields
 WHERE deleted_at IS NULL AND fields.id = $1 AND fields.farm_id = (
   SELECT id FROM farms
   WHERE deleted_at IS NULL AND farms.id = (
@@ -148,6 +154,7 @@ func (q *Queries) GetFieldByIdAndUser(ctx context.Context, arg GetFieldByIdAndUs
 		&i.Name,
 		&i.Epsg2100Boundary,
 		&i.Epsg4326Boundary,
+		&i.MapLocation,
 		&i.FieldLocation,
 		&i.AreaInMeters,
 		&i.IsOwned,
@@ -168,10 +175,11 @@ UPDATE  fields SET
   epsg_4326_boundary =
     COALESCE($4,epsg_4326_boundary),
   area_in_meters =COALESCE($5,area_in_meters),
-  field_location = COALESCE($6,field_location),
-  is_owned = COALESCE($7,is_owned)
+  map_location = COALESCE($6,map_location),
+  field_location = COALESCE($7,field_location),
+  is_owned = COALESCE($8,is_owned)
 WHERE id = $1
-  RETURNING id, name, epsg_2100_boundary, epsg_4326_boundary, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at
+  RETURNING id, name, epsg_2100_boundary, epsg_4326_boundary, map_location, field_location, area_in_meters, is_owned, farm_id, created_at, updated_at, deleted_at
 `
 
 type UpdateFieldParams struct {
@@ -180,7 +188,8 @@ type UpdateFieldParams struct {
 	Epsg2100Boundary *json.RawMessage
 	Epsg4326Boundary *json.RawMessage
 	AreaInMeters     *float64
-	FieldLocation    *json.RawMessage
+	MapLocation      *json.RawMessage
+	FieldLocation    *string
 	IsOwned          *bool
 }
 
@@ -191,6 +200,7 @@ func (q *Queries) UpdateField(ctx context.Context, arg UpdateFieldParams) (Field
 		arg.Epsg2100Boundary,
 		arg.Epsg4326Boundary,
 		arg.AreaInMeters,
+		arg.MapLocation,
 		arg.FieldLocation,
 		arg.IsOwned,
 	)
@@ -200,6 +210,7 @@ func (q *Queries) UpdateField(ctx context.Context, arg UpdateFieldParams) (Field
 		&i.Name,
 		&i.Epsg2100Boundary,
 		&i.Epsg4326Boundary,
+		&i.MapLocation,
 		&i.FieldLocation,
 		&i.AreaInMeters,
 		&i.IsOwned,

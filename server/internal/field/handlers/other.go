@@ -102,7 +102,7 @@ func (q FieldQueries) GetAllFields(w http.ResponseWriter, r *http.Request) {
 		listData = append(listData, toFieldResponse(field))
 	}
 
-	jData, err := json.Marshal(data)
+	jData, err := json.Marshal(listData)
 
 	if err != nil {
 		er.GeneralError(500, "Internal Server Error")

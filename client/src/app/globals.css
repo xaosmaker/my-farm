@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 .leaflet-container {
+  /* height: calc(100dvh - 7rem); */
   height: 100%;
 }
 

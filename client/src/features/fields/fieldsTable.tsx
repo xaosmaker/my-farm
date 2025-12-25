@@ -1,27 +1,28 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { FarmFields } from "./types";
+import { Field } from "./types";
 import { MapPin } from "lucide-react";
 
-export const fieldsTable: ColumnDef<FarmFields>[] = [
+export const fieldsTable: ColumnDef<Field>[] = [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "fieldName",
+    accessorKey: "name",
     header: "Field Name",
   },
   {
-    accessorKey: "fieldLocation",
-    header: "Location",
+    accessorKey: "mapLocation",
+    header: "Map Location",
     cell: ({ row }) => {
-      if (row.original.fieldLocation != null) {
+      if (row.original.mapLocation != null) {
         return <MapPin />;
       }
 
       return null;
     },
   },
+  { accessorKey: "fieldLocation", header: "Location" },
 ];

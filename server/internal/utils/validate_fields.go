@@ -3,11 +3,10 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 	"reflect"
 	"strings"
-
-	"github.com/go-playground/validator/v10"
 )
 
 type FieldErrors map[string]string
@@ -25,6 +24,8 @@ func formatValidator(f validator.FieldError) string {
 		return "Please provide a valid email"
 	case "alphanumspace":
 		return fmt.Sprintf("%v should contain only chars spaces and number", f.Field())
+	case "oneof":
+		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), f.Param())
 	default:
 		return fmt.Sprintf("format Validator uknown format %v", f.Error())
 	}

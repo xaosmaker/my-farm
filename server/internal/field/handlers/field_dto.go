@@ -12,7 +12,8 @@ type fieldResponse struct {
 	Name             string             `json:"name"`
 	Epsg2100Boundary *json.RawMessage   `json:"epsg2100Boundary"`
 	Epsg4326Boundary *json.RawMessage   `json:"epsg4326Boundary"`
-	FieldLocation    *json.RawMessage   `json:"fieldLocation"`
+	MapLocation      *json.RawMessage   `json:"mapLocation"`
+	FieldLocation    *string            `json:"fieldLocation"`
 	AreaInMeters     float64            `json:"areaInMeters"`
 	IsOwned          bool               `json:"isOwned"`
 	CreatedAt        pgtype.Timestamptz `json:"createdAt"`
@@ -27,6 +28,7 @@ func toFieldResponse(f db.Field) fieldResponse {
 		Name:             f.Name,
 		Epsg2100Boundary: f.Epsg2100Boundary,
 		Epsg4326Boundary: f.Epsg4326Boundary,
+		MapLocation:      f.MapLocation,
 		FieldLocation:    f.FieldLocation,
 		AreaInMeters:     f.AreaInMeters,
 		IsOwned:          f.IsOwned,

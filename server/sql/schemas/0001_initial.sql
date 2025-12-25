@@ -32,7 +32,8 @@ id BIGINT UNIQUE NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 name varchar(255) NOT NULL,
 epsg_2100_boundary jsonb,
 epsg_4326_boundary jsonb,
-field_location jsonb,
+map_location jsonb,
+field_location varchar(255),
 area_in_meters FLOAT NOT NULL,
 is_owned BOOLEAN NOT NULL DEFAULT FALSE,
 farm_id BIGINT NOT NULL,
@@ -64,9 +65,12 @@ deleted_at TIMESTAMP WITH TIME ZONE DEFAUlT NULL,
 CONSTRAINT fk_farms_supplies
 FOREIGN KEY (farm_id)
 REFERENCES farms(id)
-ON DELETE CASCADE,
-UNIQUE (name,farm_id,deleted_at)
+ON DELETE CASCADE
 );
+
+CREATE UNIQUE INDEX idx_supplies_unique_name_farm_id_active
+ON supplies (name, farm_id)
+WHERE deleted_at IS NULL;
 
 CREATE TABLE supplies_prices (
 id BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,

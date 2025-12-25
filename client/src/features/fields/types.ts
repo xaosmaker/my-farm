@@ -1,12 +1,12 @@
-export interface FarmFields {
+export interface Field {
   id: number;
-  createdAt: Date;
-  editedAt: Date;
-  fieldName: string;
-  fieldEpsg2100Boundary: Array<[number, number]> | null;
-  fieldEpsg4326Boundary: Array<[number, number]> | null;
-  fieldLocation: [number, number] | null;
-  fieldAreaInMeters: number;
+  name: string;
+  epsg2100Boundary: Array<[number, number]> | null;
+  epsg4326Boundary: Array<[number, number]> | null;
+  mapLocation: Array<[number, number]> | null;
+  fieldLocation: string;
+  areaInMeters: number;
   isOwned: boolean;
-  farmFieldID: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

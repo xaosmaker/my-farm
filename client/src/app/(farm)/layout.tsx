@@ -15,7 +15,9 @@ export default function layout({
         <NavBar>
           <SidebarTrigger />
         </NavBar>
-        <div className="mx-auto mt-10 px-10">{children}</div>
+        <div className="mx-auto mt-10 h-[calc(100dvh-7rem)] px-10">
+          {children}
+        </div>
       </main>
     </SidebarProvider>
   );
