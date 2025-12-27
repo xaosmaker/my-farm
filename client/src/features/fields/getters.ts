@@ -1,21 +1,26 @@
-import { auth } from "@/lib/auth";
+import { baseRequest } from "@/lib/baseRequest";
 import { SERVER_URL } from "@/lib/serverUrl";
+import { Field } from "@/features/fields/types";
 
 export async function getAllFields() {
-  const session = await auth();
-  if (!session?.user) {
-    return [];
-  }
-  const res = await fetch(`${SERVER_URL}/api/fields`, {
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/fields`,
     method: "GET",
-
-    headers: {
-      "content-type": "application/json",
-      cookie: session.user.access,
-    },
+    body: undefined,
   });
-  console.log(res);
 
+  if (res.ok) {
+    return res.json();
+  }
+  return [];
+}
+
+export async function getFieldById(id: string): Promise<Field[]> {
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/fields/${id}`,
+    method: "GET",
+    body: undefined,
+  });
   if (res.ok) {
     return res.json();
   }

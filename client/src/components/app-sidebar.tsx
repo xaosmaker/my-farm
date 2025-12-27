@@ -29,13 +29,13 @@ const items = [
     icon: Calendar,
   },
   {
-    title: "Search",
-    url: "#",
+    title: "Supplies",
+    url: "/supplies",
     icon: Search,
   },
   {
-    title: "Settings",
-    url: "#",
+    title: "Create Supplies",
+    url: "/supplies/create",
     icon: Settings,
   },
 ];
