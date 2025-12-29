@@ -1,0 +1,55 @@
+package handlers
+
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+
+	"github.com/xaosmaker/server/internal/db"
+	"github.com/xaosmaker/server/internal/er"
+	"github.com/xaosmaker/server/internal/utils"
+)
+
+func (q JobsQueries) GetAllJobs(w http.ResponseWriter, r *http.Request) {
+	user, err := utils.GetUserFromContext(r)
+	if err != nil {
+		er.GeneralError(400, "login")(w, r)
+		return
+	}
+	fieldId := r.PathValue("fieldId")
+	if fieldId == "" {
+		er.GeneralError(500, nil)(w, r)
+		return
+	}
+	nFieldId, err := strconv.ParseInt(fieldId, 10, 64)
+	if err != nil {
+		er.GeneralError(500, nil)(w, r)
+		return
+	}
+
+	field, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+		FieldID: nFieldId,
+		UserID:  user.ID,
+	})
+	if err != nil {
+		er.GeneralError(400, "This Field Doesnt Exist")
+	}
+	jobs, err := q.DB.GetAllJobs(r.Context(), field.ID)
+	if err != nil {
+		er.GeneralError(400, err.Error())(w, r)
+		return
+	}
+	jJobs := []jobResponse{}
+	for _, job := range jobs {
+		jJobs = append(jJobs, toJodResponse(job))
+	}
+
+	data, err := json.Marshal(jJobs)
+	if err != nil {
+		er.GeneralError(500, nil)(w, r)
+		return
+	}
+	w.WriteHeader(200)
+	w.Write(data)
+
+}

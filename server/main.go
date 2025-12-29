@@ -13,6 +13,7 @@ import (
 	"github.com/xaosmaker/server/internal/er"
 	"github.com/xaosmaker/server/internal/farm"
 	"github.com/xaosmaker/server/internal/field"
+	"github.com/xaosmaker/server/internal/jobs"
 	"github.com/xaosmaker/server/internal/middlewares"
 	"github.com/xaosmaker/server/internal/supplies"
 )
@@ -36,6 +37,7 @@ func main() {
 	r.Post("/api/users/login", authQ.LoginUser)
 	r.Mount("/api/farms", farm.FarmRouter(conn))
 	r.Mount("/api/fields", field.FieldRouter(conn))
+	r.Mount("/api/jobs", jobs.JobsRouter(conn))
 	r.Mount("/api/supplies", supplies.SuppliesRouter(conn))
 	r.NotFound(er.GeneralError(404, "Route not Found"))
 	r.MethodNotAllowed(er.GeneralError(405, "Method not found "))

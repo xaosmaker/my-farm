@@ -30,10 +30,10 @@ updated_at
 `
 
 type CreateSuppliesParams struct {
-	SupplyType      string
+	SupplyType      interface{}
 	Nickname        *string
 	Name            string
-	MeasurementUnit string
+	MeasurementUnit interface{}
 	FarmID          int64
 }
 

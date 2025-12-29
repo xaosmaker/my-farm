@@ -7,10 +7,10 @@ import (
 
 type supplyResponse struct {
 	ID              int64              `json:"id"`
-	SupplyType      string             `json:"supplyType"`
+	SupplyType      any                `json:"supplyType"`
 	Nickname        *string            `json:"nickname"`
 	Name            string             `json:"name"`
-	MeasurementUnit string             `json:"measurementUnit"`
+	MeasurementUnit any                `json:"measurementUnit"`
 	CreatedAt       pgtype.Timestamptz `json:"createdAt"`
 	UpdatedAt       pgtype.Timestamptz `json:"updatedAt"`
 }

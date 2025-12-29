@@ -26,6 +26,8 @@ func formatValidator(f validator.FieldError) string {
 		return fmt.Sprintf("%v should contain only chars spaces and number", f.Field())
 	case "oneof":
 		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), f.Param())
+	case "jobtype":
+		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(JobTypes(), ", "))
 	default:
 		return fmt.Sprintf("format Validator uknown format %v", f.Error())
 	}
@@ -58,8 +60,10 @@ func getFieldJsonTag(s any, field string) string {
 	return f.Name
 }
 
-func ValidateFields(s any) map[string]string {
+func ValidateFields(s any) FieldErrors {
 	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("jobtype", jobTypeValidator)
+
 	err := validate.Struct(s)
 
 	fieldErrors := map[string]string{}

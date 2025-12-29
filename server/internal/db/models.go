@@ -87,10 +87,10 @@ type SuppliesPrice struct {
 
 type Supply struct {
 	ID              int64
-	SupplyType      string
+	SupplyType      interface{}
 	Nickname        *string
 	Name            string
-	MeasurementUnit string
+	MeasurementUnit interface{}
 	FarmID          int64
 	CreatedAt       pgtype.Timestamptz
 	UpdatedAt       pgtype.Timestamptz
