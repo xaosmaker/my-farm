@@ -1,12 +1,19 @@
-import { auth } from "@/lib/auth";
+"use client";
+import { redirect, usePathname } from "next/navigation";
 import { ReactNode } from "react";
+import { useSession } from "next-auth/react";
 
-export default async function NavBar({
+export default function NavBar({
   children,
 }: {
   children: Readonly<ReactNode>;
 }) {
-  const session = await auth();
+  const { data: session } = useSession();
+  const url = usePathname();
+
+  if (session?.user && !session?.user?.farmId && !(url === "/farm/create")) {
+    redirect("/farm/create");
+  }
   return (
     <div className="flex h-14 items-center justify-between px-5 pl-2 shadow shadow-current/10">
       {children}

@@ -2,8 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Field } from "./types";
-import { MapPin } from "lucide-react";
+import { MapPin, Plus } from "lucide-react";
 import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const fieldsTable: ColumnDef<Field>[] = [
   {
@@ -35,4 +40,17 @@ export const fieldsTable: ColumnDef<Field>[] = [
     },
   },
   { accessorKey: "fieldLocation", header: "Location" },
+  {
+    id: "createField",
+    header: () => (
+      <Link href="/fields/create" className="text-green-500">
+        <Tooltip>
+          <TooltipTrigger>
+            <Plus />
+          </TooltipTrigger>
+          <TooltipContent>Create Field</TooltipContent>
+        </Tooltip>
+      </Link>
+    ),
+  },
 ];

@@ -1,6 +1,6 @@
 import { baseRequest } from "@/lib/baseRequest";
 import { SERVER_URL } from "@/lib/serverUrl";
-import { Supply } from "./types";
+import { Supply } from "@/types/sharedTypes";
 
 export async function getAllSupplies() {
   const res = await baseRequest({

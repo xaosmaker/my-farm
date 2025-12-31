@@ -4,7 +4,6 @@ import { suppliesTable } from "@/features/supplies/suppliesTable";
 
 export default async function SuppliesPage() {
   const supplies = await getAllSupplies();
-  console.log(supplies);
 
   return <DataTable data={supplies} columns={suppliesTable} />;
 }

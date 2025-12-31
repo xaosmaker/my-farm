@@ -11,6 +11,7 @@ type jobResponse struct {
 	ID           int64              `json:"id"`
 	JobType      string             `json:"jobType"`
 	Description  *string            `json:"description"`
+	FieldID      int64              `json:"fieldId"`
 	JobDate      pgtype.Timestamptz `json:"jobDate"`
 	CreatedAt    pgtype.Timestamptz `json:"createdAt"`
 	UpdatedAt    pgtype.Timestamptz `json:"updatedAt"`
@@ -22,6 +23,7 @@ func toJodResponse(f db.GetAllJobsRow) jobResponse {
 		ID:           f.ID,
 		JobType:      f.JobType,
 		Description:  f.Description,
+		FieldID:      f.FieldID,
 		JobDate:      f.JobDate,
 		CreatedAt:    f.CreatedAt,
 		UpdatedAt:    f.UpdatedAt,

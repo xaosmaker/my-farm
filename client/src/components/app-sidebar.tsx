@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 // Menu items.
 const items = [
@@ -24,19 +25,9 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Create Field",
-    url: "/fields/create",
-    icon: Calendar,
-  },
-  {
     title: "Supplies",
     url: "/supplies",
     icon: Search,
-  },
-  {
-    title: "Create Supplies",
-    url: "/supplies/create",
-    icon: Settings,
   },
 ];
 
@@ -51,10 +42,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

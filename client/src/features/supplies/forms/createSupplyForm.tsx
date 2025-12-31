@@ -20,6 +20,13 @@ import { SuppliesRequest, suppliesValidator } from "../validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState, useTransition } from "react";
 import { createSupplyAction } from "../actions/createSuppliesActions";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function CreateSupplyForm() {
   const { control, reset, handleSubmit } = useForm<SuppliesRequest>({
@@ -90,16 +97,17 @@ export default function CreateSupplyForm() {
             <Controller
               control={control}
               name="measurementUnit"
-              render={({ fieldState, field }) => (
+              render={({ fieldState, field: { value, onChange } }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="measurementUnits">
-                    measurement Unit
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    aria-invalid={fieldState.invalid}
-                    id="measurementUnits"
-                  />
+                  <Select value={value} onValueChange={onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="KG">kilograms</SelectItem>
+                      <SelectItem value="L">Litres</SelectItem>
+                    </SelectContent>
+                  </Select>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -112,12 +120,15 @@ export default function CreateSupplyForm() {
               name="supplyType"
               render={({ fieldState, field }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="supplyType">Supply Type</FieldLabel>
-                  <Input
-                    {...field}
-                    aria-invalid={fieldState.invalid}
-                    id="SupplyType"
-                  />
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Supply Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="chemicals">Chemicals</SelectItem>
+                      <SelectItem value="fertilizers">Fertilizers</SelectItem>
+                    </SelectContent>
+                  </Select>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
