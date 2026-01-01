@@ -10,21 +10,15 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import {
-  Select,
-  SelectItem,
-  SelectTrigger,
-  SelectContent,
-  SelectValue,
-} from "@/components/ui/select";
 import { JOB_TYPES } from "../types";
 import { DateTimePicker } from "@/components/DateTimePicker";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useActionState, useTransition } from "react";
 import { createJobAction } from "../actions/createJobAction";
 import { Textarea } from "@/components/ui/textarea";
+import ControllledSelect from "@/components/ControllledSelect";
+import { Input } from "@/components/ui/input";
 
 export default function CreateJobForm({
   fieldId,
@@ -41,6 +35,7 @@ export default function CreateJobForm({
     formState: { errors },
   } = useForm<Jobs>({
     resolver: zodResolver(jobValidator),
+    mode: "onChange",
     defaultValues: {
       fieldId: fieldId,
       jobDate: undefined,
@@ -90,34 +85,11 @@ export default function CreateJobForm({
         id="create-jobs"
       >
         <FieldGroup>
-          <Controller
+          <ControllledSelect
             control={control}
+            placeholder="Select a job type"
             name="jobType"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="jobType">Select a Job Type</FieldLabel>
-                <Select
-                  value={field.value || ""}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger>
-                    <SelectValue defaultValue="Select a job type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {JOB_TYPES.map((item) => {
-                      return (
-                        <SelectItem key={item} value={item}>
-                          {item.toUpperCase()}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            values={JOB_TYPES.map((type) => ({ value: type, label: type }))}
           />
 
           <Controller
@@ -156,44 +128,26 @@ export default function CreateJobForm({
             <FieldError errors={[{ message: errors.jobSupplies.message }]} />
           )}
         </FieldGroup>
+
         {fields.map((fiel, index) => (
           <FieldGroup key={fiel.id} className="relative mt-10">
             <Button
               type="button"
               variant="ghost"
-              className="absolute top-0 right-0 -translate-y-1/2"
+              className="absolute top-0 right-0 -translate-y-full"
               onClick={() => remove(index)}
             >
               <X />
             </Button>
 
-            <Controller
+            <ControllledSelect
               control={control}
               name={`jobSupplies.${index}.supplyId`}
-              render={({ fieldState, field }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={`supplyId${index}`}>Supply</FieldLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue defaultValue="Select a supply" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {supplies.map((supply) => (
-                        <SelectItem
-                          key={supply.id}
-                          value={supply.id.toString()}
-                        >
-                          {supply.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
+              placeholder="select a supply"
+              values={supplies.map((supply) => ({
+                value: supply.id.toString(),
+                label: supply.name,
+              }))}
             />
             <Field
               data-invalid={

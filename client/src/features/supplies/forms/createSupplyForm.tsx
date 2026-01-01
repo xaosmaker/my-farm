@@ -1,32 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Controller, useForm } from "react-hook-form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { FieldGroup } from "@/components/ui/field";
 import { SuppliesRequest, suppliesValidator } from "../validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState, useTransition } from "react";
 import { createSupplyAction } from "../actions/createSuppliesActions";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
+import BaseForm from "@/components/BaseForm";
+import ControlledInput from "@/components/ControlledInput";
+import ControllledSelect from "@/components/ControllledSelect";
 
 export default function CreateSupplyForm() {
   const { control, reset, handleSubmit } = useForm<SuppliesRequest>({
@@ -50,96 +32,11 @@ export default function CreateSupplyForm() {
   }
 
   return (
-    <Card className="mx-auto w-1/3">
-      <CardHeader>
-        <CardTitle>Create Supplies</CardTitle>
-        <CardDescription>Create a Supply to manage</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form id="create-field-form" onSubmit={handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              control={control}
-              name="name"
-              render={({ fieldState, field }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="name">name</FieldLabel>
-                  <Input
-                    {...field}
-                    aria-invalid={fieldState.invalid}
-                    id="name"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="nickname"
-              render={({ fieldState, field }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="nickname">nickname</FieldLabel>
-                  <Input
-                    {...field}
-                    aria-invalid={fieldState.invalid}
-                    id="nickname"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="measurementUnit"
-              render={({ fieldState, field: { value, onChange } }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <Select value={value} onValueChange={onChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a Unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="KG">kilograms</SelectItem>
-                      <SelectItem value="L">Litres</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="supplyType"
-              render={({ fieldState, field }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Supply Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="chemicals">Chemicals</SelectItem>
-                      <SelectItem value="fertilizers">Fertilizers</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Field orientation="horizontal">
+    <BaseForm
+      cardTitle="Create Supplies"
+      cardDescription="Create a Supply to manage"
+      buttonChildren={
+        <>
           <Button
             onClick={() => reset()}
             type="button"
@@ -151,8 +48,36 @@ export default function CreateSupplyForm() {
           <Button type="submit" form="create-field-form" disabled={isPending}>
             Create Supplies
           </Button>
-        </Field>
-      </CardFooter>
-    </Card>
+        </>
+      }
+    >
+      <form id="create-field-form" onSubmit={handleSubmit(onSubmit)}>
+        <FieldGroup>
+          <ControlledInput control={control} name="name" label="name" />
+
+          <ControlledInput control={control} name="nickname" label="alias" />
+
+          <ControllledSelect
+            control={control}
+            name="measurementUnit"
+            placeholder="select a unit"
+            values={[
+              { value: "KG", label: "Kilograms" },
+              { value: "L", label: "Litres" },
+            ]}
+          />
+
+          <ControllledSelect
+            control={control}
+            name="supplyType"
+            placeholder="Select a supply type"
+            values={[
+              { value: "chemicals", label: "Chemicals" },
+              { value: "fertilizers", label: "Fertilizers" },
+            ]}
+          />
+        </FieldGroup>
+      </form>
+    </BaseForm>
   );
 }

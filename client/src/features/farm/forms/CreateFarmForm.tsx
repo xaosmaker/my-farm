@@ -1,21 +1,16 @@
 "use client";
 import BaseForm from "@/components/BaseForm";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Controller, useForm } from "react-hook-form";
-import { Farm, farmValidators } from "@/features/farm/farmValidators";
+import { FieldGroup } from "@/components/ui/field";
+import { useForm } from "react-hook-form";
+import { FarmFormData, farmValidators } from "@/features/farm/farmValidators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState, useTransition } from "react";
 import { CreateFarmAction } from "../actions/CreateFarmAction";
+import ControlledInput from "@/components/ControlledInput";
 
 export default function CreateFarmForm() {
-  const { control, handleSubmit } = useForm<Farm>({
+  const { control, handleSubmit } = useForm<FarmFormData>({
     defaultValues: {
       name: "",
     },
@@ -25,7 +20,7 @@ export default function CreateFarmForm() {
 
   const [_, action] = useActionState(CreateFarmAction, undefined);
   const [isPending, startTransition] = useTransition();
-  function farmSubmit(data: Farm) {
+  function farmSubmit(data: FarmFormData) {
     startTransition(() => {
       action(data);
     });
@@ -48,23 +43,7 @@ export default function CreateFarmForm() {
     >
       <form onSubmit={handleSubmit(farmSubmit)} id="create-farm-form">
         <FieldGroup>
-          <Controller
-            control={control}
-            name="name"
-            render={({ fieldState, field }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="farmName">Farm Name</FieldLabel>
-                <Input
-                  {...field}
-                  aria-invalid={fieldState.invalid}
-                  id="farmName"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
+          <ControlledInput control={control} name="name" label="Farm Name" />
         </FieldGroup>
       </form>
     </BaseForm>
