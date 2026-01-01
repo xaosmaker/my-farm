@@ -53,9 +53,12 @@ select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.update
         'id',js.id,
         'quantity',js.quantity,
         'jobId',js.job_id,
-        'supplyId',js.supply_id,
         'createdAt',js.created_at,
-        'updatedAt',js.updated_at
+        'updatedAt',js.updated_at,
+        'supplyName',s.name,
+        'supplyAlias',s.nickname,
+        'supplyId',js.supply_id,
+        'supplyMeasurementUnit',s.measurement_unit
        )
   ) FILTER (WHERE js.id IS NOT NULL),
     '[]'::json
@@ -63,6 +66,8 @@ select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.update
 FROM jobs AS j
 LEFT JOIN jobs_supplies AS js
 ON j.id = js.job_id
+JOIN supplies AS s
+ON js.supply_id = s.id
 WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND job_id=$1 AND  j.field_id=$2
 GROUP BY j.id;
 

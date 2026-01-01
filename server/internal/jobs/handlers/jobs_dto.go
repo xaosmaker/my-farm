@@ -7,7 +7,7 @@ import (
 	"github.com/xaosmaker/server/internal/db"
 )
 
-type jobResponse struct {
+type internalJobResponse struct {
 	ID          int64              `json:"id"`
 	JobType     string             `json:"jobType"`
 	Description *string            `json:"description"`
@@ -17,17 +17,18 @@ type jobResponse struct {
 	UpdatedAt   pgtype.Timestamptz `json:"updatedAt"`
 }
 
-type totalJobSuppliesResponse struct {
-	jobResponse
+type jobResponse struct {
+	internalJobResponse
 	TotalSupplies int64 `json:"totalSupplies"`
 }
-type jobSuppliesResponse struct {
+type jobDetailsResponse struct {
+	internalJobResponse
 	JobsSupplies *json.RawMessage `json:"jobsSupplies"`
 }
 
-func toTotalJodSuppliesResponse(f db.GetAllJobsRow) totalJobSuppliesResponse {
-	return totalJobSuppliesResponse{
-		jobResponse: jobResponse{
+func toJodResponse(f db.GetAllJobsRow) jobResponse {
+	return jobResponse{
+		internalJobResponse: internalJobResponse{
 			ID:          f.ID,
 			JobType:     f.JobType,
 			Description: f.Description,
@@ -37,5 +38,20 @@ func toTotalJodSuppliesResponse(f db.GetAllJobsRow) totalJobSuppliesResponse {
 			UpdatedAt:   f.UpdatedAt,
 		},
 		TotalSupplies: f.TotalSupplies,
+	}
+}
+
+func toJodDetailsResponse(f db.GetJobDetailsRow) jobDetailsResponse {
+	return jobDetailsResponse{
+		internalJobResponse: internalJobResponse{
+			ID:          f.ID,
+			JobType:     f.JobType,
+			Description: f.Description,
+			FieldID:     f.FieldID,
+			JobDate:     f.JobDate,
+			CreatedAt:   f.CreatedAt,
+			UpdatedAt:   f.UpdatedAt,
+		},
+		JobsSupplies: f.JobsSupplies,
 	}
 }
