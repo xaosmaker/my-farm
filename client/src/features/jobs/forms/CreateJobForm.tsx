@@ -129,6 +129,9 @@ export default function CreateJobForm({
           )}
         </FieldGroup>
 
+        {fields.length >= 1 && (
+          <h3 className="mt-4 text-center font-bold">Supplies</h3>
+        )}
         {fields.map((fiel, index) => (
           <FieldGroup key={fiel.id} className="relative mt-10">
             <Button

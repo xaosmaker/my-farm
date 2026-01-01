@@ -15,6 +15,7 @@ export const jobsTable: ColumnDef<Job>[] = [
   },
 
   { accessorKey: "jobDate", header: "Job Date" },
+
   {
     accessorKey: "description",
     header: "Job Description",
@@ -26,6 +27,10 @@ export const jobsTable: ColumnDef<Job>[] = [
       }
       return row.original.description;
     },
+  },
+  {
+    accessorKey: "totalSupplies",
+    header: "Supplies Used",
   },
   {
     id: "jobActions",

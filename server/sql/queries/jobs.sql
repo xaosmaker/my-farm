@@ -34,6 +34,18 @@ VALUES(
 
 
 -- name: GetAllJobs :many
+
+select j.id,j.job_type,j.description,j.job_date,
+j.field_id,j.created_at,j.updated_at, 
+COUNT(j) AS total_supplies
+FROM jobs AS j
+LEFT JOIN jobs_supplies AS js
+ON j.id = js.job_id
+WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL  AND  j.field_id=$1
+
+GROUP BY j.id;
+
+-- name: GetJobDetails :one
 select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
@@ -51,6 +63,7 @@ select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.update
 FROM jobs AS j
 LEFT JOIN jobs_supplies AS js
 ON j.id = js.job_id
-WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND  j.field_id=$1
+WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND job_id=$1 AND  j.field_id=$2
 GROUP BY j.id;
+
 

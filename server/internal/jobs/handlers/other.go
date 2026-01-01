@@ -39,9 +39,9 @@ func (q JobsQueries) GetAllJobs(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, err.Error())(w, r)
 		return
 	}
-	jJobs := []jobResponse{}
+	jJobs := []totalJobSuppliesResponse{}
 	for _, job := range jobs {
-		jJobs = append(jJobs, toJodResponse(job))
+		jJobs = append(jJobs, toTotalJodSuppliesResponse(job))
 	}
 
 	data, err := json.Marshal(jJobs)

@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/data-table";
+import ShowFieldGroup from "@/components/ShowFieldGroup";
 import ShowFieldsData from "@/components/ShowFieldsData";
 import {
   Tooltip,
@@ -27,7 +28,7 @@ export default async function FieldPage({
   return (
     <>
       <h1 className="text-center text-2xl">{field.name}</h1>
-      <div className="relative my-10 grid grid-cols-2 gap-10">
+      <div className="relative my-10 grid grid-cols-2 gap-2">
         <Link
           href={`/fields/${fieldId}/jobs/create`}
           className="absolute -top-10 right-0 text-green-500"
@@ -39,18 +40,26 @@ export default async function FieldPage({
             <TooltipContent>Create field</TooltipContent>
           </Tooltip>
         </Link>
-        <ShowFieldsData fieldName="square meters">
-          {field.areaInMeters.toString()}
-        </ShowFieldsData>
-        <ShowFieldsData fieldName="is owned">
-          {field.isOwned ? "yes" : "no"}
-        </ShowFieldsData>
-        <ShowFieldsData fieldName="location">
-          {field.fieldLocation.toString()}
-        </ShowFieldsData>
-        <Link href={"#"}>
-          <MapPin />
-        </Link>
+        <ShowFieldGroup groupName="Details">
+          <>
+            <ShowFieldsData fieldName="square meters">
+              {field.areaInMeters.toString()}
+            </ShowFieldsData>
+            <ShowFieldsData fieldName="is owned">
+              {field.isOwned ? "yes" : "no"}
+            </ShowFieldsData>
+          </>
+        </ShowFieldGroup>
+        <>
+          <ShowFieldGroup groupName="Location">
+            <ShowFieldsData fieldName="location">
+              {field.fieldLocation.toString()}
+            </ShowFieldsData>
+            <Link href={"#"}>
+              <MapPin />
+            </Link>
+          </ShowFieldGroup>
+        </>
       </div>
       <DataTable columns={jobsTable} data={jobs} />
     </>
