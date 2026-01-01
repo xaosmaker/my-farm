@@ -36,4 +36,4 @@ export const jobValidator = z
   });
 // schema.ts
 
-export type Jobs = z.infer<typeof jobValidator>;
+export type JobFormData = z.infer<typeof jobValidator>;

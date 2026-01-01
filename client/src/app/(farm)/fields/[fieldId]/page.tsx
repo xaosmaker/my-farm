@@ -5,8 +5,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getFieldById } from "@/features/fields/getters";
-import { GetAllJobs } from "@/features/jobs/fetchers";
+import { getFieldById } from "@/features/fields/fieldsFetchers";
+import { GetAllJobs } from "@/features/jobs/jobsFetchers";
 import { jobsTable } from "@/features/jobs/jobsTable";
 import { MapPin, Plus } from "lucide-react";
 import Link from "next/link";

@@ -1,7 +1,7 @@
 "use server";
 
 import { SERVER_URL } from "@/lib/serverUrl";
-import { FieldFormData } from "./validators";
+import { FieldFormData } from "@/features/fields/fieldValidators";
 import { baseRequest } from "@/lib/baseRequest";
 import { redirect } from "next/navigation";
 

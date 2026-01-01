@@ -1,7 +1,7 @@
 "use server";
 
 import { baseRequest } from "@/lib/baseRequest";
-import { Jobs } from "../jobValidators";
+import { JobFormData } from "../jobValidators";
 import { JOB_TYPES_WITH_SUPPLIES, JobTypesWithSupplies } from "../types";
 import { SERVER_URL } from "@/lib/serverUrl";
 import { redirect } from "next/navigation";
@@ -19,7 +19,10 @@ type JobSupplies = {
   supplyId: number;
 };
 
-export async function createJobAction(_prevState: undefined, data: Jobs) {
+export async function createJobAction(
+  _prevState: undefined,
+  data: JobFormData,
+) {
   const sendData: JobRequest = {
     fieldId: data.fieldId,
     jobDate: data.jobDate.toISOString(),

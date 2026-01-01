@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/data-table";
 import { fieldsTable } from "@/features/fields/fieldsTable";
-import { getAllFields } from "@/features/fields/getters";
+import { getAllFields } from "@/features/fields/fieldsFetchers";
 
 export default async function FieldsPages() {
   const fields = await getAllFields();

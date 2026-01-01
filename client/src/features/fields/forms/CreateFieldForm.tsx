@@ -8,10 +8,13 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { type FieldFormData, fieldValidator } from "../validators";
+import {
+  type FieldFormData,
+  fieldValidator,
+} from "@/features/fields/fieldValidators";
 import { Switch } from "@/components/ui/switch";
 import { useActionState, useTransition } from "react";
-import { createFieldAction } from "../actions";
+import { createFieldAction } from "@/features/fields/actions/actions";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 

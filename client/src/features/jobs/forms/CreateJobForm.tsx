@@ -1,7 +1,7 @@
 "use client";
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Jobs, jobValidator } from "../jobValidators";
+import { JobFormData, jobValidator } from "../jobValidators";
 import { Supply } from "@/types/sharedTypes";
 import BaseForm from "@/components/BaseForm";
 import {
@@ -33,7 +33,7 @@ export default function CreateJobForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Jobs>({
+  } = useForm<JobFormData>({
     resolver: zodResolver(jobValidator),
     mode: "onChange",
     defaultValues: {
@@ -53,7 +53,7 @@ export default function CreateJobForm({
   const [isPending, startTransition] = useTransition();
   const jobSupplies = useWatch({ control, name: "jobSupplies" });
 
-  const onSubmit = (data: Jobs) => {
+  const onSubmit = (data: JobFormData) => {
     startTransition(() => {
       action(data);
     });
