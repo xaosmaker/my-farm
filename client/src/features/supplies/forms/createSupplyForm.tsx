@@ -33,8 +33,8 @@ export default function CreateSupplyForm() {
 
   return (
     <BaseForm
-      cardTitle="Create Supplies"
-      cardDescription="Create a Supply to manage"
+      cardTitle="Δημιουργία εφοδίων"
+      cardDescription="Δημιουργία εφοδίων για τη φάρμα σας"
       buttonChildren={
         <>
           <Button
@@ -46,34 +46,38 @@ export default function CreateSupplyForm() {
             Reset
           </Button>
           <Button type="submit" form="create-field-form" disabled={isPending}>
-            Create Supplies
+            Δημιουργία
           </Button>
         </>
       }
     >
       <form id="create-field-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
-          <ControlledInput control={control} name="name" label="name" />
+          <ControlledInput control={control} name="name" label="Όνομα" />
 
-          <ControlledInput control={control} name="nickname" label="alias" />
+          <ControlledInput
+            control={control}
+            name="nickname"
+            label="Ψευδώνυμο"
+          />
 
           <ControllledSelect
             control={control}
             name="measurementUnit"
-            placeholder="select a unit"
+            placeholder="Μονάδα μέτρησης"
             values={[
-              { value: "KG", label: "Kilograms" },
-              { value: "L", label: "Litres" },
+              { value: "KG", label: "Κιλά" },
+              { value: "L", label: "Λίτρα" },
             ]}
           />
 
           <ControllledSelect
             control={control}
             name="supplyType"
-            placeholder="Select a supply type"
+            placeholder="Κατηγορία"
             values={[
-              { value: "chemicals", label: "Chemicals" },
-              { value: "fertilizers", label: "Fertilizers" },
+              { value: "chemicals", label: "φάρμακά" },
+              { value: "fertilizers", label: "λιπάσματα" },
             ]}
           />
         </FieldGroup>

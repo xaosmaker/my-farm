@@ -19,6 +19,7 @@ import { createJobAction } from "../actions/createJobAction";
 import { Textarea } from "@/components/ui/textarea";
 import ControllledSelect from "@/components/ControllledSelect";
 import { Input } from "@/components/ui/input";
+import { engToGreek } from "@/lib/translateMap";
 
 export default function CreateJobForm({
   fieldId,
@@ -61,8 +62,8 @@ export default function CreateJobForm({
 
   return (
     <BaseForm
-      cardTitle="Create Job"
-      cardDescription="Create a Job for field"
+      cardTitle="Δημιουργία εργασίας"
+      cardDescription="Δημιουργήστε την εργασία σας για το χωράφι σας"
       buttonChildren={
         <>
           <Button
@@ -74,7 +75,7 @@ export default function CreateJobForm({
             Reset
           </Button>
           <Button disabled={isPending} type="submit" form="create-jobs">
-            Submit
+            Δημιουργία εργασίας
           </Button>
         </>
       }
@@ -87,9 +88,12 @@ export default function CreateJobForm({
         <FieldGroup>
           <ControllledSelect
             control={control}
-            placeholder="Select a job type"
+            placeholder="Κατηγορία"
             name="jobType"
-            values={JOB_TYPES.map((type) => ({ value: type, label: type }))}
+            values={JOB_TYPES.map((type) => ({
+              value: type,
+              label: engToGreek.get(type) || type,
+            }))}
           />
 
           <Controller
@@ -97,7 +101,7 @@ export default function CreateJobForm({
             name="description"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Description</FieldLabel>
+                <FieldLabel>Περιγραφή</FieldLabel>
                 <Textarea value={field.value} onChange={field.onChange} />
 
                 {fieldState.invalid && (
@@ -115,7 +119,7 @@ export default function CreateJobForm({
             name="jobDate"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Select Job Date and time</FieldLabel>
+                <FieldLabel>Ημερομηνία εργασίας</FieldLabel>
                 <DateTimePicker value={field.value} onChange={field.onChange} />
 
                 {fieldState.invalid && (
@@ -130,7 +134,7 @@ export default function CreateJobForm({
         </FieldGroup>
 
         {fields.length >= 1 && (
-          <h3 className="mt-4 text-center font-bold">Supplies</h3>
+          <h3 className="mt-4 text-center font-bold">Εφόδια</h3>
         )}
         {fields.map((fiel, index) => (
           <FieldGroup key={fiel.id} className="relative mt-10">
@@ -146,7 +150,7 @@ export default function CreateJobForm({
             <ControllledSelect
               control={control}
               name={`jobSupplies.${index}.supplyId`}
-              placeholder="select a supply"
+              placeholder="Επιλογή εφοδίων"
               values={supplies.map((supply) => ({
                 value: supply.id.toString(),
                 label: supply.name,
@@ -157,7 +161,7 @@ export default function CreateJobForm({
                 errors.jobSupplies && errors.jobSupplies[index]?.quantity
               }
             >
-              <FieldLabel htmlFor={`quantity${index}`}>Quantity</FieldLabel>
+              <FieldLabel htmlFor={`quantity${index}`}>Ποσότητα</FieldLabel>
               <div className="flex items-center gap-2">
                 <Input
                   id={`quantity${index}`}
@@ -194,7 +198,7 @@ export default function CreateJobForm({
             type="button"
             disabled={isPending}
           >
-            Add supplies
+            Προσθήκη εφοδίων
           </Button>
         </FieldGroup>
       </form>

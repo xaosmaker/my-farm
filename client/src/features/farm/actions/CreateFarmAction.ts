@@ -15,6 +15,8 @@ export async function CreateFarmAction(
     method: "POST",
     body: JSON.stringify(data),
   });
+  const resdata = await res.json();
+  console.log(resdata);
 
   if (res.ok) {
     await signOut();

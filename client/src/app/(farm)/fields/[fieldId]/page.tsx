@@ -24,6 +24,7 @@ export default async function FieldPage({
   }
   const field = fields[0];
   const jobs = await GetAllJobs(fieldId);
+  console.log(jobs);
 
   return (
     <>
@@ -37,22 +38,22 @@ export default async function FieldPage({
             <TooltipTrigger>
               <Plus />
             </TooltipTrigger>
-            <TooltipContent>Create field</TooltipContent>
+            <TooltipContent>Δημιουργία εργασίας</TooltipContent>
           </Tooltip>
         </Link>
-        <ShowFieldGroup groupName="Details">
+        <ShowFieldGroup groupName="Λεπτομέρειες">
           <>
-            <ShowFieldsData fieldName="square meters">
+            <ShowFieldsData fieldName="Τ.Μ τετραγωνικά μέτρα">
               {field.areaInMeters.toString()}
             </ShowFieldsData>
-            <ShowFieldsData fieldName="is owned">
-              {field.isOwned ? "yes" : "no"}
+            <ShowFieldsData fieldName="Ιδιόκτητο">
+              {field.isOwned ? "ναι" : "όχι"}
             </ShowFieldsData>
           </>
         </ShowFieldGroup>
         <>
-          <ShowFieldGroup groupName="Location">
-            <ShowFieldsData fieldName="location">
+          <ShowFieldGroup groupName="Τοποθεσία">
+            <ShowFieldsData fieldName="Τοποθεσία">
               {field.fieldLocation.toString()}
             </ShowFieldsData>
             <Link href={"#"}>

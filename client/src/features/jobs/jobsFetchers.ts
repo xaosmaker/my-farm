@@ -10,6 +10,7 @@ export async function GetAllJobs(fieldId: string): Promise<Job[]> {
   });
   if (res.ok) {
     const data = await res.json();
+    console.log(data, 1234);
     return data;
   }
   return [];

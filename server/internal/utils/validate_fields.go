@@ -63,6 +63,7 @@ func getFieldJsonTag(s any, field string) string {
 func ValidateFields(s any) FieldErrors {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	validate.RegisterValidation("jobtype", jobTypeValidator)
+	validate.RegisterValidation("alphanumspace", alphaNumSpacesGreek)
 
 	err := validate.Struct(s)
 

@@ -42,8 +42,8 @@ export default function CreateFieldForm() {
 
   return (
     <BaseForm
-      cardTitle="Create Field"
-      cardDescription="Create a field to manage"
+      cardTitle="Δημιουργία χωραφιού"
+      cardDescription="Δημιουργήστε το χωράφι σας "
       buttonChildren={
         <>
           <Button
@@ -55,24 +55,24 @@ export default function CreateFieldForm() {
             Reset
           </Button>
           <Button type="submit" form="create-field-form" disabled={isPending}>
-            Create Field
+            Δημιουργία
           </Button>
         </>
       }
     >
       <form id="create-field-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
-          <ControlledInput control={control} name="name" label="Field Name" />
+          <ControlledInput control={control} name="name" label="Όνομα" />
 
           <ControlledInput
             control={control}
             name="fieldLocation"
-            label="Field Locations"
+            label="Τοποθεσία"
           />
           <ControlledInput
             control={control}
             name="areaInMeters"
-            label="Area in meters"
+            label="Τ.Μ Τετραγωνικά μέτρα"
           />
 
           <Controller
@@ -91,7 +91,7 @@ export default function CreateFieldForm() {
                   id="is owned"
                 />
                 <FieldLabel htmlFor="isOwned" className="flex-1">
-                  Is owned
+                  Ιδιόκτητο
                 </FieldLabel>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

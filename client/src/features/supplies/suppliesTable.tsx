@@ -5,6 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { engToGreek } from "@/lib/translateMap";
 import { Supply } from "@/types/sharedTypes";
 import { ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
@@ -21,7 +22,7 @@ export const suppliesTable: ColumnDef<Supply>[] = [
   },
   {
     accessorKey: "name",
-    header: "Field Name",
+    header: "Όνομα φάρμακου",
 
     cell: ({ row }) => {
       return (
@@ -32,7 +33,7 @@ export const suppliesTable: ColumnDef<Supply>[] = [
 
   {
     accessorKey: "nickname",
-    header: "Alias",
+    header: "Ψευδώνυμο",
 
     cell: ({ row }) => {
       return (
@@ -44,9 +45,19 @@ export const suppliesTable: ColumnDef<Supply>[] = [
   },
   {
     accessorKey: "supplyType",
-    header: "Supply Type",
+    header: "Κατηγορία",
+    cell: ({ row }) =>
+      engToGreek.get(row.original.supplyType) || row.original.supplyType,
   },
-  { accessorKey: "measurementUnit", header: "Unit" },
+  {
+    accessorKey: "measurementUnit",
+    header: "Μονάδα Μέτρησης",
+    cell: ({
+      row: {
+        original: { measurementUnit },
+      },
+    }) => engToGreek.get(measurementUnit) || measurementUnit,
+  },
   {
     id: "Supllies Actions",
     header: () => (
@@ -55,7 +66,7 @@ export const suppliesTable: ColumnDef<Supply>[] = [
           <TooltipTrigger>
             <Plus />
           </TooltipTrigger>
-          <TooltipContent>Create Supply</TooltipContent>
+          <TooltipContent>Δημιουργία εφοδίων</TooltipContent>
         </Tooltip>
       </Link>
     ),

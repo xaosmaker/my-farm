@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Job } from "./types";
+import { engToGreek } from "@/lib/translateMap";
 
 export const jobsTable: ColumnDef<Job>[] = [
   {
@@ -11,14 +12,19 @@ export const jobsTable: ColumnDef<Job>[] = [
 
   {
     accessorKey: "jobType",
-    header: "Job Type",
+    header: "Κατηγορία",
+    cell: ({
+      row: {
+        original: { jobType },
+      },
+    }) => engToGreek.get(jobType) || jobType,
   },
 
-  { accessorKey: "jobDate", header: "Job Date" },
+  { accessorKey: "jobDate", header: "Ημερομηνία" },
 
   {
     accessorKey: "description",
-    header: "Job Description",
+    header: "Περίληψη",
     cell: ({ row }) => {
       const split_description = row.original.description?.split(" ") || [];
 
@@ -30,10 +36,9 @@ export const jobsTable: ColumnDef<Job>[] = [
   },
   {
     accessorKey: "totalSupplies",
-    header: "Supplies Used",
+    header: "Χρησιμοποιήθηκαν εφόδια",
   },
   {
     id: "jobActions",
-    header: () => "Actions",
   },
 ];

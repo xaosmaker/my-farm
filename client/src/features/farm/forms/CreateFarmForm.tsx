@@ -28,22 +28,22 @@ export default function CreateFarmForm() {
 
   return (
     <BaseForm
-      cardDescription="Create your farm"
-      cardTitle="Create Farm"
+      cardDescription="Εισάγεται το όνομά της φάρμας σας"
+      cardTitle="Δημιουργία φάρμας"
       buttonChildren={
         <>
           <Button type="reset" variant="ghost" disabled={isPending}>
             Reset
           </Button>
           <Button form="create-farm-form" disabled={isPending}>
-            Submit
+            Δημιουργία
           </Button>
         </>
       }
     >
       <form onSubmit={handleSubmit(farmSubmit)} id="create-farm-form">
         <FieldGroup>
-          <ControlledInput control={control} name="name" label="Farm Name" />
+          <ControlledInput control={control} name="name" label="Ονομα Φάρμας" />
         </FieldGroup>
       </form>
     </BaseForm>

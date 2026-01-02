@@ -20,7 +20,7 @@ export const fieldsTable: ColumnDef<Field>[] = [
   },
   {
     accessorKey: "name",
-    header: "Field Name",
+    header: "Χωράφια",
 
     cell: ({ row }) => {
       return (
@@ -30,16 +30,19 @@ export const fieldsTable: ColumnDef<Field>[] = [
   },
   {
     accessorKey: "mapLocation",
-    header: "Map Location",
-    cell: ({ row }) => {
-      if (row.original.mapLocation != null) {
-        return <MapPin />;
-      }
-
-      return null;
+    header: "Χάρτης",
+    cell: () => {
+      return (
+        <Tooltip>
+          <TooltipTrigger>
+            <MapPin />
+          </TooltipTrigger>
+          <TooltipContent>σύντομα κοντά σας</TooltipContent>
+        </Tooltip>
+      );
     },
   },
-  { accessorKey: "fieldLocation", header: "Location" },
+  { accessorKey: "fieldLocation", header: "Τοποθεσία" },
   {
     id: "createField",
     header: () => (
@@ -48,7 +51,7 @@ export const fieldsTable: ColumnDef<Field>[] = [
           <TooltipTrigger>
             <Plus />
           </TooltipTrigger>
-          <TooltipContent>Create Field</TooltipContent>
+          <TooltipContent>Δημιουργία Χωραφιού</TooltipContent>
         </Tooltip>
       </Link>
     ),

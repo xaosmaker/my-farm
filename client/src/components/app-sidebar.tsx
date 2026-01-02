@@ -1,4 +1,4 @@
-import { Home, Inbox, Search } from "lucide-react";
+import { Container, Home, LandPlot } from "lucide-react";
 
 import {
   Sidebar,
@@ -15,19 +15,19 @@ import Link from "next/link";
 // Menu items.
 const items = [
   {
-    title: "Home",
+    title: "Αρχική",
     url: "/",
     icon: Home,
   },
   {
-    title: "Fields",
+    title: "Χωράφια",
     url: "/fields",
-    icon: Inbox,
+    icon: LandPlot,
   },
   {
-    title: "Supplies",
+    title: "Εφόδια",
     url: "/supplies",
-    icon: Search,
+    icon: Container,
   },
 ];
 
