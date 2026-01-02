@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -42,10 +41,9 @@ func (q JobsQueries) GetAllJobs(w http.ResponseWriter, r *http.Request) {
 	}
 	jJobs := []jobResponse{}
 	for _, job := range jobs {
-		jJobs = append(jJobs, toJodResponse(job))
+		jJobs = append(jJobs, toJobResponse(job))
 	}
 
-	fmt.Println(jJobs)
 	data, err := json.Marshal(jJobs)
 	if err != nil {
 		er.GeneralError(500, nil)(w, r)
@@ -96,7 +94,7 @@ func (q JobsQueries) GetJobDetails(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, err.Error())(w, r)
 		return
 	}
-	jJob := toJodDetailsResponse(job)
+	jJob := toJobDetailsResponse(job)
 
 	data, err := json.Marshal(jJob)
 	if err != nil {

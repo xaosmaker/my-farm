@@ -35,8 +35,9 @@ export const jobsTable: ColumnDef<Job>[] = [
     },
   },
   {
-    accessorKey: "totalSupplies",
+    id: "totalSupplies",
     header: "Χρησιμοποιήθηκαν εφόδια",
+    cell: ({ row: { original } }) => original.jobsSupplies.length || "",
   },
   {
     id: "jobActions",

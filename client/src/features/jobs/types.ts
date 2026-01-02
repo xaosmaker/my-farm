@@ -1,4 +1,4 @@
-interface InternalJob {
+export interface Job {
   id: number;
   jobType: string;
   description: null | string;
@@ -6,6 +6,7 @@ interface InternalJob {
   jobDate: Date;
   createdAt: Date;
   updatedAt: Date;
+  jobsSupplies: JobSupplies[];
 }
 export interface JobSupplies {
   id: number;
@@ -17,14 +18,6 @@ export interface JobSupplies {
   supplyName: string;
   supplyAlias: string;
   supplyMeasurementUnit: string;
-}
-
-export interface Job extends InternalJob {
-  totalSupplies: number;
-}
-
-export interface JobDetails extends InternalJob {
-  jobsSupplies: JobSupplies[];
 }
 
 export const JOB_TYPES_WITH_SUPPLIES = [

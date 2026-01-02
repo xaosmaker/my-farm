@@ -35,7 +35,6 @@ func (q FieldQueries) CreateField(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, err)(w, r)
 		return
 	}
-	fmt.Println(fields, 1234234)
 
 	params := db.CreateFieldParams{
 		Name:             fields.Name,

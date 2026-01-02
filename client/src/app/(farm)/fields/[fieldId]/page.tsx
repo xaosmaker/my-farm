@@ -24,7 +24,6 @@ export default async function FieldPage({
   }
   const field = fields[0];
   const jobs = await GetAllJobs(fieldId);
-  console.log(jobs);
 
   return (
     <>

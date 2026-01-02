@@ -45,8 +45,9 @@ export async function createJobAction(
     method: "POST",
     body: JSON.stringify(sendData),
   });
+
   if (res.ok) {
-    redirect("/fields");
+    redirect(`/fields/${sendData.fieldId}`);
   }
   return undefined;
 }

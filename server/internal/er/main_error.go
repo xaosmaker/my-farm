@@ -2,7 +2,6 @@ package er
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -34,7 +33,6 @@ func validateMessages(s any) any {
 func GeneralError(statusCode int, messages any) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.URL.RawPath, r.URL.RawQuery, r.Method, "call")
 
 		var message any
 		if statusCode == 500 {
