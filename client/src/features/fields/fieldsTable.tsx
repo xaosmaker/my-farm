@@ -2,13 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Field } from "./types";
-import { MapPin, Plus } from "lucide-react";
+import { MapPin, Pencil, Plus } from "lucide-react";
 import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ActionMenu from "@/components/ActionMenu";
+import DeleteItem from "@/components/DeleteItem";
+import { deleteFieldAction } from "./actions/actions";
 
 export const fieldsTable: ColumnDef<Field>[] = [
   {
@@ -54,6 +57,18 @@ export const fieldsTable: ColumnDef<Field>[] = [
           <TooltipContent>Δημιουργία Χωραφιού</TooltipContent>
         </Tooltip>
       </Link>
+    ),
+    cell: ({ row }) => (
+      <ActionMenu>
+        <DeleteItem
+          id={row.original.id.toString()}
+          name={row.original.name}
+          formAction={deleteFieldAction}
+        />
+        <Link href={`fields/${row.original.id}/edit`} className="flex gap-2">
+          <Pencil /> Edit
+        </Link>
+      </ActionMenu>
     ),
   },
 ];

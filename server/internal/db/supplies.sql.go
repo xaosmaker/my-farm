@@ -95,3 +95,32 @@ func (q *Queries) GetAllSupplies(ctx context.Context, farmID int64) ([]Supply, e
 	}
 	return items, nil
 }
+
+const getSupplyDetails = `-- name: GetSupplyDetails :one
+SELECT id, supply_type, nickname, name, measurement_unit, farm_id, created_at, updated_at, deleted_at FROM supplies 
+WHERE deleted_at IS NULL 
+AND supplies.farm_id = $1
+AND supplies.id = $2
+`
+
+type GetSupplyDetailsParams struct {
+	FarmID int64
+	ID     int64
+}
+
+func (q *Queries) GetSupplyDetails(ctx context.Context, arg GetSupplyDetailsParams) (Supply, error) {
+	row := q.db.QueryRow(ctx, getSupplyDetails, arg.FarmID, arg.ID)
+	var i Supply
+	err := row.Scan(
+		&i.ID,
+		&i.SupplyType,
+		&i.Nickname,
+		&i.Name,
+		&i.MeasurementUnit,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}

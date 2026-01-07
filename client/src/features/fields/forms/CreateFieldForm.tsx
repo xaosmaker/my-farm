@@ -14,35 +14,50 @@ import {
 } from "@/features/fields/fieldValidators";
 import { Switch } from "@/components/ui/switch";
 import { useActionState, useTransition } from "react";
-import { createFieldAction } from "@/features/fields/actions/actions";
+import {
+  createFieldAction,
+  updateFieldAction,
+} from "@/features/fields/actions/actions";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
+import { Field as FieldData } from "../types";
 
-export default function CreateFieldForm() {
+export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
   const { control, reset, handleSubmit } = useForm<FieldFormData>({
     mode: "onChange",
     resolver: zodResolver(fieldValidator),
     shouldFocusError: true,
     defaultValues: {
-      name: "",
-      isOwned: false,
-      fieldLocation: "",
-      areaInMeters: "",
+      name: oldData?.name || "",
+      isOwned: oldData?.isOwned || false,
+      fieldLocation: oldData?.fieldLocation || "",
+      areaInMeters: oldData?.areaInMeters.toString() || "",
       govPDF: null,
     },
   });
-  const [_, action] = useActionState(createFieldAction, undefined);
+
+  const [_, action] = useActionState(
+    oldData ? updateFieldAction : createFieldAction,
+    undefined,
+  );
   const [isPending, startTransition] = useTransition();
 
   function onSubmit(data: FieldFormData) {
+    const newData: { oldData: undefined | FieldData; data: FieldFormData } = {
+      oldData: undefined,
+      data,
+    };
+    if (oldData) {
+      newData.oldData = oldData;
+    }
     startTransition(() => {
-      action(data);
+      action(newData);
     });
   }
 
   return (
     <BaseForm
-      cardTitle="Δημιουργία χωραφιού"
+      cardTitle={oldData ? "edit" : "Δημιουργία χωραφιού"}
       cardDescription="Δημιουργήστε το χωράφι σας "
       buttonChildren={
         <>
@@ -55,7 +70,7 @@ export default function CreateFieldForm() {
             Reset
           </Button>
           <Button type="submit" form="create-field-form" disabled={isPending}>
-            Δημιουργία
+            {oldData ? "Edit" : "Δημιουργία"}
           </Button>
         </>
       }

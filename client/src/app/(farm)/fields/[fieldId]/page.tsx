@@ -1,5 +1,6 @@
 import { DataTable } from "@/components/data-table";
 import ShowFieldGroup from "@/components/ShowFieldGroup";
+import ShowFieldPage from "@/components/ShowFieldPage";
 import ShowFieldsData from "@/components/ShowFieldsData";
 import {
   Tooltip,
@@ -27,8 +28,7 @@ export default async function FieldPage({
 
   return (
     <>
-      <h1 className="text-center text-2xl">{field.name}</h1>
-      <div className="relative my-10 grid grid-cols-2 gap-2">
+      <ShowFieldPage title={field.name}>
         <Link
           href={`/fields/${fieldId}/jobs/create`}
           className="absolute -top-10 right-0 text-green-500"
@@ -41,26 +41,22 @@ export default async function FieldPage({
           </Tooltip>
         </Link>
         <ShowFieldGroup groupName="Λεπτομέρειες">
-          <>
-            <ShowFieldsData fieldName="Τ.Μ τετραγωνικά μέτρα">
-              {field.areaInMeters.toString()}
-            </ShowFieldsData>
-            <ShowFieldsData fieldName="Ιδιόκτητο">
-              {field.isOwned ? "ναι" : "όχι"}
-            </ShowFieldsData>
-          </>
+          <ShowFieldsData fieldName="Τ.Μ τετραγωνικά μέτρα">
+            {field.areaInMeters.toString()}
+          </ShowFieldsData>
+          <ShowFieldsData fieldName="Ιδιόκτητο">
+            {field.isOwned ? "ναι" : "όχι"}
+          </ShowFieldsData>
         </ShowFieldGroup>
-        <>
-          <ShowFieldGroup groupName="Τοποθεσία">
-            <ShowFieldsData fieldName="Τοποθεσία">
-              {field.fieldLocation.toString()}
-            </ShowFieldsData>
-            <Link href={"#"}>
-              <MapPin />
-            </Link>
-          </ShowFieldGroup>
-        </>
-      </div>
+        <ShowFieldGroup groupName="Τοποθεσία">
+          <ShowFieldsData fieldName="Τοποθεσία">
+            {field.fieldLocation.toString()}
+          </ShowFieldsData>
+          <Link href={"#"}>
+            <MapPin />
+          </Link>
+        </ShowFieldGroup>
+      </ShowFieldPage>
       <DataTable columns={jobsTable} data={jobs} />
     </>
   );

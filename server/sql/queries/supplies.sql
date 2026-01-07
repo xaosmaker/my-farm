@@ -22,5 +22,11 @@ SELECT * FROM supplies
 WHERE farm_id = $1
 AND deleted_at IS NULL;
 
+-- name: GetSupplyDetails :one
+SELECT * FROM supplies 
+WHERE deleted_at IS NULL 
+AND supplies.farm_id = $1
+AND supplies.id = $2;
+
 
 

@@ -17,8 +17,8 @@ type updateFieldRequestParams struct {
 	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"excluded_if=epsg210Boundary []"`
 	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"excluded_if=epsg4326Boundary []"`
 	AreaInMeters     *float64         `json:"areaInMeters" validate:"excluded_if=areaInMeters number"`
-	MapLocation      *json.RawMessage `json:"mapLocation" validate:"excluded_if=fieldLocation []"`
-	FieldLocation    *string          `json:"fieldLocation" validate:"alphanumspace"`
+	MapLocation      *json.RawMessage `json:"mapLocation" validate:"excluded_if=mapLocation []"`
+	FieldLocation    *string          `json:"fieldLocation" validate:"excluded_if=fieldLocation alphanumspace"`
 	IsOwned          *bool            `json:"isOwned" validate:"excluded_if=isOwned boolean"`
 }
 

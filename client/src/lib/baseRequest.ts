@@ -6,7 +6,7 @@ export async function baseRequest({
   body = undefined,
 }: {
   url: string;
-  method: "PATCH" | "POST" | "GET";
+  method: "PATCH" | "POST" | "GET" | "DELETE";
   body?: undefined | BodyInit;
 }) {
   const session = await auth();

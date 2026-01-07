@@ -17,6 +17,7 @@ func SuppliesRouter(con *pgxpool.Pool) *chi.Mux {
 	q := handlers.SuppliesQueries{DB: *db.New(con)}
 	r := chi.NewRouter()
 	r.Get("/", q.GetAllSupplies)
+	r.Get("/{supplyId}", q.GetSupplyDetails)
 	r.Mount("/", protectedRoutes(q))
 
 	return r

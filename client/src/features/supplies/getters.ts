@@ -14,3 +14,16 @@ export async function getAllSupplies() {
   }
   return [];
 }
+
+export async function getSupplyById(id: string) {
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/supplies/${id}`,
+    method: "GET",
+    body: undefined,
+  });
+  if (res.ok) {
+    const data: Supply[] = await res.json();
+    return data;
+  }
+  return [];
+}
