@@ -21,8 +21,11 @@ import {
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import { Field as FieldData } from "../types";
+import { getLandUnit } from "@/lib/settings";
+import { engToGreek } from "@/lib/translateMap";
 
 export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
+  const unit = getLandUnit();
   const { control, reset, handleSubmit } = useForm<FieldFormData>({
     mode: "onChange",
     resolver: zodResolver(fieldValidator),
@@ -31,7 +34,8 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
       name: oldData?.name || "",
       isOwned: oldData?.isOwned || false,
       fieldLocation: oldData?.fieldLocation || "",
-      areaInMeters: oldData?.areaInMeters.toString() || "",
+      areaInMeters:
+        ((oldData?.areaInMeters || 0) / unit.value)?.toString() || "",
       govPDF: null,
     },
   });
@@ -50,6 +54,9 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
     if (oldData) {
       newData.oldData = oldData;
     }
+    newData.data.areaInMeters = (
+      parseFloat(data.areaInMeters) * (unit.value || 1)
+    ).toString();
     startTransition(() => {
       action(newData);
     });
@@ -89,7 +96,7 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
           <ControlledInput
             control={control}
             name="areaInMeters"
-            label="Τ.Μ Τετραγωνικά μέτρα"
+            label={engToGreek.get(unit.name) || "Τετραγωνικά μέτρα"}
           />
 
           <Controller

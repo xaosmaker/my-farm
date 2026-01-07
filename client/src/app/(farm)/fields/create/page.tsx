@@ -1,5 +1,5 @@
-import CreateFieldForm from "@/features/fields/forms/CreateFieldForm";
+import DynamicCreateFieldForm from "@/features/fields/forms/DynamicCreateFieldForm";
 
 export default function CreateFieldPage() {
-  return <CreateFieldForm />;
+  return <DynamicCreateFieldForm />;
 }

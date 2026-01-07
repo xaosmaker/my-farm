@@ -1,7 +1,7 @@
 -- +goose up
 CREATE DOMAIN supplies_types as TEXT NOT NULL
 CONSTRAINT must_be_chemicals_or_fertilizers
-CHECK (VALUE IN ('chemicals','fertilizers'));
+CHECK (VALUE IN ('chemicals','fertilizers','seeds'));
 
 CREATE DOMAIN measurement_units_type as TEXT NOT NULL
 CONSTRAINT must_be_KG_or_L

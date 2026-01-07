@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-const supplyTypes = ["chemicals", "fertilizers"];
+const supplyTypes = ["chemicals", "fertilizers", "seeds"];
 const measurementUnits = ["KG", "L"];
 export const suppliesValidator = z.object({
   nickname: z.string(),

@@ -31,28 +31,28 @@ export const JOB_TYPES_WITH_SUPPLIES = [
 export const JOB_TYPES = [
   "spraying", //Ψεκασμός
   "fertilizing", //Λίπανση
-  "planting", //Φύτευση
+  // "planting", //Φύτευση
   "sowing", //Σπορά
-  "irrigation", //Άρδευση / Πότισμα
-  "transplanting", //Μεταφύτευση
+  // "irrigation", //Άρδευση / Πότισμα
+  // "transplanting", //Μεταφύτευση
   "harvesting", //Συγκομιδή
-  "pruning", //Κλάδεμα
-  "weeding", //Ζιζανιοκτονία / Βοτάνισμα
-  "soil preparation", //Προετοιμασία εδάφους
-  "plowing", //Όργωμα
-  "tilling", //Φρεζάρισμα
-  "cultivation", //Καλλιέργεια
-  "pest control", //Καταπολέμηση εχθρών
-  "disease control", //Καταπολέμηση ασθενειών
-  "crop monitoring", //Παρακολούθηση καλλιεργειών
-  "soil testing", //Εδαφολογικός έλεγχος
-  "fertilizer application", //Εφαρμογή λιπασμάτων
-  "pesticide application", //Εφαρμογή φυτοφαρμάκων
-  "equipment maintenance", //Συντήρηση εξοπλισμού
-  "field cleaning", //Καθαρισμός αγρού
-  "mulching", //Εδαφοκάλυψη
-  "thinning", //Αραίωμα
-  "post-harvest handling", //Μετασυλλεκτικοί χειρισμοί
+  // "pruning", //Κλάδεμα
+  // "weeding", //Ζιζανιοκτονία / Βοτάνισμα
+  // "soil preparation", //Προετοιμασία εδάφους
+  // "plowing", //Όργωμα
+  // "tilling", //Φρεζάρισμα
+  // "cultivation", //Καλλιέργεια
+  // "pest control", //Καταπολέμηση εχθρών
+  // "disease control", //Καταπολέμηση ασθενειών
+  // "crop monitoring", //Παρακολούθηση καλλιεργειών
+  // "soil testing", //Εδαφολογικός έλεγχος
+  // "fertilizer application", //Εφαρμογή λιπασμάτων
+  // "pesticide application", //Εφαρμογή φυτοφαρμάκων
+  // "equipment maintenance", //Συντήρηση εξοπλισμού
+  // "field cleaning", //Καθαρισμός αγρού
+  // "mulching", //Εδαφοκάλυψη
+  // "thinning", //Αραίωμα
+  // "post-harvest handling", //Μετασυλλεκτικοί χειρισμοί
 ] as const;
 
 export type JobTypes = (typeof JOB_TYPES)[number];

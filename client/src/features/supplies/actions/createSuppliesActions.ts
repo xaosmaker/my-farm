@@ -14,6 +14,9 @@ export async function createSupplyAction(
     method: "POST",
     body: JSON.stringify(formData),
   });
+  const dat = await res.json();
+  console.log(res, dat);
+
   if (res.ok) {
     redirect("/supplies");
   }

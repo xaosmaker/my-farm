@@ -1,5 +1,5 @@
 import { getFieldById } from "@/features/fields/fieldsFetchers";
-import CreateFieldForm from "@/features/fields/forms/CreateFieldForm";
+import DynamicCreateFieldForm from "@/features/fields/forms/DynamicCreateFieldForm";
 
 export default async function FieldEditPage({
   params,
@@ -11,5 +11,5 @@ export default async function FieldEditPage({
   if (fields.length !== 1) {
     return <div>No field found</div>;
   }
-  return <CreateFieldForm oldData={fields[0]} />;
+  return <DynamicCreateFieldForm oldData={fields[0]} />;
 }

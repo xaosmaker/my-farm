@@ -1,4 +1,4 @@
-import { Container, Home, LandPlot } from "lucide-react";
+import { Container, Home, LandPlot, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -29,6 +29,7 @@ const items = [
     url: "/supplies",
     icon: Container,
   },
+  { title: "Ρυθμίσεις", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {

@@ -13,6 +13,8 @@ import ActionMenu from "@/components/ActionMenu";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteFieldAction } from "./actions/actions";
 import EditItem from "@/components/EditItem";
+import { getLandUnit } from "@/lib/settings";
+import { engToGreek } from "@/lib/translateMap";
 
 export const fieldsTable: ColumnDef<Field>[] = [
   {
@@ -32,7 +34,21 @@ export const fieldsTable: ColumnDef<Field>[] = [
       );
     },
   },
-  { accessorKey: "areaInMeters", header: "Τ.Μ" },
+  {
+    accessorKey: "areaInMeters",
+    header: () => {
+      const unit = getLandUnit();
+      return engToGreek.get(unit.name);
+    },
+    cell: ({
+      row: {
+        original: { areaInMeters },
+      },
+    }) => {
+      const unit = getLandUnit();
+      return areaInMeters / unit.value;
+    },
+  },
   { accessorKey: "fieldLocation", header: "Τοποθεσία" },
   {
     accessorKey: "mapLocation",

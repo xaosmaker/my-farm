@@ -78,6 +78,7 @@ export default function CreateSupplyForm() {
             values={[
               { value: "chemicals", label: "φάρμακά" },
               { value: "fertilizers", label: "λιπάσματα" },
+              { value: "seeds", label: "Σπόροι" },
             ]}
           />
         </FieldGroup>
