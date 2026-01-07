@@ -28,6 +28,10 @@ func formatValidator(f validator.FieldError) string {
 		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), f.Param())
 	case "jobtype":
 		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(JobTypes(), ", "))
+	case "strongpassword":
+		return fmt.Sprintf("%v should contains Capital letters, one of:'@!$',digits and has length greater than %v", f.Field(), f.Param())
+	case "eqfield":
+		return fmt.Sprintf("%v mismatch %v", f.Field(), f.Param())
 	default:
 		return fmt.Sprintf("format Validator uknown format %v", f.Error())
 	}
@@ -64,6 +68,7 @@ func ValidateFields(s any) FieldErrors {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	validate.RegisterValidation("jobtype", jobTypeValidator)
 	validate.RegisterValidation("alphanumspace", alphaNumSpacesGreek)
+	validate.RegisterValidation("strongPassword", strongPassword)
 
 	err := validate.Struct(s)
 

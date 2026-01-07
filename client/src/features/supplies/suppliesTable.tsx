@@ -1,5 +1,7 @@
 "use client";
 
+import ActionMenu from "@/components/ActionMenu";
+import DeleteItem from "@/components/DeleteItem";
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +12,7 @@ import { Supply } from "@/types/sharedTypes";
 import { ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { deleteSupplyAction } from "./actions/createSuppliesActions";
 export const suppliesTable: ColumnDef<Supply>[] = [
   {
     accessorKey: "id",
@@ -69,6 +72,19 @@ export const suppliesTable: ColumnDef<Supply>[] = [
           <TooltipContent>Δημιουργία εφοδίων</TooltipContent>
         </Tooltip>
       </Link>
+    ),
+    cell: ({
+      row: {
+        original: { name, id },
+      },
+    }) => (
+      <ActionMenu>
+        <DeleteItem
+          id={id.toString()}
+          name={name}
+          formAction={deleteSupplyAction}
+        />
+      </ActionMenu>
     ),
   },
 ];

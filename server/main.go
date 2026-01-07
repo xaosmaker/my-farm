@@ -35,6 +35,7 @@ func main() {
 	r.Use(middlewares.TrailSlashErrorMiddleware)
 	r.Use(authQ.AuthMiddleware)
 	r.Post("/api/users/login", authQ.LoginUser)
+	r.Post("/api/users/create", authQ.CreateUser)
 	r.Mount("/api/farms", farm.FarmRouter(conn))
 	r.Mount("/api/fields", field.FieldRouter(conn))
 	r.Mount("/api/jobs", jobs.JobsRouter(conn))

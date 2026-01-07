@@ -12,7 +12,7 @@ import (
 
 func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, "/login") {
+		if strings.HasSuffix(r.URL.Path, "/login") || strings.HasSuffix(r.URL.Path, "/create") {
 			next.ServeHTTP(w, r)
 			return
 		}

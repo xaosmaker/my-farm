@@ -3,6 +3,8 @@ package utils
 import (
 	"reflect"
 	"slices"
+	"strconv"
+	"strings"
 	"unicode"
 
 	"github.com/go-playground/validator/v10"
@@ -28,4 +30,37 @@ func alphaNumSpacesGreek(sl validator.FieldLevel) bool {
 	}
 	return true
 
+}
+
+func strongPassword(sl validator.FieldLevel) bool {
+	field := sl.Field().String()
+	length, err := strconv.ParseInt(sl.Param(), 10, 64)
+	if err != nil {
+		return false
+	}
+
+	hasUpper := false
+	hasDigit := false
+	hasLength := len(field)
+	if hasLength < int(length) {
+		return false
+	}
+	if !strings.ContainsAny(field, "@$!") {
+		return false
+
+	}
+
+	for _, letter := range field {
+		if unicode.IsLetter(letter) || unicode.IsDigit(letter) {
+			if unicode.IsUpper(letter) {
+				hasUpper = true
+			} else if unicode.IsDigit(letter) {
+				hasDigit = true
+
+			}
+
+		}
+
+	}
+	return hasUpper && hasDigit
 }

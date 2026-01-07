@@ -28,5 +28,8 @@ WHERE deleted_at IS NULL
 AND supplies.farm_id = $1
 AND supplies.id = $2;
 
-
+-- name: DeleteSupply :exec
+DELETE FROM supplies
+WHERE supplies.deleted_at IS NULL 
+AND supplies.farm_id = $1 AND id = $2;
 

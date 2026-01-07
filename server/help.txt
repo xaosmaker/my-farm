@@ -1,0 +1,5 @@
+i should remove all checks for the user the middleware guarantes there is a user
+
+i should remove the errors for the id from the urls if i dont have urls the url is different 
+
+whene i try to parse the int from the url the id if not a number then i should return resourse not found

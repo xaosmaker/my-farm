@@ -60,6 +60,22 @@ func (q *Queries) CreateSupplies(ctx context.Context, arg CreateSuppliesParams) 
 	return i, err
 }
 
+const deleteSupply = `-- name: DeleteSupply :exec
+DELETE FROM supplies
+WHERE supplies.deleted_at IS NULL 
+AND supplies.farm_id = $1 AND id = $2
+`
+
+type DeleteSupplyParams struct {
+	FarmID int64
+	ID     int64
+}
+
+func (q *Queries) DeleteSupply(ctx context.Context, arg DeleteSupplyParams) error {
+	_, err := q.db.Exec(ctx, deleteSupply, arg.FarmID, arg.ID)
+	return err
+}
+
 const getAllSupplies = `-- name: GetAllSupplies :many
 SELECT id, supply_type, nickname, name, measurement_unit, farm_id, created_at, updated_at, deleted_at FROM supplies
 WHERE farm_id = $1

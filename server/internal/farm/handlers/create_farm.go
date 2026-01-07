@@ -16,13 +16,9 @@ func (q FarmQeuries) CreateFarm(w http.ResponseWriter, r *http.Request) {
 	}
 	farmFields := FarmBody{}
 
-	user, err := utils.GetUserFromContext(r)
+	user, _ := utils.GetUserFromContext(r)
 
-	if err != nil {
-		er.GeneralError(500, []string{"internal server error"})(w, r)
-		return
-	}
-	_, err = q.DB.GetFarm(r.Context(), user.ID)
+	_, err := q.DB.GetFarm(r.Context(), user.ID)
 	if err == nil {
 		er.GeneralError(400, []string{"Farm already Exist can create another"})(w, r)
 		return

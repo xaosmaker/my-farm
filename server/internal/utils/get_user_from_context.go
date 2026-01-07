@@ -16,8 +16,11 @@ func GetUserFromContext(r *http.Request) (db.User, error) {
 		if !ok {
 			return db.User{}, errors.New("Cant cast type user")
 		}
+		if user.FarmID == nil {
+			return user, errors.New("Create a farm before continue")
+		}
 		return user, nil
 	}
-	return db.User{}, errors.New("User is nill")
+	return db.User{}, errors.New("User not found")
 
 }

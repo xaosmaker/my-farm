@@ -19,3 +19,15 @@ export async function createSupplyAction(
   }
   return undefined;
 }
+
+export async function deleteSupplyAction(_prevState: undefined, id: string) {
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/supplies/${id}`,
+    method: "DELETE",
+    body: undefined,
+  });
+  if (res.ok) {
+    redirect("/supplies");
+  }
+  return undefined;
+}

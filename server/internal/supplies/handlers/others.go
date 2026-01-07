@@ -12,38 +12,31 @@ import (
 
 func (q SuppliesQueries) GetSupplyDetails(w http.ResponseWriter, r *http.Request) {
 
-	supplyId := r.PathValue("supplyId")
-	if supplyId == "" {
-		er.GeneralError(400, "supplyId param required in request")(w, r)
+	supplyId, err := strconv.ParseInt(r.PathValue("supplyId"), 10, 64)
+	if err != nil {
+		er.GeneralError(400, "Supply not found")(w, r)
 		return
 	}
-	supplyIdNum, err := strconv.ParseInt(supplyId, 10, 64)
-	if err != nil {
-		er.GeneralError(400, "supplyId param should be an int")(w, r)
-		return
 
-	}
 	user, err := utils.GetUserFromContext(r)
-	if err != nil {
-		er.GeneralError(401, "Login to continue")(w, r)
-		return
-	}
-	farm, err := q.DB.GetFarm(r.Context(), user.ID)
-	if err != nil {
-		er.GeneralError(400, "Create A Farm to continue")(w, r)
-		return
-	}
-	data, _ := q.DB.GetSupplyDetails(r.Context(), db.GetSupplyDetailsParams{
-		FarmID: farm.ID,
-		ID:     supplyIdNum,
-	})
-	dataJson, err := json.Marshal([]supplyResponse{toSupplyResponse(data)})
 	if err != nil {
 		er.GeneralError(400, err.Error())(w, r)
 		return
 	}
+
+	supplies, _ := q.DB.GetSupplyDetails(r.Context(), db.GetSupplyDetailsParams{
+		FarmID: *user.FarmID,
+		ID:     supplyId,
+	})
+
+	suppliesResponse, err := json.Marshal([]supplyResponse{toSupplyResponse(supplies)})
+	if err != nil {
+		er.GeneralError(400, err.Error())(w, r)
+		return
+	}
+
 	w.WriteHeader(200)
-	w.Write(dataJson)
+	w.Write(suppliesResponse)
 
 }
 
@@ -51,30 +44,54 @@ func (q SuppliesQueries) GetAllSupplies(w http.ResponseWriter, r *http.Request) 
 
 	user, err := utils.GetUserFromContext(r)
 	if err != nil {
-		er.GeneralError(401, "Login to continue")(w, r)
+		er.GeneralError(400, err.Error())(w, r)
 		return
 	}
-	farm, err := q.DB.GetFarm(r.Context(), user.ID)
-	if err != nil {
-		er.GeneralError(400, "Create A Farm to continue")(w, r)
-		return
-	}
-	supplies, err := q.DB.GetAllSupplies(r.Context(), farm.ID)
+
+	supplies, err := q.DB.GetAllSupplies(r.Context(), *user.FarmID)
 	if err != nil {
 		er.GeneralError(400, err.Error())(w, r)
 		return
 
 	}
-	s := []supplyResponse{}
+
+	suppliesResponse := []supplyResponse{}
 	for _, supply := range supplies {
-		s = append(s, toSupplyResponse(supply))
+		suppliesResponse = append(suppliesResponse, toSupplyResponse(supply))
 	}
-	suppliesRES, err := json.Marshal(s)
+
+	suppliesResponseEncoded, err := json.Marshal(suppliesResponse)
 	if err != nil {
 		er.GeneralError(500, nil)(w, r)
 		return
 	}
+
 	w.WriteHeader(200)
-	w.Write(suppliesRES)
+	w.Write(suppliesResponseEncoded)
+
+}
+func (q SuppliesQueries) DeleteSupply(w http.ResponseWriter, r *http.Request) {
+	user, err := utils.GetUserFromContext(r)
+	if err != nil {
+		er.GeneralError(400, err.Error())(w, r)
+		return
+	}
+
+	supplyId, err := strconv.ParseInt(r.PathValue("supplyId"), 10, 64)
+	if err != nil {
+		er.GeneralError(400, "Supply not found")(w, r)
+		return
+	}
+
+	err = q.DB.DeleteSupply(r.Context(), db.DeleteSupplyParams{
+		FarmID: *user.FarmID,
+		ID:     supplyId,
+	})
+	if err != nil {
+		er.GeneralError(400, err.Error())(w, r)
+		return
+	}
+
+	w.WriteHeader(204)
 
 }
