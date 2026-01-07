@@ -31,27 +31,27 @@ export default function DeleteItem({
   }
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="flex gap-2 text-red-500">
+      <AlertDialogTrigger className="flex gap-2 rounded-xl p-2 text-red-500 hover:bg-current/10">
         <Trash2 />
-        Delete
+        Διαγραφή
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-red-600">
-            Are you sure you want to delete {name}?
+            Είσαι σίγουρος ότι θες να διαγράψεις &apos;{name}&apos;?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-red-500">
-            This action is ireversible! Do you want to continue
+            Αυτή η διαδικασία είναι μόνιμή! Θες αν συνεχίσεις?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Close</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Ακύρωσή</AlertDialogCancel>
           <Button
             disabled={isPending}
             onClick={onSubmit}
             className="bg-red-500 text-neutral-50"
           >
-            Delete
+            Διαγραφή
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { Field } from "../types";
 
 export async function createFieldAction(
-  _previousState: undefined,
+  _previousState: unknown | undefined,
   formData: { oldData: undefined | Field; data: FieldFormData },
 ) {
   const d = {
@@ -29,11 +29,23 @@ export async function createFieldAction(
     return redirect("/fields");
   }
 
+  const data = await res.json();
+  if (data.errors && Array.isArray(data.errors)) {
+    const errors: { message: string }[] = [];
+    for (const err of data.errors) {
+      if (err === "Field already exists with this name") {
+        return [{ message: "Υπάρχει χωράφι με αυτό το όνομα" }];
+      }
+      errors.push({ message: err });
+    }
+    return errors;
+  }
+
   return undefined;
 }
 
 export async function updateFieldAction(
-  _previousState: undefined,
+  _previousState: unknown | undefined,
   formData: { oldData: undefined | Field; data: FieldFormData },
 ) {
   const d: {
@@ -64,12 +76,21 @@ export async function updateFieldAction(
       method: "PATCH",
       body: JSON.stringify(d),
     });
-    console.log(res, 1234);
-    const data = await res.json();
-    console.log(data, 123);
 
     if (res.ok) {
       return redirect("/fields");
+    }
+
+    const data = await res.json();
+    if (data.errors && Array.isArray(data.errors)) {
+      const errors: { message: string }[] = [];
+      for (const err of data.errors) {
+        if (err === "Field already exists with this name") {
+          return [{ message: "Υπάρχει χωράφι με αυτό το όνομα" }];
+        }
+        errors.push({ message: err });
+      }
+      return errors;
     }
   }
   return undefined;

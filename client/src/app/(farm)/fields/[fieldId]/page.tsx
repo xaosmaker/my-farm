@@ -1,4 +1,6 @@
 import { DataTable } from "@/components/data-table";
+import DeleteItem from "@/components/DeleteItem";
+import EditItem from "@/components/EditItem";
 import ShowFieldGroup from "@/components/ShowFieldGroup";
 import ShowFieldPage from "@/components/ShowFieldPage";
 import ShowFieldsData from "@/components/ShowFieldsData";
@@ -7,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { deleteFieldAction } from "@/features/fields/actions/actions";
 import { getFieldById } from "@/features/fields/fieldsFetchers";
 import { GetAllJobs } from "@/features/jobs/jobsFetchers";
 import { jobsTable } from "@/features/jobs/jobsTable";
@@ -55,6 +58,15 @@ export default async function FieldPage({
           <Link href={"#"}>
             <MapPin />
           </Link>
+        </ShowFieldGroup>
+        <ShowFieldGroup groupName="Actions" className="col-span-2 mt-10 gap-1">
+          <DeleteItem
+            name={field.name}
+            formAction={deleteFieldAction}
+            id={field.id.toString()}
+          />
+
+          <EditItem url={`/fields/${field.id}/edit`} />
         </ShowFieldGroup>
       </ShowFieldPage>
       <DataTable columns={jobsTable} data={jobs} />

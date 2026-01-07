@@ -36,7 +36,7 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
     },
   });
 
-  const [_, action] = useActionState(
+  const [state, action] = useActionState(
     oldData ? updateFieldAction : createFieldAction,
     undefined,
   );
@@ -57,8 +57,10 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
 
   return (
     <BaseForm
-      cardTitle={oldData ? "edit" : "Δημιουργία χωραφιού"}
-      cardDescription="Δημιουργήστε το χωράφι σας "
+      cardTitle={oldData ? "Επεξεργασία χωραφιού" : "Δημιουργία χωραφιού"}
+      cardDescription={
+        oldData ? "Επεξεργαστείτε το χωράφι σας" : "Δημιουργείστε το χωράφι σας"
+      }
       buttonChildren={
         <>
           <Button
@@ -70,7 +72,7 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
             Reset
           </Button>
           <Button type="submit" form="create-field-form" disabled={isPending}>
-            {oldData ? "Edit" : "Δημιουργία"}
+            {oldData ? "Αποθήκευση" : "Δημιουργία"}
           </Button>
         </>
       }
@@ -115,6 +117,7 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
             )}
           />
         </FieldGroup>
+        {state && <FieldError errors={state} />}
       </form>
     </BaseForm>
   );

@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Field } from "./types";
-import { MapPin, Pencil, Plus } from "lucide-react";
+import { MapPin, Plus } from "lucide-react";
 import Link from "next/link";
 import {
   Tooltip,
@@ -12,6 +12,7 @@ import {
 import ActionMenu from "@/components/ActionMenu";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteFieldAction } from "./actions/actions";
+import EditItem from "@/components/EditItem";
 
 export const fieldsTable: ColumnDef<Field>[] = [
   {
@@ -31,6 +32,8 @@ export const fieldsTable: ColumnDef<Field>[] = [
       );
     },
   },
+  { accessorKey: "areaInMeters", header: "Τ.Μ" },
+  { accessorKey: "fieldLocation", header: "Τοποθεσία" },
   {
     accessorKey: "mapLocation",
     header: "Χάρτης",
@@ -45,7 +48,6 @@ export const fieldsTable: ColumnDef<Field>[] = [
       );
     },
   },
-  { accessorKey: "fieldLocation", header: "Τοποθεσία" },
   {
     id: "createField",
     header: () => (
@@ -65,9 +67,7 @@ export const fieldsTable: ColumnDef<Field>[] = [
           name={row.original.name}
           formAction={deleteFieldAction}
         />
-        <Link href={`fields/${row.original.id}/edit`} className="flex gap-2">
-          <Pencil /> Edit
-        </Link>
+        <EditItem url={`/fields/${row.original.id}/edit`} />
       </ActionMenu>
     ),
   },

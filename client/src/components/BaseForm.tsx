@@ -21,7 +21,7 @@ export default function BaseForm({
   cardDescription: string;
 }) {
   return (
-    <Card className="mx-auto w-1/3 min-w-96">
+    <Card className="mx-auto w-1/3 min-w-80">
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
