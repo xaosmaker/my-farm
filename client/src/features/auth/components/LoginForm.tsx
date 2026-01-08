@@ -20,8 +20,10 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const { control, reset, handleSubmit, formState, setError } =
     useForm<LoginFormData>({
       mode: "onChange",
@@ -37,6 +39,9 @@ export default function LoginForm() {
     const res = await signIn("credentials", { redirect: false, ...data });
     if (res.error) {
       setError("root", { type: "value", message: "Invalid Credentials" });
+    } else {
+      router.push("/");
+      return;
     }
   }
 
