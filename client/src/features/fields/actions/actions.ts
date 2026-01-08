@@ -5,6 +5,7 @@ import { FieldFormData } from "@/features/fields/fieldValidators";
 import { baseRequest } from "@/lib/baseRequest";
 import { redirect } from "next/navigation";
 import { Field } from "../types";
+import { toResponseError } from "@/lib/responseError";
 
 export async function createFieldAction(
   _previousState: unknown | undefined,
@@ -30,18 +31,7 @@ export async function createFieldAction(
   }
 
   const data = await res.json();
-  if (data.errors && Array.isArray(data.errors)) {
-    const errors: { message: string }[] = [];
-    for (const err of data.errors) {
-      if (err === "Field already exists with this name") {
-        return [{ message: "Υπάρχει χωράφι με αυτό το όνομα" }];
-      }
-      errors.push({ message: err });
-    }
-    return errors;
-  }
-
-  return undefined;
+  return toResponseError(data);
 }
 
 export async function updateFieldAction(
@@ -77,21 +67,13 @@ export async function updateFieldAction(
       body: JSON.stringify(d),
     });
 
+    console.log(res);
     if (res.ok) {
       return redirect("/fields");
     }
 
     const data = await res.json();
-    if (data.errors && Array.isArray(data.errors)) {
-      const errors: { message: string }[] = [];
-      for (const err of data.errors) {
-        if (err === "Field already exists with this name") {
-          return [{ message: "Υπάρχει χωράφι με αυτό το όνομα" }];
-        }
-        errors.push({ message: err });
-      }
-      return errors;
-    }
+    return toResponseError(data);
   }
   return undefined;
 }

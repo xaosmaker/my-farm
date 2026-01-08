@@ -13,13 +13,13 @@ import (
 )
 
 type updateFieldRequestParams struct {
-	Name             *string          `json:"name" validate:"excluded_if=fieldName alphanumspace"`
-	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"excluded_if=epsg210Boundary []"`
-	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"excluded_if=epsg4326Boundary []"`
-	AreaInMeters     *float64         `json:"areaInMeters" validate:"excluded_if=areaInMeters number"`
-	MapLocation      *json.RawMessage `json:"mapLocation" validate:"excluded_if=mapLocation []"`
-	FieldLocation    *string          `json:"fieldLocation" validate:"excluded_if=fieldLocation alphanumspace"`
-	IsOwned          *bool            `json:"isOwned" validate:"excluded_if=isOwned boolean"`
+	Name             *string          `json:"name" validate:"omitnil,alphanumspace"`
+	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"omitnil"`
+	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"omitnil"`
+	AreaInMeters     *float64         `json:"areaInMeters" validate:"omitnil,number"`
+	MapLocation      *json.RawMessage `json:"mapLocation" validate:"omitnil"`
+	FieldLocation    *string          `json:"fieldLocation" validate:"omitnil,alphanumspace"`
+	IsOwned          *bool            `json:"isOwned" validate:"omitnil,boolean"`
 }
 
 func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +55,7 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, err)(w, r)
 		return
 	}
+	fmt.Println(s)
 	if s.AreaInMeters != nil {
 		*s.AreaInMeters *= float64(utils.UnitConverter(user.LandUnit))
 	}
@@ -82,7 +83,7 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	jData, _ := json.Marshal([]fieldResponse{toFieldResponse(data, user.LandUnit)})
-	w.WriteHeader(201)
+	w.WriteHeader(200)
 	w.Write(jData)
 
 }

@@ -23,6 +23,7 @@ import ControlledInput from "@/components/ControlledInput";
 import { Field as FieldData } from "../types";
 import { UserSettings } from "@/types/sharedTypes";
 import { engToGreek } from "@/lib/translateMap";
+import ServerErrors from "@/components/ServerErrors";
 
 export default function CreateFieldForm({
   landUnit,
@@ -126,7 +127,7 @@ export default function CreateFieldForm({
             )}
           />
         </FieldGroup>
-        {state && <FieldError errors={state} />}
+        {state && <ServerErrors errors={state} />}
       </form>
     </BaseForm>
   );

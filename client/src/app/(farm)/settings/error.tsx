@@ -1,10 +1,11 @@
 "use client";
-export default function SettingsError() {
-  return (
-    <div className="text-center">
-      <p className="text-center text-2xl text-red-500">Settings Error</p>
-      <p>Try to reset the page</p>
-      <p>if the error persist notify admin</p>
-    </div>
-  );
+
+import GeneralPageError from "@/components/errorComponents/GeneralPageError";
+
+export default function SettingsError({
+  error,
+}: {
+  error: Error & { digest?: string };
+}) {
+  return <GeneralPageError error={error} title="Settings Error" />;
 }
