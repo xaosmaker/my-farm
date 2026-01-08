@@ -13,7 +13,6 @@ export async function baseRequest({
   if (!session?.user) {
     throw new Error("Log in to continue");
   }
-  console.log(session);
   return fetch(url, {
     method: method,
     headers: {

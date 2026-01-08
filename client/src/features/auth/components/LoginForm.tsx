@@ -22,18 +22,22 @@ import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 
 export default function LoginForm() {
-  const { control, reset, handleSubmit, formState } = useForm<LoginFormData>({
-    mode: "onChange",
-    resolver: zodResolver(loginValidate),
-    shouldFocusError: true,
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const { control, reset, handleSubmit, formState, setError } =
+    useForm<LoginFormData>({
+      mode: "onChange",
+      resolver: zodResolver(loginValidate),
+      shouldFocusError: true,
+      defaultValues: {
+        email: "",
+        password: "",
+      },
+    });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   async function onSubmit(data: LoginFormData) {
-    await signIn("credentials", data);
+    const res = await signIn("credentials", { redirect: false, ...data });
+    if (res.error) {
+      setError("root", { type: "value", message: "Invalid Credentials" });
+    }
   }
 
   return (
@@ -102,6 +106,9 @@ export default function LoginForm() {
             )}
           />
         </FieldGroup>
+        {formState.errors.root?.message && (
+          <FieldError className="pt-2" errors={[formState.errors.root]} />
+        )}
       </form>
     </BaseForm>
   );
