@@ -23,7 +23,7 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	password, _ := HashPassword(reqUser.Password)
-	_, err := q.DB.CreateUser(r.Context(), db.CreateUserParams{
+	err := q.DB.CreateUser(r.Context(), db.CreateUserParams{
 		Email:    reqUser.Email,
 		Password: password,
 	})

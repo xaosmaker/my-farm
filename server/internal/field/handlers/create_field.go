@@ -40,7 +40,7 @@ func (q FieldQueries) CreateField(w http.ResponseWriter, r *http.Request) {
 		Name:             fields.Name,
 		Epsg2100Boundary: fields.Epsg2100Boundary,
 		Epsg4326Boundary: fields.Epsg4326Boundary,
-		AreaInMeters:     fields.AreaInMeters,
+		AreaInMeters:     fields.AreaInMeters * float64(utils.UnitConverter(user.LandUnit)),
 		MapLocation:      fields.MapLocation,
 		FieldLocation:    fields.FieldLocation,
 		FarmID:           farm.ID,
@@ -57,7 +57,7 @@ func (q FieldQueries) CreateField(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, err.Error())
 		fmt.Println(err, "Error")
 	}
-	data, _ := json.Marshal([]fieldResponse{toFieldResponse(field)})
+	data, _ := json.Marshal([]fieldResponse{toFieldResponse(field, user.LandUnit)})
 	w.WriteHeader(201)
 	w.Write(data)
 

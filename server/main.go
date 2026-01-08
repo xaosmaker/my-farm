@@ -16,6 +16,7 @@ import (
 	"github.com/xaosmaker/server/internal/jobs"
 	"github.com/xaosmaker/server/internal/middlewares"
 	"github.com/xaosmaker/server/internal/supplies"
+	usersettings "github.com/xaosmaker/server/internal/user_settings"
 )
 
 func main() {
@@ -40,6 +41,7 @@ func main() {
 	r.Mount("/api/fields", field.FieldRouter(conn))
 	r.Mount("/api/jobs", jobs.JobsRouter(conn))
 	r.Mount("/api/supplies", supplies.SuppliesRouter(conn))
+	r.Mount("/api/settings", usersettings.UserSettingsRouter(conn))
 	r.NotFound(er.GeneralError(404, "Route not Found"))
 	r.MethodNotAllowed(er.GeneralError(405, "Method not found "))
 	// mux.HandleFunc("/", er.GeneralError(400, []string{"Route Dont found"}))

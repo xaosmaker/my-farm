@@ -5,6 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
+	"github.com/xaosmaker/server/internal/utils"
 )
 
 type fieldResponse struct {
@@ -18,10 +19,11 @@ type fieldResponse struct {
 	IsOwned          bool               `json:"isOwned"`
 	CreatedAt        pgtype.Timestamptz `json:"createdAt"`
 	UpdatedAt        pgtype.Timestamptz `json:"updatedAt"`
+	LandUnit         any                `json:"landUnit"`
 	// FarmID           int64              `json:"farmId"`
 }
 
-func toFieldResponse(f db.Field) fieldResponse {
+func toFieldResponse(f db.Field, landUnit any) fieldResponse {
 
 	return fieldResponse{
 		ID:               f.ID,
@@ -30,10 +32,11 @@ func toFieldResponse(f db.Field) fieldResponse {
 		Epsg4326Boundary: f.Epsg4326Boundary,
 		MapLocation:      f.MapLocation,
 		FieldLocation:    f.FieldLocation,
-		AreaInMeters:     f.AreaInMeters,
+		AreaInMeters:     f.AreaInMeters / float64(utils.UnitConverter(landUnit)),
 		IsOwned:          f.IsOwned,
 		CreatedAt:        f.CreatedAt,
 		UpdatedAt:        f.UpdatedAt,
+		LandUnit:         landUnit,
 	}
 
 }

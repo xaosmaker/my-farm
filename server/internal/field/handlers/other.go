@@ -71,7 +71,7 @@ func (q FieldQueries) GetFieldById(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(404, "No Field found")(w, r)
 		return
 	}
-	listData := []fieldResponse{toFieldResponse(data)}
+	listData := []fieldResponse{toFieldResponse(data, user.LandUnit)}
 	jData, err := json.Marshal(listData)
 	if err != nil {
 		er.GeneralError(500, "Internal Server Error")
@@ -99,7 +99,7 @@ func (q FieldQueries) GetAllFields(w http.ResponseWriter, r *http.Request) {
 
 	listData := []fieldResponse{}
 	for _, field := range data {
-		listData = append(listData, toFieldResponse(field))
+		listData = append(listData, toFieldResponse(field, user.LandUnit))
 	}
 
 	jData, err := json.Marshal(listData)

@@ -37,7 +37,7 @@ func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 			er.GeneralError(401, "Login to continue")(w, r)
 			return
 		}
-		user, err := q.DB.GetUserBYId(r.Context(), id)
+		user, err := q.DB.GetUserByIdWithSettings(r.Context(), id)
 		if err != nil {
 			fmt.Println("auth Error", err)
 			er.GeneralError(401, "Login to continue")(w, r)

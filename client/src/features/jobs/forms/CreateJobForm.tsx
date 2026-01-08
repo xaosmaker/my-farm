@@ -17,9 +17,9 @@ import { X } from "lucide-react";
 import { useActionState, useTransition } from "react";
 import { createJobAction } from "../actions/createJobAction";
 import { Textarea } from "@/components/ui/textarea";
-import ControllledSelect from "@/components/ControllledSelect";
 import { Input } from "@/components/ui/input";
 import { engToGreek } from "@/lib/translateMap";
+import ControlledSelect from "@/components/ControlledSelect";
 
 export default function CreateJobForm({
   fieldId,
@@ -86,7 +86,7 @@ export default function CreateJobForm({
         id="create-jobs"
       >
         <FieldGroup>
-          <ControllledSelect
+          <ControlledSelect
             control={control}
             placeholder="Κατηγορία"
             name="jobType"
@@ -147,7 +147,7 @@ export default function CreateJobForm({
               <X />
             </Button>
 
-            <ControllledSelect
+            <ControlledSelect
               control={control}
               name={`jobSupplies.${index}.supplyId`}
               placeholder="Επιλογή εφοδίων"

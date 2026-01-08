@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "./ui/select";
 
-export default function ControllledSelect<T extends FieldValues>({
+export default function ControlledSelect<T extends FieldValues>({
   control,
   name,
   placeholder,

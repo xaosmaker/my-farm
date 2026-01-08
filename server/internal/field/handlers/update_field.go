@@ -55,6 +55,9 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, err)(w, r)
 		return
 	}
+	if s.AreaInMeters != nil {
+		*s.AreaInMeters *= float64(utils.UnitConverter(user.LandUnit))
+	}
 
 	fiel := db.UpdateFieldParams{
 		ID:               nId,
@@ -78,7 +81,7 @@ func (q FieldQueries) UpdateField(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, err.Error())(w, r)
 		return
 	}
-	jData, _ := json.Marshal([]fieldResponse{toFieldResponse(data)})
+	jData, _ := json.Marshal([]fieldResponse{toFieldResponse(data, user.LandUnit)})
 	w.WriteHeader(201)
 	w.Write(jData)
 

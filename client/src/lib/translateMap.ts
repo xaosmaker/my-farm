@@ -1,7 +1,7 @@
 export const engToGreek = new Map<string, string>([
   ["stremata", "Στρέμματα"],
   ["hectares", "Εκτάρια"],
-  ["default", "Τετραγωνικά μέτρα"],
+  ["m2", "Τ.Μ"],
 
   ["chemicals", "Φάρμακά"],
   ["fertilizers", "Λιπάσματα"],

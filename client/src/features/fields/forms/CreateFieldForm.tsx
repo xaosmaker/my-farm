@@ -21,21 +21,26 @@ import {
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import { Field as FieldData } from "../types";
-import { getLandUnit } from "@/lib/settings";
+import { UserSettings } from "@/types/sharedTypes";
 import { engToGreek } from "@/lib/translateMap";
 
-export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
-  const unit = getLandUnit();
+export default function CreateFieldForm({
+  landUnit,
+  oldData,
+}: {
+  landUnit: UserSettings;
+  oldData?: FieldData;
+}) {
   const { control, reset, handleSubmit } = useForm<FieldFormData>({
     mode: "onChange",
     resolver: zodResolver(fieldValidator),
     shouldFocusError: true,
     defaultValues: {
+      landUnit: landUnit.landUnit,
       name: oldData?.name || "",
       isOwned: oldData?.isOwned || false,
       fieldLocation: oldData?.fieldLocation || "",
-      areaInMeters:
-        ((oldData?.areaInMeters || 0) / unit.value)?.toString() || "",
+      areaInMeters: oldData?.areaInMeters.toString() || "",
       govPDF: null,
     },
   });
@@ -54,9 +59,6 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
     if (oldData) {
       newData.oldData = oldData;
     }
-    newData.data.areaInMeters = (
-      parseFloat(data.areaInMeters) * (unit.value || 1)
-    ).toString();
     startTransition(() => {
       action(newData);
     });
@@ -96,7 +98,7 @@ export default function CreateFieldForm({ oldData }: { oldData?: FieldData }) {
           <ControlledInput
             control={control}
             name="areaInMeters"
-            label={engToGreek.get(unit.name) || "Τετραγωνικά μέτρα"}
+            label={engToGreek.get(landUnit.landUnit) || ""}
           />
 
           <Controller

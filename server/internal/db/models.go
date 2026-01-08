@@ -64,6 +64,15 @@ type JobsSupply struct {
 	DeletedAt pgtype.Timestamptz
 }
 
+type Setting struct {
+	ID        int64
+	UserID    int64
+	LandUnit  interface{}
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
+}
+
 type SuppliesDetail struct {
 	ID          int64
 	BuyDate     pgtype.Timestamptz

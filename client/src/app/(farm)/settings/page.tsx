@@ -1,37 +1,13 @@
-"use client";
-import ControllledSelect from "@/components/ControllledSelect";
 import ShowFieldPage from "@/components/ShowFieldPage";
-import { getLandUnit, LandUnit, setLandUnit } from "@/lib/settings";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { getSettings } from "@/features/userSettings/fetchers";
+import SettingsForm from "@/features/userSettings/SettingsForm";
 
-type Units = {
-  landUnit: string;
-};
-export default function SettingsPage() {
-  const { control } = useForm<Units>({
-    mode: "onChange",
-    defaultValues: {
-      landUnit: getLandUnit().name,
-    },
-  });
-  const { landUnit } = useWatch({ control });
-  useEffect(() => {
-    setLandUnit((landUnit as LandUnit) || "default");
-  }, [landUnit]);
-  console.log(landUnit);
+export default async function SettingsPage() {
+  const userSettings = await getSettings();
+
   return (
     <ShowFieldPage title="Ρυθμίσεις">
-      <ControllledSelect
-        control={control}
-        name="landUnit"
-        placeholder="Μονάδα μέτρησής εδάφους"
-        values={[
-          { value: "stremata", label: "Στρέμματα" },
-          { value: "hectares", label: "Εκτάρια" },
-          { value: "default", label: "Τετραγωνικά μέτρα" },
-        ]}
-      />
+      <SettingsForm settings={userSettings} />
     </ShowFieldPage>
   );
 }

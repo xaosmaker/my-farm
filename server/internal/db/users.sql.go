@@ -7,9 +7,12 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createUser = `-- name: CreateUser :one
+const createUser = `-- name: CreateUser :exec
+WITH new_user AS (
 INSERT INTO users (
 created_at,
 updated_at,
@@ -18,9 +21,14 @@ password
 )values(
 CURRENT_TIMESTAMP,
 CURRENT_TIMESTAMP,
-  $1,
-  $2
+    $1,
+    $2
 )RETURNING id, email, password, farm_id, created_at, updated_at, deleted_at
+)
+INSERT INTO settings(
+user_id
+)
+select id from new_user
 `
 
 type CreateUserParams struct {
@@ -28,19 +36,9 @@ type CreateUserParams struct {
 	Password string
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Password)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.Password,
-		&i.FarmID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-	)
-	return i, err
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.Exec(ctx, createUser, arg.Email, arg.Password)
+	return err
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
@@ -77,7 +75,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 
 const getUserBYId = `-- name: GetUserBYId :one
 SELECT id, email, password, farm_id, created_at, updated_at, deleted_at FROM users
-WHERE id = $1
+WHERE users.deleted_at IS NULL AND id = $1
 `
 
 func (q *Queries) GetUserBYId(ctx context.Context, id int64) (User, error) {
@@ -97,7 +95,7 @@ func (q *Queries) GetUserBYId(ctx context.Context, id int64) (User, error) {
 
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, email, password, farm_id, created_at, updated_at, deleted_at FROM users
-WHERE email = $1
+WHERE users.deleted_at IS NULL AND email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -111,6 +109,50 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+	)
+	return i, err
+}
+
+const getUserByIdWithSettings = `-- name: GetUserByIdWithSettings :one
+SELECT users.id, email, password, farm_id, users.created_at, users.updated_at, users.deleted_at, settings.id, user_id, land_unit, settings.created_at, settings.updated_at, settings.deleted_at FROM users
+LEFT JOIN settings
+ON users.id = settings.user_id
+WHERE users.deleted_at IS NULL AND users.id = $1
+`
+
+type GetUserByIdWithSettingsRow struct {
+	ID          int64
+	Email       string
+	Password    string
+	FarmID      *int64
+	CreatedAt   pgtype.Timestamptz
+	UpdatedAt   pgtype.Timestamptz
+	DeletedAt   pgtype.Timestamptz
+	ID_2        *int64
+	UserID      *int64
+	LandUnit    interface{}
+	CreatedAt_2 pgtype.Timestamptz
+	UpdatedAt_2 pgtype.Timestamptz
+	DeletedAt_2 pgtype.Timestamptz
+}
+
+func (q *Queries) GetUserByIdWithSettings(ctx context.Context, id int64) (GetUserByIdWithSettingsRow, error) {
+	row := q.db.QueryRow(ctx, getUserByIdWithSettings, id)
+	var i GetUserByIdWithSettingsRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ID_2,
+		&i.UserID,
+		&i.LandUnit,
+		&i.CreatedAt_2,
+		&i.UpdatedAt_2,
+		&i.DeletedAt_2,
 	)
 	return i, err
 }

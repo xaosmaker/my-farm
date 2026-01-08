@@ -8,20 +8,27 @@ INSERT INTO farms (
   CURRENT_TIMESTAMP
   );
 
+
+WITH new_user AS (
 INSERT INTO users (
 created_at,
 updated_at,
 email,
 password,
 farm_id
-
 )values(
 CURRENT_TIMESTAMP,
 CURRENT_TIMESTAMP,
 'xaos@xaos.com',
  '$argon2id$v=19$m=65536,t=1,p=8$6hu5WXopdNfDoXsURWtaCA$0cdNGayvCSGyX8mf1Nl4g4naC5LRaZlM5ZjrmZbn+jk',
   (select id FROM farms WHERE name = 'Δροσος Χωραφια' LIMIT  1)
-  );
+)RETURNING *
+)
+INSERT INTO settings(
+user_id
+)
+select id from new_user;
+
 INSERT INTO fields
 (
 name,

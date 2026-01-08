@@ -7,3 +7,12 @@ export interface Supply {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface UserSettings {
+  id: number;
+  userID: number;
+  landUnit: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+}

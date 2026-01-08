@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 
 export const fieldValidator = z.object({
+  landUnit: z.string(),
   name: z.string().nonempty("Required"),
   areaInMeters: z
     .string()

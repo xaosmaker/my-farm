@@ -53,10 +53,10 @@ WHERE deleted_at IS NULL;
 
 CREATE TABLE supplies (
 id BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
-supply_type varchar(255) NOT NULL,
+supply_type varchar(50) NOT NULL,
 nickname varchar(255),
 name varchar(255) NOT NULL,
-measurement_unit varchar(255) NOT NULL,
+measurement_unit varchar(50) NOT NULL,
 farm_id BIGINT NOT NULL,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

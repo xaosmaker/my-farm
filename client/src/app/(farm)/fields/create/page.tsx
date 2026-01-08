@@ -1,5 +1,7 @@
-import DynamicCreateFieldForm from "@/features/fields/forms/DynamicCreateFieldForm";
+import CreateFieldForm from "@/features/fields/forms/CreateFieldForm";
+import { getSettings } from "@/features/userSettings/fetchers";
 
-export default function CreateFieldPage() {
-  return <DynamicCreateFieldForm />;
+export default async function CreateFieldPage() {
+  const userSettings = await getSettings();
+  return <CreateFieldForm landUnit={userSettings} />;
 }

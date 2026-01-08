@@ -15,6 +15,9 @@ services:
     networks:
       - "farm_nw"
       - "local-nginx-net"
+    depends_on:
+      - farm-server
+      - farm-client
 
   farm-server:
     container_name: farm-server
@@ -36,6 +39,8 @@ services:
       - "farm_nw"
       - farm_db_nw
     command: go run .
+    depends_on:
+      - farm-postgres-db
 
   farm-orm:
     container_name: "farm-orm"

@@ -8,7 +8,7 @@ import { useActionState, useTransition } from "react";
 import { createSupplyAction } from "../actions/createSuppliesActions";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
-import ControllledSelect from "@/components/ControllledSelect";
+import ControlledSelect from "@/components/ControlledSelect";
 
 export default function CreateSupplyForm() {
   const { control, reset, handleSubmit } = useForm<SuppliesRequest>({
@@ -61,7 +61,7 @@ export default function CreateSupplyForm() {
             label="Ψευδώνυμο"
           />
 
-          <ControllledSelect
+          <ControlledSelect
             control={control}
             name="measurementUnit"
             placeholder="Μονάδα μέτρησης"
@@ -71,7 +71,7 @@ export default function CreateSupplyForm() {
             ]}
           />
 
-          <ControllledSelect
+          <ControlledSelect
             control={control}
             name="supplyType"
             placeholder="Κατηγορία"

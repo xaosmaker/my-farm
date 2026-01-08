@@ -9,4 +9,5 @@ export interface Field {
   isOwned: boolean;
   createdAt: Date;
   updatedAt: Date;
+  landUnit: string;
 }
