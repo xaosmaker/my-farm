@@ -29,7 +29,6 @@ const items = [
     url: "/supplies",
     icon: Container,
   },
-  { title: "Ρυθμίσεις", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
