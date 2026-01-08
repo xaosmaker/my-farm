@@ -9,7 +9,10 @@ import (
 	"strings"
 )
 
-type FieldErrors map[string]string
+type Message struct {
+	Message string `json:"message"`
+}
+type FieldErrors []Message
 
 func formatValidator(f validator.FieldError) string {
 	switch strings.ToLower(f.Tag()) {
@@ -72,11 +75,13 @@ func ValidateFields(s any) FieldErrors {
 
 	err := validate.Struct(s)
 
-	fieldErrors := map[string]string{}
+	fieldErrors := FieldErrors{}
 
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			fieldErrors[getFieldJsonTag(s, e.Field())] = formatValidator(e)
+			fieldErrors = append(fieldErrors, Message{
+				Message: fmt.Sprintf("%v: %v", getFieldJsonTag(s, e.Field()), formatValidator(e)),
+			})
 		}
 		return fieldErrors
 	}

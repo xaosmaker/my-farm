@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState, useTransition } from "react";
 import { CreateFarmAction } from "../actions/CreateFarmAction";
 import ControlledInput from "@/components/ControlledInput";
+import ServerErrors from "@/components/ServerErrors";
 
 export default function CreateFarmForm() {
   const { control, handleSubmit } = useForm<FarmFormData>({
@@ -18,7 +19,7 @@ export default function CreateFarmForm() {
     mode: "onChange",
   });
 
-  const [_, action] = useActionState(CreateFarmAction, undefined);
+  const [state, action] = useActionState(CreateFarmAction, undefined);
   const [isPending, startTransition] = useTransition();
   function farmSubmit(data: FarmFormData) {
     startTransition(() => {
@@ -45,6 +46,7 @@ export default function CreateFarmForm() {
         <FieldGroup>
           <ControlledInput control={control} name="name" label="Ονομα Φάρμας" />
         </FieldGroup>
+        {state && <ServerErrors errors={state} />}
       </form>
     </BaseForm>
   );

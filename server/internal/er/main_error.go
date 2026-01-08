@@ -24,7 +24,7 @@ func validateMessages(s any) any {
 	case []string:
 		return s
 	case utils.FieldErrors:
-		return []utils.FieldErrors{s.(utils.FieldErrors)}
+		return s
 	default:
 		return []string{"Something Went Wrong"}
 	}
