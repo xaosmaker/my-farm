@@ -1,7 +1,7 @@
-package handlers
+package farm
 
 import "github.com/xaosmaker/server/internal/db"
 
-type FieldQueries struct {
+type farmQeuries struct {
 	DB db.Queries
 }

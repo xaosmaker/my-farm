@@ -3,13 +3,13 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/xaosmaker/server/internal/db"
+	"github.com/xaosmaker/server/internal/httpx"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
-
-	"github.com/xaosmaker/server/internal/er"
-	"github.com/xaosmaker/server/internal/utils"
 )
 
 const (
@@ -24,20 +24,20 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	fields := userValidation{}
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&fields)
-	if err := utils.ValidateFields(fields); err != nil {
+	if err := httpx.ValidateFields(fields); err != nil {
 		fmt.Println("Error validating fields", err)
-		er.GeneralError(400, err)(w, r)
+		httpx.GeneralError(400, err)(w, r)
 		return
 	}
 
 	user, err := q.DB.GetUserByEmail(r.Context(), fields.Email)
 
 	if err != nil {
-		er.GeneralError(401, []string{"Invalid Credentials"})(w, r)
+		httpx.GeneralError(401, []string{"Invalid Credentials"})(w, r)
 		return
 	}
 	if !ComparePassword(user.Password, fields.Password) {
-		er.GeneralError(401, []string{"Invalid Credentials"})(w, r)
+		httpx.GeneralError(401, []string{"Invalid Credentials"})(w, r)
 		return
 	}
 	user.Password = "****"
@@ -48,7 +48,7 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	jwt, err := MakeJwt(fmt.Sprintf("%d", user.ID), key, expires)
 	if err != nil {
 		fmt.Println("Failed to generate jwt token: ", err)
-		er.GeneralError(401, []string{"Failed To Generate JWT Token"})(w, r)
+		httpx.GeneralError(401, []string{"Failed To Generate JWT Token"})(w, r)
 		return
 
 	}
@@ -87,5 +87,35 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 		w.Write(jUser)
 
 	}
+
+}
+
+func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
+	type UserRequest struct {
+		Email           string `json:"email" validate:"required,email"`
+		Password        string `json:"password" validate:"required,strongPassword=12"`
+		ConfirmPassword string `json:"confirmPassword" validate:"required,eqfield=Password"`
+	}
+	reqUser := UserRequest{}
+	fieldError := httpx.DecodeAndValidate(r, &reqUser)
+	if fieldError != nil {
+		httpx.GeneralError(400, fieldError)(w, r)
+		return
+	}
+
+	password, _ := HashPassword(reqUser.Password)
+	err := q.DB.CreateUser(r.Context(), db.CreateUserParams{
+		Email:    reqUser.Email,
+		Password: password,
+	})
+	if err != nil {
+		if strings.Contains(err.Error(), "23505") {
+			httpx.GeneralError(400, "user already exists")(w, r)
+			return
+		}
+		httpx.GeneralError(400, err.Error())(w, r)
+		return
+	}
+	w.WriteHeader(201)
 
 }

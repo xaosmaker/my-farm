@@ -1,7 +1,7 @@
-package handlers
+package jobs
 
 import "github.com/xaosmaker/server/internal/db"
 
-type JobsQueries struct {
+type jobsQueries struct {
 	DB db.Queries
 }

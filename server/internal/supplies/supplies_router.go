@@ -4,21 +4,20 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/supplies/handlers"
 )
 
-func protectedRoutes(q handlers.SuppliesQueries) *chi.Mux {
+func protectedRoutes(q suppliesQueries) *chi.Mux {
 	r := chi.NewRouter()
-	r.Post("/", q.CreateSupply)
-	r.Delete("/{supplyId}", q.DeleteSupply)
+	r.Post("/", q.createSupply)
+	r.Delete("/{supplyId}", q.deleteSupply)
 	return r
 }
 
 func SuppliesRouter(con *pgxpool.Pool) *chi.Mux {
-	q := handlers.SuppliesQueries{DB: *db.New(con)}
+	q := suppliesQueries{DB: *db.New(con)}
 	r := chi.NewRouter()
-	r.Get("/", q.GetAllSupplies)
-	r.Get("/{supplyId}", q.GetSupplyDetails)
+	r.Get("/", q.getAllSupplies)
+	r.Get("/{supplyId}", q.getSupplyDetails)
 	r.Mount("/", protectedRoutes(q))
 
 	return r

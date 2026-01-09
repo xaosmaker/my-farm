@@ -1,4 +1,4 @@
-package handlers
+package farm
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"

@@ -1,12 +1,12 @@
-package er
+package httpx
 
 import (
 	"encoding/json"
 	"log"
 	"net/http"
-
-	"github.com/xaosmaker/server/internal/utils"
 )
+
+type HttpErrorResponse http.HandlerFunc
 
 type errorMessageString struct {
 	Status int `json:"status"`
@@ -23,14 +23,14 @@ func validateMessages(s any) any {
 		return []any{s}
 	case []string:
 		return s
-	case utils.FieldErrors:
+	case FieldErrors:
 		return s
 	default:
 		return []string{"Something Went Wrong"}
 	}
 }
 
-func GeneralError(statusCode int, messages any) http.HandlerFunc {
+func GeneralError(statusCode int, messages any) HttpErrorResponse {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

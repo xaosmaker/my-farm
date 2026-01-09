@@ -1,4 +1,4 @@
-package utils
+package httpx
 
 func UnitConverter(landUnit string) int {
 	switch landUnit {

@@ -1,4 +1,4 @@
-package utils
+package httpx
 
 import (
 	"encoding/json"
@@ -107,11 +107,11 @@ func Decoder(r *http.Request, s any) error {
 
 }
 
-func DecodeAndValidate(r *http.Request, s any) FieldErrors {
+func DecodeAndValidate(r *http.Request, s any) HttpErrorResponse {
 	Decoder(r, s)
 	err := ValidateFields(s)
 	if err != nil {
-		return err
+		return GeneralError(400, err)
 	}
 
 	return nil

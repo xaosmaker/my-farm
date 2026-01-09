@@ -10,9 +10,9 @@ import (
 	"github.com/xaosmaker/server/internal/auth"
 	"github.com/xaosmaker/server/internal/config"
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/er"
 	"github.com/xaosmaker/server/internal/farm"
 	"github.com/xaosmaker/server/internal/field"
+	"github.com/xaosmaker/server/internal/httpx"
 	"github.com/xaosmaker/server/internal/jobs"
 	"github.com/xaosmaker/server/internal/middlewares"
 	"github.com/xaosmaker/server/internal/supplies"
@@ -29,7 +29,6 @@ func main() {
 		DB: *db.New(conn),
 	}
 
-	// mux := http.NewServeMux()
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -42,9 +41,8 @@ func main() {
 	r.Mount("/api/jobs", jobs.JobsRouter(conn))
 	r.Mount("/api/supplies", supplies.SuppliesRouter(conn))
 	r.Mount("/api/settings", usersettings.UserSettingsRouter(conn))
-	r.NotFound(er.GeneralError(404, "Route not Found"))
-	r.MethodNotAllowed(er.GeneralError(405, "Method not found "))
-	// mux.HandleFunc("/", er.GeneralError(400, []string{"Route Dont found"}))
+	r.NotFound(http.HandlerFunc(httpx.GeneralError(404, "Route not Found")))
+	r.MethodNotAllowed(http.HandlerFunc(httpx.GeneralError(405, "Method not found ")))
 
 	server := &http.Server{
 

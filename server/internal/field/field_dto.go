@@ -1,11 +1,11 @@
-package handlers
+package field
 
 import (
 	"encoding/json"
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/utils"
+	"github.com/xaosmaker/server/internal/httpx"
 )
 
 type fieldResponse struct {
@@ -32,7 +32,7 @@ func toFieldResponse(f db.Field, landUnit string) fieldResponse {
 		Epsg4326Boundary: f.Epsg4326Boundary,
 		MapLocation:      f.MapLocation,
 		FieldLocation:    f.FieldLocation,
-		AreaInMeters:     f.AreaInMeters / float64(utils.UnitConverter(landUnit)),
+		AreaInMeters:     f.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
 		IsOwned:          f.IsOwned,
 		CreatedAt:        f.CreatedAt,
 		UpdatedAt:        f.UpdatedAt,
