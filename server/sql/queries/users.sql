@@ -12,7 +12,7 @@ WHERE users.deleted_at IS NULL AND id = $1;
 
 -- name: GetUserByIdWithSettings :one
 SELECT * FROM users
-LEFT JOIN settings
+JOIN settings
 ON users.id = settings.user_id
 WHERE users.deleted_at IS NULL AND users.id = $1;
 

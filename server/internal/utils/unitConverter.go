@@ -1,6 +1,6 @@
 package utils
 
-func UnitConverter(landUnit any) int {
+func UnitConverter(landUnit string) int {
 	switch landUnit {
 	case "stremata":
 		return 1000

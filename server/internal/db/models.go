@@ -67,7 +67,7 @@ type JobsSupply struct {
 type Setting struct {
 	ID        int64
 	UserID    int64
-	LandUnit  interface{}
+	LandUnit  string
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
 	DeletedAt pgtype.Timestamptz
@@ -96,10 +96,10 @@ type SuppliesPrice struct {
 
 type Supply struct {
 	ID              int64
-	SupplyType      interface{}
+	SupplyType      string
 	Nickname        *string
 	Name            string
-	MeasurementUnit interface{}
+	MeasurementUnit string
 	FarmID          int64
 	CreatedAt       pgtype.Timestamptz
 	UpdatedAt       pgtype.Timestamptz

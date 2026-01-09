@@ -115,7 +115,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 
 const getUserByIdWithSettings = `-- name: GetUserByIdWithSettings :one
 SELECT users.id, email, password, farm_id, users.created_at, users.updated_at, users.deleted_at, settings.id, user_id, land_unit, settings.created_at, settings.updated_at, settings.deleted_at FROM users
-LEFT JOIN settings
+JOIN settings
 ON users.id = settings.user_id
 WHERE users.deleted_at IS NULL AND users.id = $1
 `
@@ -128,9 +128,9 @@ type GetUserByIdWithSettingsRow struct {
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
 	DeletedAt   pgtype.Timestamptz
-	ID_2        *int64
-	UserID      *int64
-	LandUnit    interface{}
+	ID_2        int64
+	UserID      int64
+	LandUnit    string
 	CreatedAt_2 pgtype.Timestamptz
 	UpdatedAt_2 pgtype.Timestamptz
 	DeletedAt_2 pgtype.Timestamptz

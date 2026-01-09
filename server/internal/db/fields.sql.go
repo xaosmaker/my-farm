@@ -95,6 +95,7 @@ WHERE deleted_at IS NULL AND fields.farm_id = (
     WHERE deleted_at IS NULL AND users.id = $1
   )
 )
+ORDER BY id ASC
 `
 
 func (q *Queries) GetAllFields(ctx context.Context, userID int64) ([]Field, error) {

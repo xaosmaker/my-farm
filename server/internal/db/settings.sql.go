@@ -35,7 +35,7 @@ returning id, user_id, land_unit, created_at, updated_at, deleted_at
 `
 
 type UpdateSettingsParams struct {
-	LandUnit interface{}
+	LandUnit string
 	UserID   int64
 }
 

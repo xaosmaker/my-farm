@@ -23,7 +23,7 @@ type fieldResponse struct {
 	// FarmID           int64              `json:"farmId"`
 }
 
-func toFieldResponse(f db.Field, landUnit any) fieldResponse {
+func toFieldResponse(f db.Field, landUnit string) fieldResponse {
 
 	return fieldResponse{
 		ID:               f.ID,

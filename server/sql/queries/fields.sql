@@ -62,4 +62,5 @@ WHERE deleted_at IS NULL AND fields.farm_id = (
     SELECT farm_id FROM users
     WHERE deleted_at IS NULL AND users.id = sqlc.arg('user_id')
   )
-);
+)
+ORDER BY id ASC;
