@@ -17,7 +17,7 @@ INSERT INTO jobs(
 job_type,
 description,
 job_date,
-field_id,
+season_id,
 created_at,
 updated_at
 )
@@ -28,14 +28,14 @@ VALUES(
   $4,
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP
-  ) returning id, job_type, description, job_date, field_id, created_at, updated_at, deleted_at
+  ) returning id, job_type, description, job_date, season_id, created_at, updated_at, deleted_at
 `
 
 type CreateJobParams struct {
 	JobType     string
 	Description *string
 	JobDate     pgtype.Timestamptz
-	FieldID     int64
+	SeasonID    int64
 }
 
 func (q *Queries) CreateJob(ctx context.Context, arg CreateJobParams) (Job, error) {
@@ -43,7 +43,7 @@ func (q *Queries) CreateJob(ctx context.Context, arg CreateJobParams) (Job, erro
 		arg.JobType,
 		arg.Description,
 		arg.JobDate,
-		arg.FieldID,
+		arg.SeasonID,
 	)
 	var i Job
 	err := row.Scan(
@@ -51,7 +51,7 @@ func (q *Queries) CreateJob(ctx context.Context, arg CreateJobParams) (Job, erro
 		&i.JobType,
 		&i.Description,
 		&i.JobDate,
-		&i.FieldID,
+		&i.SeasonID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
@@ -99,7 +99,7 @@ func (q *Queries) CreateJobSupplies(ctx context.Context, arg CreateJobSuppliesPa
 
 const getAllJobs = `-- name: GetAllJobs :many
 
-select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -121,7 +121,7 @@ LEFT JOIN jobs_supplies AS js
 ON j.id = js.job_id
 LEFT JOIN supplies AS s
 ON js.supply_id = s.id
-WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND  j.field_id=$1
+WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND  j.season_id=$1
 GROUP BY j.id
 `
 
@@ -130,14 +130,14 @@ type GetAllJobsRow struct {
 	JobType      string
 	Description  *string
 	JobDate      pgtype.Timestamptz
-	FieldID      int64
+	SeasonID     int64
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
 	JobsSupplies *json.RawMessage
 }
 
-func (q *Queries) GetAllJobs(ctx context.Context, fieldID int64) ([]GetAllJobsRow, error) {
-	rows, err := q.db.Query(ctx, getAllJobs, fieldID)
+func (q *Queries) GetAllJobs(ctx context.Context, seasonID int64) ([]GetAllJobsRow, error) {
+	rows, err := q.db.Query(ctx, getAllJobs, seasonID)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +150,7 @@ func (q *Queries) GetAllJobs(ctx context.Context, fieldID int64) ([]GetAllJobsRo
 			&i.JobType,
 			&i.Description,
 			&i.JobDate,
-			&i.FieldID,
+			&i.SeasonID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.JobsSupplies,
@@ -166,7 +166,7 @@ func (q *Queries) GetAllJobs(ctx context.Context, fieldID int64) ([]GetAllJobsRo
 }
 
 const getJobDetails = `-- name: GetJobDetails :one
-select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -188,13 +188,13 @@ LEFT JOIN jobs_supplies AS js
 ON j.id = js.job_id
 LEFT JOIN supplies AS s
 ON js.supply_id = s.id
-WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND job_id=$1 AND  j.field_id=$2
+WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND job_id=$1 AND  j.season_id=$2
 GROUP BY j.id
 `
 
 type GetJobDetailsParams struct {
-	JobID   *int64
-	FieldID int64
+	JobID    *int64
+	SeasonID int64
 }
 
 type GetJobDetailsRow struct {
@@ -202,21 +202,21 @@ type GetJobDetailsRow struct {
 	JobType      string
 	Description  *string
 	JobDate      pgtype.Timestamptz
-	FieldID      int64
+	SeasonID     int64
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
 	JobsSupplies *json.RawMessage
 }
 
 func (q *Queries) GetJobDetails(ctx context.Context, arg GetJobDetailsParams) (GetJobDetailsRow, error) {
-	row := q.db.QueryRow(ctx, getJobDetails, arg.JobID, arg.FieldID)
+	row := q.db.QueryRow(ctx, getJobDetails, arg.JobID, arg.SeasonID)
 	var i GetJobDetailsRow
 	err := row.Scan(
 		&i.ID,
 		&i.JobType,
 		&i.Description,
 		&i.JobDate,
-		&i.FieldID,
+		&i.SeasonID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.JobsSupplies,

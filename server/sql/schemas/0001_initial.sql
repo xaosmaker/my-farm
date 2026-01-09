@@ -1,5 +1,9 @@
 -- +goose up
 
+-- =========================
+-- farms
+-- =========================
+
 CREATE TABLE farms (
 id BIGINT UNIQUE NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 name varchar(255) NOT NULL,
@@ -7,6 +11,10 @@ created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 deleted_at TIMESTAMP WITH TIME ZONE DEFAUlT NULL
 );
+
+-- =========================
+-- users
+-- =========================
 
 CREATE TABLE users(
 id BIGINT UNIQUE NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -23,10 +31,33 @@ REFERENCES  farms(id)
 ON DELETE SET NULL
 );
 
+
+-- =========================
+-- user settings
+-- =========================
+CREATE TABLE settings (
+id BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE NOT NULL,
+user_id BIGINT NOT NULL UNIQUE,
+land_unit varchar(50) NOT NULL  DEFAULT 'm2',
+created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+deleted_at TIMESTAMP WITH TIME ZONE DEFAUlT NULL,
+
+CONSTRAINT fk_settings_user_id
+FOREIGN KEY (user_id)
+REFERENCES users(id)
+ON DELETE CASCADE
+
+);
+
 CREATE UNIQUE INDEX unique_users_email_active
 ON users (email)
 WHERE deleted_at IS NULL;
 
+
+-- =========================
+-- fields
+-- =========================
 CREATE TABLE fields (
 id BIGINT UNIQUE NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 name varchar(255) NOT NULL,
@@ -51,6 +82,10 @@ CREATE UNIQUE INDEX unique_fields_name_farm_id_active
 ON fields (name, farm_id)
 WHERE deleted_at IS NULL;
 
+
+-- =========================
+-- supplies
+-- =========================
 CREATE TABLE supplies (
 id BIGINT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
 supply_type varchar(50) NOT NULL,
@@ -103,19 +138,52 @@ REFERENCES supplies(id)
 ON DELETE CASCADE
 );
 
+-- =========================
+-- seasons
+-- =========================
+
+CREATE TABLE seasons(
+id BIGINT NOT NULL UNIQUE PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+field_id BIGINT NOT NULL,
+name varchar(100),
+start_season TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+finish_season TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+crop BIGINT NOT NULL,
+bounday jsonb,
+area_in_meters DOUBLE PRECISION NOT NULL,
+created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+deleted_at TIMESTAMP WITH TIME ZONE DEFAUlT NULL,
+
+CONSTRAINT fk_seasons_field_id
+FOREIGN KEY (field_id)
+REFERENCES fields(id)
+ON DELETE CASCADE,
+CONSTRAINT fk_seasons_crop
+FOREIGN KEY (crop)
+REFERENCES supplies(id)
+ON DELETE CASCADE,
+UNIQUE(id,crop)
+);
+
+
+-- =========================
+-- jobs
+-- =========================
+
 CREATE TABLE jobs (
 id BIGINT PRIMARY KEY UNIQUE GENERATED ALWAYS AS IDENTITY,
 job_type varchar(100) NOT NULL,
 description TEXT,
 job_date TIMESTAMP WITH TIME ZONE NOT NULL,
-field_id BIGINT NOT NULL,
+season_id BIGINT NOT NULL,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 deleted_at TIMESTAMP WITH TIME ZONE DEFAUlT NULL,
 
-CONSTRAINT fk_jobs_fields
-FOREIGN KEY (field_id)
-REFERENCES fields(id)
+CONSTRAINT fk_jobs_season_id
+FOREIGN KEY (season_id)
+REFERENCES seasons(id)
 ON DELETE CASCADE
 );
 
@@ -159,9 +227,11 @@ ON DELETE CASCADE
 
 -- +goose down
 
+DROP TABLE settings;
 DROP TABLE IF EXISTS jobs_observations;
 DROP TABLE IF EXISTS jobs_supplies;
 DROP TABLE IF EXISTS jobs;
+DROP TABLE seasons;
 DROP TABLE IF EXISTS supplies_details;
 DROP TABLE IF EXISTS supplies_prices;
 DROP TABLE IF EXISTS users;

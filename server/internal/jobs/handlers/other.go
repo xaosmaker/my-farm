@@ -86,8 +86,9 @@ func (q JobsQueries) GetJobDetails(w http.ResponseWriter, r *http.Request) {
 		er.GeneralError(400, "This Field Doesnt Exist")
 	}
 	job, err := q.DB.GetJobDetails(r.Context(), db.GetJobDetailsParams{
-		FieldID: nFieldId,
-		JobID:   &nJobId,
+		//WARN: overwrite the season id
+		SeasonID: 1,
+		JobID:    &nJobId,
 	})
 
 	if err != nil {

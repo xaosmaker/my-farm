@@ -38,7 +38,7 @@ type Job struct {
 	JobType     string
 	Description *string
 	JobDate     pgtype.Timestamptz
-	FieldID     int64
+	SeasonID    int64
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
 	DeletedAt   pgtype.Timestamptz
@@ -62,6 +62,20 @@ type JobsSupply struct {
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
 	DeletedAt pgtype.Timestamptz
+}
+
+type Season struct {
+	ID           int64
+	FieldID      int64
+	Name         *string
+	StartSeason  pgtype.Timestamptz
+	FinishSeason pgtype.Timestamptz
+	Crop         int64
+	Bounday      *json.RawMessage
+	AreaInMeters float64
+	CreatedAt    pgtype.Timestamptz
+	UpdatedAt    pgtype.Timestamptz
+	DeletedAt    pgtype.Timestamptz
 }
 
 type Setting struct {

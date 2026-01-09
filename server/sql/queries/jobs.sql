@@ -3,7 +3,7 @@ INSERT INTO jobs(
 job_type,
 description,
 job_date,
-field_id,
+season_id,
 created_at,
 updated_at
 )
@@ -35,7 +35,7 @@ VALUES(
 
 -- name: GetAllJobs :many
 
-select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -57,13 +57,13 @@ LEFT JOIN jobs_supplies AS js
 ON j.id = js.job_id
 LEFT JOIN supplies AS s
 ON js.supply_id = s.id
-WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND  j.field_id=$1
+WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND  j.season_id=$1
 GROUP BY j.id;
 
 
 
 -- name: GetJobDetails :one
-select j.id,j.job_type,j.description,j.job_date,j.field_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -85,7 +85,7 @@ LEFT JOIN jobs_supplies AS js
 ON j.id = js.job_id
 LEFT JOIN supplies AS s
 ON js.supply_id = s.id
-WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND job_id=$1 AND  j.field_id=$2
+WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND job_id=$1 AND  j.season_id=$2
 GROUP BY j.id;
 
 

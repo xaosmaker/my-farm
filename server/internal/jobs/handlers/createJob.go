@@ -11,11 +11,7 @@ import (
 	"github.com/xaosmaker/server/internal/utils"
 )
 
-/*
-check if the fields is correct
-if in supply types
-handle supply types else handler diffrent
-*/
+//WARN: overwite the seasonId
 
 type jobSupplyParams struct {
 	Quantity float64 `json:"quantity" validate:"required"`
@@ -73,7 +69,7 @@ func (q JobsQueries) CreateJob(w http.ResponseWriter, r *http.Request) {
 		JobType:     requestData.JobType,
 		Description: requestData.Description,
 		JobDate:     requestData.JobDate,
-		FieldID:     requestData.FieldID,
+		SeasonID:    1,
 	})
 	if err != nil {
 		er.GeneralError(400, err.Error())(w, r)
