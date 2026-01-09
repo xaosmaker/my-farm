@@ -66,7 +66,27 @@ VALUES
 ('πλατανος',83000 ,'πλατανος',false,(select id FROM farms WHERE name = 'Δροσος Χωραφια'),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),
 ('κλειδι',130000  ,'κλειδι',false,(select id FROM farms WHERE name = 'Δροσος Χωραφια'),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
 
+INSERT INTO supplies(
+name,
+supply_type,
+measurement_unit,
+farm_id
+)
+ VALUES
+('Akito','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('Ortiva','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('Tonik','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('Focus','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('Permit','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('Dash','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('GLORIA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('PVL','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('DIVA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com'));
+
 -- +goose down
+DELETE FROM supplies
+WHERE farm_id = (select id FROM farms WHERE name = 'Δροσος Χωραφια');
+
 DELETE FROM fields
 WHERE farm_id = (select id FROM farms WHERE name = 'Δροσος Χωραφια');
 

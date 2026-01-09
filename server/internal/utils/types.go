@@ -6,63 +6,46 @@ func JobTypesWithSupplies() []string {
 		"fertilizing", //Λίπανση
 		"sowing",      //Σπορά
 		"harvesting",  //Συγκομιδή
-		// "planting",    //Φύτευση
+		"planting",    //Φύτευση
 	}
 
 }
+func MeasurementUnits() []string {
+	return []string{
+
+		"KG",    //"Κιλά"
+		"L",     //"Λίτρα"
+		"piece", //"Τεμάχιο"
+	}
+}
+func SuppliesTypes() []string {
+	return []string{
+
+		"chemicals",   //"Φάρμακά"
+		"fertilizers", //"Λιπάσματα"
+		"seeds",       //"Σπόροι"
+		"diesel",      //"Πετρέλαιο"
+	}
+}
+
 func JobTypes() []string {
 	return []string{
-		"spraying",    //Ψεκασμός
-		"fertilizing", //Λίπανση
-		"sowing",      //Σπορά
-		"harvesting",  //Συγκομιδή
-		// "planting",               //Φύτευση
-		// "irrigation",             //Άρδευση / Πότισμα
-		// "transplanting",          //Μεταφύτευση
-		// "pruning",                //Κλάδεμα
-		// "weeding",                //Ζιζανιοκτονία / Βοτάνισμα
-		// "soil preparation",       //Προετοιμασία εδάφους
-		// "plowing",                //Όργωμα
-		// "tilling",                //Φρεζάρισμα
-		// "cultivation",            //Καλλιέργεια
-		// "pest control",           //Καταπολέμηση εχθρών
-		// "disease control",        //Καταπολέμηση ασθενειών
-		// "crop monitoring",        //Παρακολούθηση καλλιεργειών
-		// "soil testing",           //Εδαφολογικός έλεγχος
-		// "fertilizer application", //Εφαρμογή λιπασμάτων
-		// "pesticide application",  //Εφαρμογή φυτοφαρμάκων
-		// "equipment maintenance",  //Συντήρηση εξοπλισμού
-		// "field cleaning",         //Καθαρισμός αγρού
-		// "mulching",               //Εδαφοκάλυψη
-		// "thinning",               //Αραίωμα
-		// "post-harvest handling",  //Μετασυλλεκτικοί χειρισμοί
-
+		"spraying",          //"Ψεκασμός"
+		"drone spraying",    //"Ψεκασμός drone"
+		"fertilizing",       //"Λίπανση"
+		"sowing",            //"Σπορά"
+		"harvesting",        //"Συγκομιδή"
+		"planting",          //"Φύτευση"
+		"irrigation",        //"πότισμα",
+		"pruning",           //"κλάδεμα",
+		"hoeing",            //"τσάπισμα",
+		"preparation",       //"προετοιμασία",
+		"plowing",           //"όργωμα",
+		"leveling",          //"ισοπέδωμα",
+		"tilling",           //"φρέζα",
+		"cultivator",        //"σκαλιστήρι",
+		"rotary cultivator", //"φρεζοσκαλιστήρι",
+		"subsoiler",         //"ρίπερ",
+		"harrowing",         //"δισκοσβάρνα",
 	}
 }
-
-/*
-"Spraying",//Ψεκασμός
-"Fertilizing",//Λίπανση
-"Irrigation",//Άρδευση / Πότισμα
-"Planting",//Φύτευση
-"Sowing",//Σπορά
-"Transplanting",//Μεταφύτευση
-"Harvesting",//Συγκομιδή
-"Pruning",//Κλάδεμα
-"Weeding",//Ζιζανιοκτονία / Βοτάνισμα
-"Soil preparation",//Προετοιμασία εδάφους
-"Plowing",//Όργωμα
-"Tilling",//Φρεζάρισμα
-"Cultivation",//Καλλιέργεια
-"Pest control",//Καταπολέμηση εχθρών
-"Disease control",//Καταπολέμηση ασθενειών
-"Crop monitoring",//Παρακολούθηση καλλιεργειών
-"Soil testing",//Εδαφολογικός έλεγχος
-"Fertilizer application",//Εφαρμογή λιπασμάτων
-"Pesticide application",//Εφαρμογή φυτοφαρμάκων
-"Equipment maintenance",//Συντήρηση εξοπλισμού
-"Field cleaning",//Καθαρισμός αγρού
-"Mulching",//Εδαφοκάλυψη
-"Thinning",//Αραίωμα
-"Post-harvest handling",//Μετασυλλεκτικοί χειρισμοί
-*/

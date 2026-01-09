@@ -1,18 +1,17 @@
+import { MEASUREMENT_UNITS, SUPPLIES_TYPES } from "@/types/sharedTypes";
 import { z } from "zod/v4";
 
-const supplyTypes = ["chemicals", "fertilizers", "seeds"];
-const measurementUnits = ["KG", "L"];
 export const suppliesValidator = z.object({
   nickname: z.string(),
   name: z.string().nonempty(),
-  supplyType: z.string().refine((val) => supplyTypes.includes(val), {
-    error: `Supply type should contain one of "${supplyTypes.join(", ")}"`,
+  supplyType: z.string().refine((val) => SUPPLIES_TYPES.includes(val), {
+    error: `Supply type should contain one of "${SUPPLIES_TYPES.join(", ")}"`,
   }),
   measurementUnit: z
     .string()
 
-    .refine((val) => measurementUnits.includes(val), {
-      error: `measurement unit should contain one of "${measurementUnits.join(", ")}"`,
+    .refine((val) => MEASUREMENT_UNITS.includes(val), {
+      error: `measurement unit should contain one of "${MEASUREMENT_UNITS.join(", ")}"`,
     }),
 });
 

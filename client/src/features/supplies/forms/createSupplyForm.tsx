@@ -9,6 +9,8 @@ import { createSupplyAction } from "../actions/createSuppliesActions";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import ControlledSelect from "@/components/ControlledSelect";
+import { MEASUREMENT_UNITS, SUPPLIES_TYPES } from "@/types/sharedTypes";
+import { engToGreek } from "@/lib/translateMap";
 
 export default function CreateSupplyForm() {
   const { control, reset, handleSubmit } = useForm<SuppliesRequest>({
@@ -30,7 +32,6 @@ export default function CreateSupplyForm() {
       action(data);
     });
   }
-
   return (
     <BaseForm
       cardTitle="Δημιουργία εφοδίων"
@@ -65,21 +66,20 @@ export default function CreateSupplyForm() {
             control={control}
             name="measurementUnit"
             placeholder="Μονάδα μέτρησης"
-            values={[
-              { value: "KG", label: "Κιλά" },
-              { value: "L", label: "Λίτρα" },
-            ]}
+            values={MEASUREMENT_UNITS.map((item) => ({
+              value: item,
+              label: engToGreek.get(item) || item,
+            }))}
           />
 
           <ControlledSelect
             control={control}
             name="supplyType"
             placeholder="Κατηγορία"
-            values={[
-              { value: "chemicals", label: "φάρμακά" },
-              { value: "fertilizers", label: "λιπάσματα" },
-              { value: "seeds", label: "Σπόροι" },
-            ]}
+            values={SUPPLIES_TYPES.map((item) => ({
+              value: item,
+              label: engToGreek.get(item) || item,
+            }))}
           />
         </FieldGroup>
       </form>

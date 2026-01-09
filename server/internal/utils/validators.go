@@ -10,6 +10,30 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+func measurementUnitsValidator(sl validator.FieldLevel) bool {
+
+	current := sl.Field()
+	if current.Kind() == reflect.Pointer {
+		current = current.Elem()
+	}
+	s := current.String()
+
+	return slices.Contains(MeasurementUnits(), s)
+
+}
+
+func supplyTypeValidator(sl validator.FieldLevel) bool {
+
+	current := sl.Field()
+	if current.Kind() == reflect.Pointer {
+		current = current.Elem()
+	}
+	s := current.String()
+
+	return slices.Contains(SuppliesTypes(), s)
+
+}
+
 func jobTypeValidator(sl validator.FieldLevel) bool {
 
 	current := sl.Field()

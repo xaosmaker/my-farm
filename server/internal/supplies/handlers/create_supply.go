@@ -22,10 +22,10 @@ func (q SuppliesQueries) CreateSupply(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type supplyRequest struct {
-		SupplyType      string  `json:"supplyType" validate:"required,oneof=chemicals fertilizers seeds"`
+		SupplyType      string  `json:"supplyType" validate:"required,supplyTypeVal"`
 		Nickname        *string `json:"nickname"`
 		Name            string  `json:"name" validate:"required"`
-		MeasurementUnit string  `json:"measurementUnit" validate:"required,oneof=KG L"`
+		MeasurementUnit string  `json:"measurementUnit" validate:"required,measurementUnitsVal"`
 	}
 	rd := supplyRequest{}
 	if err := utils.DecodeAndValidate(r, &rd); err != nil {
