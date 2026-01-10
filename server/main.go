@@ -15,6 +15,7 @@ import (
 	"github.com/xaosmaker/server/internal/httpx"
 	"github.com/xaosmaker/server/internal/jobs"
 	"github.com/xaosmaker/server/internal/middlewares"
+	"github.com/xaosmaker/server/internal/seasons"
 	"github.com/xaosmaker/server/internal/supplies"
 	usersettings "github.com/xaosmaker/server/internal/user_settings"
 )
@@ -41,6 +42,7 @@ func main() {
 	r.Mount("/api/jobs", jobs.JobsRouter(conn))
 	r.Mount("/api/supplies", supplies.SuppliesRouter(conn))
 	r.Mount("/api/settings", usersettings.UserSettingsRouter(conn))
+	r.Mount("/api/seasons", seasons.SeasonsRouter(conn))
 	r.NotFound(http.HandlerFunc(httpx.GeneralError(404, "Route not Found")))
 	r.MethodNotAllowed(http.HandlerFunc(httpx.GeneralError(405, "Method not found ")))
 

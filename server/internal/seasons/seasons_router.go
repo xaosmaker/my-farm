@@ -1,0 +1,18 @@
+package seasons
+
+import (
+	"github.com/go-chi/chi/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/xaosmaker/server/internal/db"
+)
+
+func SeasonsRouter(con *pgxpool.Pool) *chi.Mux {
+	q := seasonsQueries{
+		DB: *db.New(con),
+	}
+	r := chi.NewRouter()
+	r.Get("/{fieldId}", q.getAllSeasons)
+
+	return r
+
+}

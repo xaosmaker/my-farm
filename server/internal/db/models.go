@@ -71,7 +71,7 @@ type Season struct {
 	StartSeason  pgtype.Timestamptz
 	FinishSeason pgtype.Timestamptz
 	Crop         int64
-	Bounday      *json.RawMessage
+	Boundary     *json.RawMessage
 	AreaInMeters float64
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
