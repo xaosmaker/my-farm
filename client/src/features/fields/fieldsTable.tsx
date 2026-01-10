@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Field } from "./types";
 import { MapPin, Plus } from "lucide-react";
 import Link from "next/link";
 import {
@@ -14,6 +13,7 @@ import DeleteItem from "@/components/DeleteItem";
 import { deleteFieldAction } from "./actions/actions";
 import EditItem from "@/components/EditItem";
 import { engToGreek } from "@/lib/translateMap";
+import { Field } from "@/types/sharedTypes";
 
 export const fieldsTable: ColumnDef<Field>[] = [
   {

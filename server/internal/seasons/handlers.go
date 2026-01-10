@@ -2,10 +2,9 @@ package seasons
 
 import (
 	"encoding/json"
-	"net/http"
-
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
+	"net/http"
 )
 
 func (q seasonsQueries) getAllSeasons(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +29,7 @@ func (q seasonsQueries) getAllSeasons(w http.ResponseWriter, r *http.Request) {
 	seasons, _ := q.DB.GetSeasonsByFieldId(r.Context(), fieldId)
 	seasonsSlice := []seasonResponse{}
 	for _, season := range seasons {
-		seasonsSlice = append(seasonsSlice, toSeasonResponse(season))
+		seasonsSlice = append(seasonsSlice, toSeasonResponse(season, user.LandUnit))
 
 	}
 	seasonsEncoded, err := json.Marshal(seasonsSlice)

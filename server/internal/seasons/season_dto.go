@@ -5,6 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
+	"github.com/xaosmaker/server/internal/httpx"
 )
 
 type seasonResponse struct {
@@ -18,9 +19,11 @@ type seasonResponse struct {
 	AreaInMeters float64            `json:"areaInMeters"`
 	CreatedAt    pgtype.Timestamptz `json:"createdAt"`
 	UpdatedAt    pgtype.Timestamptz `json:"updatedAt"`
+	LandUnit     string             `json:"landUnit"`
+	CropName     string             `json:"cropName"`
 }
 
-func toSeasonResponse(s db.Season) seasonResponse {
+func toSeasonResponse(s db.GetSeasonsByFieldIdRow, landUnit string) seasonResponse {
 	return seasonResponse{
 		ID:           s.ID,
 		FieldID:      s.FieldID,
@@ -29,8 +32,10 @@ func toSeasonResponse(s db.Season) seasonResponse {
 		FinishSeason: s.FinishSeason,
 		Crop:         s.Crop,
 		Boundary:     s.Boundary,
-		AreaInMeters: s.AreaInMeters,
+		AreaInMeters: s.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
 		CreatedAt:    s.CreatedAt,
 		UpdatedAt:    s.UpdatedAt,
+		LandUnit:     landUnit,
+		CropName:     s.CropName,
 	}
 }

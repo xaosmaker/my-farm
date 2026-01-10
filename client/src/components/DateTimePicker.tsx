@@ -18,10 +18,10 @@ export function DateTimePicker({
   value,
   onChange,
 }: {
-  value: Date;
+  value: Date | undefined;
   onChange: (date: Date | undefined) => void;
 }) {
-  const [date, setDate] = React.useState<Date>(value);
+  const [date, setDate] = React.useState<Date | undefined>(value);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const hours = Array.from({ length: 24 }, (_, i) => i);

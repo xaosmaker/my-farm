@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/tooltip";
 import { deleteFieldAction } from "@/features/fields/actions/actions";
 import { getFieldById } from "@/features/fields/fieldsFetchers";
-import { GetAllJobs } from "@/features/jobs/jobsFetchers";
-import { jobsTable } from "@/features/jobs/jobsTable";
+import { getAllSeasons } from "@/features/seasons/fetchers";
+import { seasonsTable } from "@/features/seasons/seasonTable";
 import { MapPin, Plus } from "lucide-react";
 import Link from "next/link";
 
@@ -27,7 +27,7 @@ export default async function FieldPage({
     return <div>No Field Found</div>;
   }
   const field = fields[0];
-  const jobs = await GetAllJobs(fieldId);
+  const seasons = await getAllSeasons(fieldId);
 
   return (
     <>
@@ -69,7 +69,7 @@ export default async function FieldPage({
           <EditItem url={`/fields/${field.id}/edit`} />
         </ShowFieldGroup>
       </ShowFieldPage>
-      <DataTable columns={jobsTable} data={jobs} />
+      <DataTable columns={seasonsTable} data={seasons} />
     </>
   );
 }

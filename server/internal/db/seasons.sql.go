@@ -7,23 +7,47 @@ package db
 
 import (
 	"context"
+	"encoding/json"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const getSeasonsByFieldId = `-- name: GetSeasonsByFieldId :many
-SELECT id, field_id, name, start_season, finish_season, crop, boundary, area_in_meters, created_at, updated_at, deleted_at FROM seasons 
-WHERE deleted_at IS NULL
-AND field_id = $1
+SELECT 
+s.id,s.field_id,s.name,s.start_season,s.finish_season,s.crop,s.boundary,
+  s.area_in_meters,s.created_at,s.updated_at,s.deleted_at,
+  supplies.name as crop_name
+FROM seasons s
+JOIN supplies
+ON supplies.id = crop
+WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
+AND s.field_id = $1
 `
 
-func (q *Queries) GetSeasonsByFieldId(ctx context.Context, fieldID int64) ([]Season, error) {
+type GetSeasonsByFieldIdRow struct {
+	ID           int64
+	FieldID      int64
+	Name         *string
+	StartSeason  pgtype.Timestamptz
+	FinishSeason pgtype.Timestamptz
+	Crop         int64
+	Boundary     *json.RawMessage
+	AreaInMeters float64
+	CreatedAt    pgtype.Timestamptz
+	UpdatedAt    pgtype.Timestamptz
+	DeletedAt    pgtype.Timestamptz
+	CropName     string
+}
+
+func (q *Queries) GetSeasonsByFieldId(ctx context.Context, fieldID int64) ([]GetSeasonsByFieldIdRow, error) {
 	rows, err := q.db.Query(ctx, getSeasonsByFieldId, fieldID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Season
+	var items []GetSeasonsByFieldIdRow
 	for rows.Next() {
-		var i Season
+		var i GetSeasonsByFieldIdRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.FieldID,
@@ -36,6 +60,7 @@ func (q *Queries) GetSeasonsByFieldId(ctx context.Context, fieldID int64) ([]Sea
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
+			&i.CropName,
 		); err != nil {
 			return nil, err
 		}
