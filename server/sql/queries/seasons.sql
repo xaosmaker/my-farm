@@ -8,3 +8,18 @@ JOIN supplies
 ON supplies.id = crop
 WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
 AND s.field_id = $1;
+-- name: GetRemainingAreaOfFieldForSeason :one
+SELECT
+    f.area_in_meters - COALESCE(SUM(s.area_in_meters), 0) AS field_remaining_area
+FROM fields f
+LEFT JOIN seasons s
+    ON s.field_id = f.id
+    AND s.deleted_at IS NULL
+    AND s.finish_season IS NULL
+WHERE f.deleted_at IS NULL AND f.id = $1
+GROUP BY f.area_in_meters;
+
+-- name: CreateSeason :one
+INSERT INTO seasons
+(name,field_id,crop,area_in_meters,start_season)
+VALUES ($1,$2,$3,$4,$5)returning *;

@@ -8,9 +8,68 @@ package db
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const createSeason = `-- name: CreateSeason :one
+INSERT INTO seasons
+(name,field_id,crop,area_in_meters,start_season)
+VALUES ($1,$2,$3,$4,$5)returning id, field_id, name, start_season, finish_season, crop, boundary, area_in_meters, created_at, updated_at, deleted_at
+`
+
+type CreateSeasonParams struct {
+	Name         *string
+	FieldID      int64
+	Crop         int64
+	AreaInMeters float64
+	StartSeason  time.Time
+}
+
+func (q *Queries) CreateSeason(ctx context.Context, arg CreateSeasonParams) (Season, error) {
+	row := q.db.QueryRow(ctx, createSeason,
+		arg.Name,
+		arg.FieldID,
+		arg.Crop,
+		arg.AreaInMeters,
+		arg.StartSeason,
+	)
+	var i Season
+	err := row.Scan(
+		&i.ID,
+		&i.FieldID,
+		&i.Name,
+		&i.StartSeason,
+		&i.FinishSeason,
+		&i.Crop,
+		&i.Boundary,
+		&i.AreaInMeters,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
+const getRemainingAreaOfFieldForSeason = `-- name: GetRemainingAreaOfFieldForSeason :one
+SELECT
+    f.area_in_meters - COALESCE(SUM(s.area_in_meters), 0) AS field_remaining_area
+FROM fields f
+LEFT JOIN seasons s
+    ON s.field_id = f.id
+    AND s.deleted_at IS NULL
+    AND s.finish_season IS NULL
+WHERE f.deleted_at IS NULL AND f.id = $1
+GROUP BY f.area_in_meters
+`
+
+func (q *Queries) GetRemainingAreaOfFieldForSeason(ctx context.Context, id int64) (float64, error) {
+	row := q.db.QueryRow(ctx, getRemainingAreaOfFieldForSeason, id)
+	var field_remaining_area float64
+	err := row.Scan(&field_remaining_area)
+	return field_remaining_area, err
+}
 
 const getSeasonsByFieldId = `-- name: GetSeasonsByFieldId :many
 SELECT 
@@ -28,7 +87,7 @@ type GetSeasonsByFieldIdRow struct {
 	ID           int64
 	FieldID      int64
 	Name         *string
-	StartSeason  pgtype.Timestamptz
+	StartSeason  time.Time
 	FinishSeason pgtype.Timestamptz
 	Crop         int64
 	Boundary     *json.RawMessage

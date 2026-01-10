@@ -2,6 +2,7 @@ package seasons
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
@@ -12,7 +13,7 @@ type seasonResponse struct {
 	ID           int64              `json:"id"`
 	FieldID      int64              `json:"fieldId"`
 	Name         *string            `json:"name"`
-	StartSeason  pgtype.Timestamptz `json:"startSeason"`
+	StartSeason  time.Time          `json:"startSeason"`
 	FinishSeason pgtype.Timestamptz `json:"endSeason"`
 	Crop         int64              `json:"crop"`
 	Boundary     *json.RawMessage   `json:"boundary"`

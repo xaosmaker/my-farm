@@ -78,6 +78,7 @@ func ValidateFields(s any) FieldErrors {
 	validate.RegisterValidation("strongPassword", strongPassword)
 	validate.RegisterValidation("supplyTypeVal", supplyTypeValidator)
 	validate.RegisterValidation("measurementUnitsVal", measurementUnitsValidator)
+	validate.RegisterValidation("isTimestamptz", isoTimestamptzValidator)
 
 	err := validate.Struct(s)
 

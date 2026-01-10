@@ -33,6 +33,7 @@ export default function CreateJobForm({
     reset,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<JobFormData>({
     resolver: zodResolver(jobValidator),
@@ -46,6 +47,7 @@ export default function CreateJobForm({
     },
   });
 
+  console.log(watch("jobDate").toISOString());
   const { fields, append, remove } = useFieldArray({
     control,
     name: "jobSupplies",

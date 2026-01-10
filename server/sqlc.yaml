@@ -1,13 +1,4 @@
 version: "2"
-# overrides:
-#     go:
-#         overrides:
-#             - db_type: json
-#               nullable: true
-#               go_type: "*encoding/json.RawMessage"
-#             - db_type: jsonb
-#               nullable: true
-#               go_type: "*encoding/json.RawMessage"
 sql:
     - queries: "sql/queries"
       database:
@@ -21,6 +12,16 @@ sql:
       gen:
           go:
               overrides:
+                  # - db_type: "pg_catalog.timestamptz"
+                  #   go_type:
+                  #       type: "time.Time"
+                  # - db_type: "pg_catalog.timestamptz"
+                  #   nullable: true
+                  #   go_type:
+                  #       type: "time.Time"
+                  #       pointer: true
+                  - column: "seasons.start_season"
+                    go_type: "time.Time"
                   - db_type: json
                     nullable: true
                     go_type: "*encoding/json.RawMessage"
@@ -28,5 +29,6 @@ sql:
                     nullable: true
                     go_type: "*encoding/json.RawMessage"
               emit_pointers_for_null_types: true
+
               out: "internal/db"
               sql_package: "pgx/v5"

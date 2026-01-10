@@ -1,6 +1,7 @@
 package httpx
 
 import (
+	"fmt"
 	"reflect"
 	"slices"
 	"strconv"
@@ -9,6 +10,18 @@ import (
 
 	"github.com/go-playground/validator/v10"
 )
+
+func isoTimestamptzValidator(sl validator.FieldLevel) bool {
+	current := sl.Field()
+	if current.Kind() == reflect.Pointer {
+		current = current.Elem()
+	}
+
+	cu := current.Interface().(string)
+	fmt.Println(current, cu)
+	return false
+
+}
 
 func measurementUnitsValidator(sl validator.FieldLevel) bool {
 

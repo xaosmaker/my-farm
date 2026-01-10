@@ -6,6 +6,7 @@ package db
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -68,7 +69,7 @@ type Season struct {
 	ID           int64
 	FieldID      int64
 	Name         *string
-	StartSeason  pgtype.Timestamptz
+	StartSeason  time.Time
 	FinishSeason pgtype.Timestamptz
 	Crop         int64
 	Boundary     *json.RawMessage
