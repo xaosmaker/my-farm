@@ -14,7 +14,7 @@ type seasonResponse struct {
 	FieldID      int64              `json:"fieldId"`
 	Name         *string            `json:"name"`
 	StartSeason  time.Time          `json:"startSeason"`
-	FinishSeason pgtype.Timestamptz `json:"endSeason"`
+	FinishSeason pgtype.Timestamptz `json:"finishSeason"`
 	Crop         int64              `json:"crop"`
 	Boundary     *json.RawMessage   `json:"boundary"`
 	AreaInMeters float64            `json:"areaInMeters"`

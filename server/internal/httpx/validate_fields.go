@@ -39,6 +39,8 @@ func formatValidator(f validator.FieldError) string {
 		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(SuppliesTypes(), ", "))
 	case "measurementunitsval":
 		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(MeasurementUnits(), ", "))
+	case "istimestamptz":
+		return fmt.Sprintf("%v should be of format '2026-01-13T02:12:00.000Z'", f.Field())
 	default:
 		return fmt.Sprintf("format Validator uknown format %v", f.Error())
 	}

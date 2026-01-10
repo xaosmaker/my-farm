@@ -11,6 +11,9 @@ import { DateTimePicker } from "@/components/DateTimePicker";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { useActionState, useTransition } from "react";
+import ServerErrors from "@/components/ServerErrors";
+import { createSeasonAction } from "../actions/seasonActions";
 
 export default function CreateSeasonForm({
   field,
@@ -27,13 +30,18 @@ export default function CreateSeasonForm({
       name: "",
       areaInMeters: field.areaInMeters.toString(),
       crop: undefined,
-      fieldID: field.id,
+      fieldId: field.id,
       startSeason: undefined,
       finishSeason: undefined,
     },
   });
+
+  const [state, action] = useActionState(createSeasonAction, undefined);
+  const [isPending, startTransition] = useTransition();
   function onFormSubmit(data: SeasonRequest) {
-    console.log(data);
+    startTransition(() => {
+      action(data);
+    });
   }
 
   return (
@@ -42,8 +50,10 @@ export default function CreateSeasonForm({
       cardDescription={`Δημιουργία σεζόν για το χωράφι \n ${field.name} ${field.areaInMeters} ${engToGreek.get(field.landUnit) || field.landUnit}`}
       buttonChildren={
         <>
-          <Button onClick={() => reset()}>Reset</Button>{" "}
-          <Button type="submit" form="create-season-form">
+          <Button disabled={isPending} onClick={() => reset()}>
+            Reset
+          </Button>
+          <Button disabled={isPending} type="submit" form="create-season-form">
             Δημιουργία σεζόν
           </Button>
         </>
@@ -97,6 +107,7 @@ export default function CreateSeasonForm({
             </Field>
           )}
         />
+        {state && <ServerErrors errors={state} />}
       </form>
     </BaseForm>
   );

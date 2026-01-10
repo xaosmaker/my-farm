@@ -13,7 +13,7 @@ export const seasonValidators = z.object({
     .refine((value) => parseFloat(value) > 0, {
       error: "Should be greater than 0",
     }),
-  fieldID: z.number(),
+  fieldId: z.number(),
   crop: z
     .string("Αυτό το πεδίο είναι υποχρεωτικό")
     .refine((item) => parseInt(item) > 0, {

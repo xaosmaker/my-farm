@@ -4,18 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/utils"
 )
 
 func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
 	type seasonRequest struct {
-		Name         *string   `json:"name" validate:"required,alphanumspace"`
-		StartSeason  time.Time `json:"startSeason" validate:"isTimestamptz"`
-		Crop         int64     `json:"crop" validate:"required,number"`
-		AreaInMeters float64   `json:"areaInMeters" validate:"required,number"`
+		Name         *string `json:"name" validate:"required,alphanumspace"`
+		StartSeason  string  `json:"startSeason" validate:"required,isTimestamptz"`
+		Crop         int64   `json:"crop" validate:"required,number"`
+		AreaInMeters float64 `json:"areaInMeters" validate:"required,number"`
 	}
 	seasonBoby := seasonRequest{}
 	if httpErr := httpx.DecodeAndValidate(r, &seasonBoby); httpErr != nil {
@@ -29,6 +29,7 @@ func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	seasonBoby.AreaInMeters = seasonBoby.AreaInMeters * float64(httpx.UnitConverter(user.LandUnit))
 	fieldId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
 	if httpErr != nil {
 		httpErr(w, r)
@@ -43,8 +44,8 @@ func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
 		httpx.GeneralError(400, "Field doent exist")(w, r)
 		return
 	}
-	if val, _ := q.DB.GetRemainingAreaOfFieldForSeason(r.Context(), fieldId); val < 0.001 {
-		httpx.GeneralError(400, fmt.Sprintf("No area to cultivate, remaining area: %.2f", val))(w, r)
+	if val, _ := q.DB.GetRemainingAreaOfFieldForSeason(r.Context(), fieldId); val < seasonBoby.AreaInMeters {
+		httpx.GeneralError(400, fmt.Sprintf("No area to cultivate, remaining area: %.2f", val/float64(httpx.UnitConverter(user.LandUnit))))(w, r)
 		return
 	}
 	_, err = q.DB.CreateSeason(r.Context(), db.CreateSeasonParams{
@@ -52,7 +53,7 @@ func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
 		FieldID:      fieldId,
 		Crop:         seasonBoby.Crop,
 		AreaInMeters: seasonBoby.AreaInMeters,
-		StartSeason:  seasonBoby.StartSeason,
+		StartSeason:  *utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason),
 	})
 	if err != nil {
 		httpx.GeneralError(400, err.Error())(w, r)

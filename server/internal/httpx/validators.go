@@ -1,11 +1,11 @@
 package httpx
 
 import (
-	"fmt"
 	"reflect"
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/go-playground/validator/v10"
@@ -17,9 +17,12 @@ func isoTimestamptzValidator(sl validator.FieldLevel) bool {
 		current = current.Elem()
 	}
 
-	cu := current.Interface().(string)
-	fmt.Println(current, cu)
-	return false
+	_, err := time.Parse(time.RFC3339, current.String())
+	if err != nil {
+		return false
+	}
+
+	return true
 
 }
 

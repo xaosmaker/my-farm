@@ -33,7 +33,7 @@ export default async function FieldPage({
     <>
       <ShowFieldPage title={field.name}>
         <Link
-          href={`/fields/${fieldId}/jobs/create`}
+          href={`/fields/${fieldId}/seasons/create`}
           className="absolute -top-10 right-0 text-green-500"
         >
           <Tooltip>

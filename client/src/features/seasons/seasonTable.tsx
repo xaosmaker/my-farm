@@ -1,13 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import Link from "next/link";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { engToGreek } from "@/lib/translateMap";
 import { Season } from "./types/seasonTypes";
 
@@ -48,15 +42,6 @@ export const seasonsTable: ColumnDef<Season>[] = [
   { accessorKey: "finishSeason", header: "Λήξη σεζόν" },
   {
     id: "createSeason",
-    header: () => (
-      /* <Link href="/jobs/create" className="text-green-500"> */
-      <Tooltip>
-        <TooltipTrigger>
-          <Plus />
-        </TooltipTrigger>
-        <TooltipContent>Δημιουργία σεζον</TooltipContent>
-      </Tooltip>
-      // </Link>
-    ),
+    header: "",
   },
 ];
