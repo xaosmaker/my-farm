@@ -3,10 +3,10 @@ import { Input } from "@/components/ui/input";
 
 export default function ShowFieldsData({
   fieldName = "name",
-  children,
+  value,
 }: {
   fieldName?: string;
-  children: Readonly<string>;
+  value: Readonly<string>;
 }) {
   return (
     <div className="relative mt-2 first:mt-6">
@@ -16,7 +16,7 @@ export default function ShowFieldsData({
       <Input
         className="py-4 pt-6 caret-transparent focus-visible:border-inherit focus-visible:ring-transparent"
         readOnly={true}
-        value={children}
+        value={value}
       />
     </div>
   );

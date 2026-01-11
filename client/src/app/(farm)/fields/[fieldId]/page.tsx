@@ -40,7 +40,7 @@ export default async function FieldPage({
             <TooltipTrigger>
               <Plus />
             </TooltipTrigger>
-            <TooltipContent>Δημιουργία εργασίας</TooltipContent>
+            <TooltipContent>Δημιουργία σεζόν</TooltipContent>
           </Tooltip>
         </Link>
         <ShowFieldGroup groupName="Λεπτομέρειες">

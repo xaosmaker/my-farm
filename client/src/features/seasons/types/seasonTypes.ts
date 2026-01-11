@@ -10,7 +10,9 @@ export interface Season {
   createdAt: DateSTR;
   updatedAt: DateSTR;
   landUnit: string;
-  fieldID: number;
+  fieldId: number;
   crop: number;
   cropName: string;
+  fieldName: string;
+  fieldAreaInMeters: number;
 }

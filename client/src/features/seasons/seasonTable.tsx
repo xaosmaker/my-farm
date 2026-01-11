@@ -10,7 +10,13 @@ export const seasonsTable: ColumnDef<Season>[] = [
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => {
-      return <Link href={`/fields/${row.original.id}`}>{row.original.id}</Link>;
+      return (
+        <Link
+          href={`/fields/${row.original.fieldId}/seasons/${row.original.id}`}
+        >
+          {row.original.id}
+        </Link>
+      );
     },
   },
   {
@@ -19,7 +25,9 @@ export const seasonsTable: ColumnDef<Season>[] = [
 
     cell: ({ row }) => {
       return (
-        <Link href={`/seasons/${row.original.id}`}>{row.original.name}</Link>
+        <Link href={`/seasons/${row.original.fieldId}/${row.original.id}`}>
+          {row.original.name}
+        </Link>
       );
     },
   },

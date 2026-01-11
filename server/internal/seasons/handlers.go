@@ -10,6 +10,48 @@ import (
 	"github.com/xaosmaker/server/internal/utils"
 )
 
+func (q seasonsQueries) getSeasonDetails(w http.ResponseWriter, r *http.Request) {
+	fieldId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+		FieldID: fieldId,
+		UserID:  user.ID,
+	})
+	if err != nil {
+		httpx.GeneralError(400, "field dont exist")(w, r)
+		return
+	}
+
+	season, err := q.DB.GetSeasonById(r.Context(), db.GetSeasonByIdParams{
+		FieldID: fieldId,
+		ID:      seasonId,
+	})
+
+	if err != nil {
+		httpx.GeneralError(404, "Resourse Not Found")(w, r)
+		return
+	}
+	data, _ := json.Marshal(toSeasonDetailResponse(season, user.LandUnit))
+	w.WriteHeader(200)
+	w.Write(data)
+}
+
 func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
 	type seasonRequest struct {
 		Name         *string `json:"name" validate:"required,alphanumspace"`

@@ -20,6 +20,7 @@ func SeasonsRouter(con *pgxpool.Pool) *chi.Mux {
 	}
 	r := chi.NewRouter()
 	r.Get("/{fieldId}", q.getAllSeasons)
+	r.Get("/{fieldId}/{seasonId}", q.getSeasonDetails)
 	r.Mount("/", q.protectedSeasonRouter())
 
 	return r

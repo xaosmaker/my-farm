@@ -71,31 +71,94 @@ func (q *Queries) GetRemainingAreaOfFieldForSeason(ctx context.Context, id int64
 	return field_remaining_area, err
 }
 
-const getSeasonsByFieldId = `-- name: GetSeasonsByFieldId :many
+const getSeasonById = `-- name: GetSeasonById :one
 SELECT 
 s.id,s.field_id,s.name,s.start_season,s.finish_season,s.crop,s.boundary,
-  s.area_in_meters,s.created_at,s.updated_at,s.deleted_at,
+  s.area_in_meters,s.created_at,s.updated_at,s.deleted_at,f.name as field_name,f.area_in_meters as field_area_in_meters,
   supplies.name as crop_name
 FROM seasons s
 JOIN supplies
 ON supplies.id = crop
+JOIN fields f
+ON f.id = s.field_id
+WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
+AND s.field_id = $1 AND s.id = $2
+`
+
+type GetSeasonByIdParams struct {
+	FieldID int64
+	ID      int64
+}
+
+type GetSeasonByIdRow struct {
+	ID                int64
+	FieldID           int64
+	Name              *string
+	StartSeason       time.Time
+	FinishSeason      pgtype.Timestamptz
+	Crop              int64
+	Boundary          *json.RawMessage
+	AreaInMeters      float64
+	CreatedAt         pgtype.Timestamptz
+	UpdatedAt         pgtype.Timestamptz
+	DeletedAt         pgtype.Timestamptz
+	FieldName         string
+	FieldAreaInMeters float64
+	CropName          string
+}
+
+func (q *Queries) GetSeasonById(ctx context.Context, arg GetSeasonByIdParams) (GetSeasonByIdRow, error) {
+	row := q.db.QueryRow(ctx, getSeasonById, arg.FieldID, arg.ID)
+	var i GetSeasonByIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.FieldID,
+		&i.Name,
+		&i.StartSeason,
+		&i.FinishSeason,
+		&i.Crop,
+		&i.Boundary,
+		&i.AreaInMeters,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.FieldName,
+		&i.FieldAreaInMeters,
+		&i.CropName,
+	)
+	return i, err
+}
+
+const getSeasonsByFieldId = `-- name: GetSeasonsByFieldId :many
+SELECT 
+s.id,s.field_id,s.name,s.start_season,s.finish_season,s.crop,s.boundary,
+  s.area_in_meters,s.created_at,s.updated_at,s.deleted_at,f.name as field_name,f.area_in_meters as field_area_in_meters,
+  supplies.name as crop_name
+FROM seasons s
+JOIN supplies
+ON supplies.id = crop
+JOIN fields f
+ON f.id = s.field_id
 WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
 AND s.field_id = $1
+ORDER BY finish_season IS NULL DESC, updated_at DESC
 `
 
 type GetSeasonsByFieldIdRow struct {
-	ID           int64
-	FieldID      int64
-	Name         *string
-	StartSeason  time.Time
-	FinishSeason pgtype.Timestamptz
-	Crop         int64
-	Boundary     *json.RawMessage
-	AreaInMeters float64
-	CreatedAt    pgtype.Timestamptz
-	UpdatedAt    pgtype.Timestamptz
-	DeletedAt    pgtype.Timestamptz
-	CropName     string
+	ID                int64
+	FieldID           int64
+	Name              *string
+	StartSeason       time.Time
+	FinishSeason      pgtype.Timestamptz
+	Crop              int64
+	Boundary          *json.RawMessage
+	AreaInMeters      float64
+	CreatedAt         pgtype.Timestamptz
+	UpdatedAt         pgtype.Timestamptz
+	DeletedAt         pgtype.Timestamptz
+	FieldName         string
+	FieldAreaInMeters float64
+	CropName          string
 }
 
 func (q *Queries) GetSeasonsByFieldId(ctx context.Context, fieldID int64) ([]GetSeasonsByFieldIdRow, error) {
@@ -119,6 +182,8 @@ func (q *Queries) GetSeasonsByFieldId(ctx context.Context, fieldID int64) ([]Get
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
+			&i.FieldName,
+			&i.FieldAreaInMeters,
 			&i.CropName,
 		); err != nil {
 			return nil, err
