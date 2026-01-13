@@ -28,7 +28,7 @@ export default async function SeasonPage({
   }
   return (
     <>
-      <ShowFieldPage title={season.fieldName}>
+      <ShowFieldPage title={`Σεζόν ${season.fieldName}`}>
         <Link
           href={`/fields/${fieldId}/seasons/${season.id}/jobs/create`}
           className="absolute -top-10 right-0 text-green-500"

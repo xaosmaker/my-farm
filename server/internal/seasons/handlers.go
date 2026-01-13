@@ -11,12 +11,6 @@ import (
 )
 
 func (q seasonsQueries) getSeasonDetails(w http.ResponseWriter, r *http.Request) {
-	fieldId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
-	}
-
 	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
 		httpErr(w, r)
@@ -29,20 +23,17 @@ func (q seasonsQueries) getSeasonDetails(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		FieldID: fieldId,
-		UserID:  user.ID,
-	})
+	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
+
 	if err != nil {
-		httpx.GeneralError(400, "field dont exist")(w, r)
+		httpx.GeneralError(404, "Resourse Not Found")(w, r)
 		return
 	}
 
-	season, err := q.DB.GetSeasonById(r.Context(), db.GetSeasonByIdParams{
-		FieldID: fieldId,
-		ID:      seasonId,
+	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+		FieldID: season.FieldID,
+		UserID:  user.ID,
 	})
-
 	if err != nil {
 		httpx.GeneralError(404, "Resourse Not Found")(w, r)
 		return

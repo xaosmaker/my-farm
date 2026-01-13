@@ -82,13 +82,8 @@ ON supplies.id = crop
 JOIN fields f
 ON f.id = s.field_id
 WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
-AND s.field_id = $1 AND s.id = $2
+AND s.id = $1
 `
-
-type GetSeasonByIdParams struct {
-	FieldID int64
-	ID      int64
-}
 
 type GetSeasonByIdRow struct {
 	ID                int64
@@ -107,8 +102,8 @@ type GetSeasonByIdRow struct {
 	CropName          string
 }
 
-func (q *Queries) GetSeasonById(ctx context.Context, arg GetSeasonByIdParams) (GetSeasonByIdRow, error) {
-	row := q.db.QueryRow(ctx, getSeasonById, arg.FieldID, arg.ID)
+func (q *Queries) GetSeasonById(ctx context.Context, id int64) (GetSeasonByIdRow, error) {
+	row := q.db.QueryRow(ctx, getSeasonById, id)
 	var i GetSeasonByIdRow
 	err := row.Scan(
 		&i.ID,

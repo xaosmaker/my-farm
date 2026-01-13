@@ -1,3 +1,5 @@
+import ShowH1 from "./ShowH1";
+
 export default function ShowFieldPage({
   title,
   children,
@@ -7,7 +9,7 @@ export default function ShowFieldPage({
 }) {
   return (
     <>
-      <h1 className="text-center text-2xl">{title}</h1>
+      <ShowH1>{title}</ShowH1>
       <div className="relative my-10 grid grid-cols-2 gap-2">{children}</div>
     </>
   );

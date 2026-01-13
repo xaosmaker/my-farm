@@ -65,10 +65,7 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = q.DB.GetSeasonById(r.Context(), db.GetSeasonByIdParams{
-		FieldID: requestData.FieldID,
-		ID:      requestData.SeasonID,
-	})
+	_, err = q.DB.GetSeasonById(r.Context(), requestData.SeasonID)
 	if err != nil {
 		httpx.GeneralError(400, err.Error())(w, r)
 		return
@@ -110,10 +107,15 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
-	//WARN:  need better validation if season is in the current user
 	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
 		httpErr(w, r)
+		return
+	}
+
+	if _, err := q.DB.GetSeasonById(r.Context(), seasonId); err != nil {
+		httpx.GeneralError(404, "Resource not found")
+
 		return
 	}
 
@@ -138,6 +140,7 @@ func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
 
 }
 func (q jobsQueries) getJobDetails(w http.ResponseWriter, r *http.Request) {
+	//WARN: this method is unused for now
 
 	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {

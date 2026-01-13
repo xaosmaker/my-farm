@@ -31,7 +31,7 @@ export default async function FieldPage({
 
   return (
     <>
-      <ShowFieldPage title={field.name}>
+      <ShowFieldPage title={`Χωράφι ${field.name}`}>
         <Link
           href={`/fields/${fieldId}/seasons/create`}
           className="absolute -top-10 right-0 text-green-500"

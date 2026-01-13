@@ -39,5 +39,5 @@ ON supplies.id = crop
 JOIN fields f
 ON f.id = s.field_id
 WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
-AND s.field_id = $1 AND s.id = $2;
+AND s.id = $1;
 
