@@ -3,6 +3,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Job } from "./types";
 import { engToGreek } from "@/lib/translateMap";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 export const jobsTable: ColumnDef<Job>[] = [
   {
@@ -37,7 +43,30 @@ export const jobsTable: ColumnDef<Job>[] = [
   {
     id: "totalSupplies",
     header: "Χρησιμοποιήθηκαν εφόδια",
-    cell: ({ row: { original } }) => original.jobsSupplies.length || "",
+    cell: ({ row: { original } }) => {
+      return (
+        <Accordion type="single" collapsible>
+          <AccordionItem value={original.id.toString()}>
+            <AccordionTrigger className="text-center">
+              {original.jobsSupplies.length || ""}
+            </AccordionTrigger>
+            <AccordionContent>
+              {original.jobsSupplies.map((item) => (
+                <div key={item.supplyName + item.id.toString()}>
+                  <span>Ποσότητα: </span>
+                  <span>{item.quantity} </span>
+                  <span>
+                    {engToGreek.get(item.supplyMeasurementUnit) ||
+                      item.supplyMeasurementUnit}
+                  </span>
+                  <span> {item.supplyName}</span>
+                </div>
+              ))}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      );
+    },
   },
   {
     id: "jobActions",
