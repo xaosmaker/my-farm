@@ -4,6 +4,7 @@ job_type,
 description,
 job_date,
 season_id,
+area_in_meters,
 created_at,
 updated_at
 )
@@ -12,6 +13,7 @@ VALUES(
   $2,
   $3,
   $4,
+  $5,
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP
   ) returning *;
@@ -35,7 +37,7 @@ VALUES(
 
 -- name: GetAllJobs :many
 
-select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.area_in_meters,j.boundary,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -63,7 +65,7 @@ GROUP BY j.id;
 
 
 -- name: GetJobDetails :one
-select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.area_in_meters,j.boundary,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -87,5 +89,4 @@ LEFT JOIN supplies AS s
 ON js.supply_id = s.id
 WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND job_id=$1 AND  j.season_id=$2
 GROUP BY j.id;
-
 

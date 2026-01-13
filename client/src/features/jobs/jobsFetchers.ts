@@ -2,9 +2,9 @@ import { baseRequest } from "@/lib/baseRequest";
 import { SERVER_URL } from "@/lib/serverUrl";
 import type { Job } from "@/features/jobs/types";
 
-export async function GetAllJobs(fieldId: string): Promise<Job[]> {
+export async function GetAllJobs(seasonId: string): Promise<Job[]> {
   const res = await baseRequest({
-    url: `${SERVER_URL}/api/jobs/${fieldId}`,
+    url: `${SERVER_URL}/api/jobs/${seasonId}`,
     method: "GET",
     body: undefined,
   });

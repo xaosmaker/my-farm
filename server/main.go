@@ -21,6 +21,8 @@ import (
 )
 
 func main() {
+	//WARN: i change the validation of the field like i can change them
+	// with using the season and then check if the season is in the current field
 	config.CheckEnvs()
 
 	ctx := context.Background()

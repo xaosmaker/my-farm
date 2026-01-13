@@ -20,7 +20,7 @@ func JobsRouter(con *pgxpool.Pool) *chi.Mux {
 	}
 	r := chi.NewRouter()
 
-	r.Get("/{fieldId}", q.getAllJobs)
+	r.Get("/{seasonId}", q.getAllJobs)
 	r.Get("/{fieldId}/{jobId}", q.getJobDetails)
 	r.Mount("/", jobProtectedRouter(q))
 

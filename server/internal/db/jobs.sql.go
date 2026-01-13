@@ -18,6 +18,7 @@ job_type,
 description,
 job_date,
 season_id,
+area_in_meters,
 created_at,
 updated_at
 )
@@ -26,16 +27,18 @@ VALUES(
   $2,
   $3,
   $4,
+  $5,
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP
-  ) returning id, job_type, description, job_date, season_id, created_at, updated_at, deleted_at
+  ) returning id, job_type, description, job_date, area_in_meters, boundary, season_id, created_at, updated_at, deleted_at
 `
 
 type CreateJobParams struct {
-	JobType     string
-	Description *string
-	JobDate     pgtype.Timestamptz
-	SeasonID    int64
+	JobType      string
+	Description  *string
+	JobDate      pgtype.Timestamptz
+	SeasonID     int64
+	AreaInMeters float64
 }
 
 func (q *Queries) CreateJob(ctx context.Context, arg CreateJobParams) (Job, error) {
@@ -44,6 +47,7 @@ func (q *Queries) CreateJob(ctx context.Context, arg CreateJobParams) (Job, erro
 		arg.Description,
 		arg.JobDate,
 		arg.SeasonID,
+		arg.AreaInMeters,
 	)
 	var i Job
 	err := row.Scan(
@@ -51,6 +55,8 @@ func (q *Queries) CreateJob(ctx context.Context, arg CreateJobParams) (Job, erro
 		&i.JobType,
 		&i.Description,
 		&i.JobDate,
+		&i.AreaInMeters,
+		&i.Boundary,
 		&i.SeasonID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -99,7 +105,7 @@ func (q *Queries) CreateJobSupplies(ctx context.Context, arg CreateJobSuppliesPa
 
 const getAllJobs = `-- name: GetAllJobs :many
 
-select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.area_in_meters,j.boundary,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -131,6 +137,8 @@ type GetAllJobsRow struct {
 	Description  *string
 	JobDate      pgtype.Timestamptz
 	SeasonID     int64
+	AreaInMeters float64
+	Boundary     *json.RawMessage
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
 	JobsSupplies *json.RawMessage
@@ -151,6 +159,8 @@ func (q *Queries) GetAllJobs(ctx context.Context, seasonID int64) ([]GetAllJobsR
 			&i.Description,
 			&i.JobDate,
 			&i.SeasonID,
+			&i.AreaInMeters,
+			&i.Boundary,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.JobsSupplies,
@@ -166,7 +176,7 @@ func (q *Queries) GetAllJobs(ctx context.Context, seasonID int64) ([]GetAllJobsR
 }
 
 const getJobDetails = `-- name: GetJobDetails :one
-select j.id,j.job_type,j.description,j.job_date,j.season_id,j.created_at,j.updated_at,
+select j.id,j.job_type,j.description,j.job_date,j.season_id,j.area_in_meters,j.boundary,j.created_at,j.updated_at,
   COALESCE(
     json_agg(
       json_build_object(
@@ -203,6 +213,8 @@ type GetJobDetailsRow struct {
 	Description  *string
 	JobDate      pgtype.Timestamptz
 	SeasonID     int64
+	AreaInMeters float64
+	Boundary     *json.RawMessage
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
 	JobsSupplies *json.RawMessage
@@ -217,6 +229,8 @@ func (q *Queries) GetJobDetails(ctx context.Context, arg GetJobDetailsParams) (G
 		&i.Description,
 		&i.JobDate,
 		&i.SeasonID,
+		&i.AreaInMeters,
+		&i.Boundary,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.JobsSupplies,

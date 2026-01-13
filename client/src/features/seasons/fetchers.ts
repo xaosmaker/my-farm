@@ -1,6 +1,6 @@
 import { baseRequest } from "@/lib/baseRequest";
 import { SERVER_URL } from "@/lib/serverUrl";
-import { Season } from "./types/seasonTypes";
+import { Season } from "@/types/sharedTypes";
 
 export async function getAllSeasons(fieldId: string) {
   const res = await baseRequest({
@@ -10,7 +10,10 @@ export async function getAllSeasons(fieldId: string) {
   });
   const data: Season[] = await res.json();
   data.map((item) => {
+    console.log(item.startSeason, new Date(item.startSeason).toString(), 123);
     item.startSeason = new Date(item.startSeason).toLocaleDateString();
+    console.log(item.startSeason);
+
     if (item.finishSeason) {
       item.finishSeason = new Date(item.finishSeason).toLocaleDateString();
     }

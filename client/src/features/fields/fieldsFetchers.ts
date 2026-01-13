@@ -1,6 +1,6 @@
 import { baseRequest } from "@/lib/baseRequest";
 import { SERVER_URL } from "@/lib/serverUrl";
-import { Field } from "@/features/fields/types";
+import { Field } from "@/types/sharedTypes";
 
 export async function getAllFields() {
   const res = await baseRequest({

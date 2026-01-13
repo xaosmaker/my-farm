@@ -2,15 +2,17 @@
 
 import { baseRequest } from "@/lib/baseRequest";
 import { JobFormData } from "../jobValidators";
-import { JOB_TYPES_WITH_SUPPLIES, JobTypesWithSupplies } from "../types";
 import { SERVER_URL } from "@/lib/serverUrl";
 import { redirect } from "next/navigation";
+import { toResponseError } from "@/lib/responseError";
 
 interface JobRequest {
   fieldId: number;
-  jobDate: string;
-  description: string;
   jobType: string;
+  description: string;
+  jobDate: string;
+  areaInMeters: number;
+  seasonId: number;
   jobSupplies: JobSupplies[];
 }
 
@@ -19,26 +21,21 @@ type JobSupplies = {
   supplyId: number;
 };
 
-export async function createJobAction(
-  _prevState: undefined,
-  data: JobFormData,
-) {
+export async function createJobAction(_prevState: unknown, data: JobFormData) {
   const sendData: JobRequest = {
     fieldId: data.fieldId,
+    seasonId: data.seasonId,
     jobDate: data.jobDate.toISOString(),
+    areaInMeters: parseFloat(data.areaInMeters),
     description: data.description,
     jobType: data.jobType as string,
     jobSupplies: [],
   };
-  if (JOB_TYPES_WITH_SUPPLIES.includes(data.jobType as JobTypesWithSupplies)) {
-    for (let i = 0; i < data.jobSupplies.length; i++) {
-      sendData.jobSupplies.push({
-        quantity: data.jobSupplies[i].quantity,
-        supplyId: parseInt(data.jobSupplies[i].supplyId),
-      });
-    }
-  } else {
-    sendData.jobSupplies = [];
+  for (let i = 0; i < data.jobSupplies.length; i++) {
+    sendData.jobSupplies.push({
+      quantity: data.jobSupplies[i].quantity,
+      supplyId: parseInt(data.jobSupplies[i].supplyId),
+    });
   }
   const res = await baseRequest({
     url: `${SERVER_URL}/api/jobs`,
@@ -47,7 +44,8 @@ export async function createJobAction(
   });
 
   if (res.ok) {
-    redirect(`/fields/${sendData.fieldId}`);
+    redirect(`/fields/${sendData.fieldId}/seasons/${sendData.seasonId}`);
   }
-  return undefined;
+  const resdata = await res.json();
+  return toResponseError(resdata);
 }

@@ -19,20 +19,22 @@ export default async function SupplyPage({
   return (
     <ShowFieldPage title={supply.name}>
       <ShowFieldGroup groupName="Name">
-        <ShowFieldsData fieldName="name">{supply.name}</ShowFieldsData>
+        <ShowFieldsData fieldName="name" value={supply.name} />
         {supply.nickname && (
-          <ShowFieldsData fieldName="Nickname">
-            {supply.nickname}
-          </ShowFieldsData>
+          <ShowFieldsData fieldName="Nickname" value={supply.nickname} />
         )}
       </ShowFieldGroup>
       <ShowFieldGroup groupName="details">
-        <ShowFieldsData fieldName="unit">
-          {engToGreek.get(supply.measurementUnit) || supply.measurementUnit}
-        </ShowFieldsData>
-        <ShowFieldsData fieldName="Type">
-          {engToGreek.get(supply.supplyType) || supply.supplyType}
-        </ShowFieldsData>
+        <ShowFieldsData
+          fieldName="unit"
+          value={
+            engToGreek.get(supply.measurementUnit) || supply.measurementUnit
+          }
+        />
+        <ShowFieldsData
+          fieldName="Type"
+          value={engToGreek.get(supply.supplyType) || supply.supplyType}
+        />
       </ShowFieldGroup>
     </ShowFieldPage>
   );

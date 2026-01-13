@@ -35,14 +35,16 @@ type Field struct {
 }
 
 type Job struct {
-	ID          int64
-	JobType     string
-	Description *string
-	JobDate     pgtype.Timestamptz
-	SeasonID    int64
-	CreatedAt   pgtype.Timestamptz
-	UpdatedAt   pgtype.Timestamptz
-	DeletedAt   pgtype.Timestamptz
+	ID           int64
+	JobType      string
+	Description  *string
+	JobDate      pgtype.Timestamptz
+	AreaInMeters float64
+	Boundary     *json.RawMessage
+	SeasonID     int64
+	CreatedAt    pgtype.Timestamptz
+	UpdatedAt    pgtype.Timestamptz
+	DeletedAt    pgtype.Timestamptz
 }
 
 type JobsObservation struct {

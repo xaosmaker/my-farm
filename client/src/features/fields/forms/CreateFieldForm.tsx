@@ -20,7 +20,7 @@ import {
 } from "@/features/fields/actions/actions";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
-import { Field as FieldData } from "../types";
+import { Field as FieldData } from "@/types/sharedTypes";
 import { UserSettings } from "@/types/sharedTypes";
 import { engToGreek } from "@/lib/translateMap";
 import ServerErrors from "@/components/ServerErrors";

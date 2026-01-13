@@ -13,6 +13,8 @@ type jobResponse struct {
 	Description  *string            `json:"description"`
 	SeasonID     int64              `json:"seasonId"`
 	JobDate      pgtype.Timestamptz `json:"jobDate"`
+	AreaInMeters float64            `json:"areaInMeters"`
+	Boundary     *json.RawMessage   `json:"boundary"`
 	CreatedAt    pgtype.Timestamptz `json:"createdAt"`
 	UpdatedAt    pgtype.Timestamptz `json:"updatedAt"`
 	JobsSupplies *json.RawMessage   `json:"jobsSupplies"`
@@ -26,6 +28,8 @@ func toJobResponse(f db.GetAllJobsRow) jobResponse {
 		Description:  f.Description,
 		SeasonID:     f.SeasonID,
 		JobDate:      f.JobDate,
+		AreaInMeters: f.AreaInMeters,
+		Boundary:     f.Boundary,
 		CreatedAt:    f.CreatedAt,
 		UpdatedAt:    f.UpdatedAt,
 		JobsSupplies: f.JobsSupplies,
@@ -40,6 +44,8 @@ func toJobDetailsResponse(f db.GetJobDetailsRow) jobResponse {
 		Description:  f.Description,
 		SeasonID:     f.SeasonID,
 		JobDate:      f.JobDate,
+		AreaInMeters: f.AreaInMeters,
+		Boundary:     f.Boundary,
 		CreatedAt:    f.CreatedAt,
 		UpdatedAt:    f.UpdatedAt,
 		JobsSupplies: f.JobsSupplies,

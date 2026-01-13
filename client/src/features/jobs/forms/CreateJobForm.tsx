@@ -2,7 +2,7 @@
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { JobFormData, jobValidator } from "../jobValidators";
-import { Supply } from "@/types/sharedTypes";
+import { JOB_TYPES, Season, Supply } from "@/types/sharedTypes";
 import BaseForm from "@/components/BaseForm";
 import {
   Field,
@@ -10,7 +10,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { JOB_TYPES } from "../types";
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -20,12 +19,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { engToGreek } from "@/lib/translateMap";
 import ControlledSelect from "@/components/ControlledSelect";
+import ControlledInput from "@/components/ControlledInput";
+import ServerErrors from "@/components/ServerErrors";
 
 export default function CreateJobForm({
   fieldId,
+  season,
   supplies,
 }: {
   fieldId: number;
+  season: Season;
   supplies: Supply[];
 }) {
   const {
@@ -33,13 +36,14 @@ export default function CreateJobForm({
     reset,
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<JobFormData>({
     resolver: zodResolver(jobValidator),
     mode: "onChange",
     defaultValues: {
       fieldId: fieldId,
+      areaInMeters: season.areaInMeters.toString(),
+      seasonId: season.id,
       jobDate: undefined,
       description: "",
       jobType: "spraying",
@@ -47,12 +51,11 @@ export default function CreateJobForm({
     },
   });
 
-  console.log(watch("jobDate").toISOString());
   const { fields, append, remove } = useFieldArray({
     control,
     name: "jobSupplies",
   });
-  const [_, action] = useActionState(createJobAction, undefined);
+  const [state, action] = useActionState(createJobAction, undefined);
   const [isPending, startTransition] = useTransition();
   const jobSupplies = useWatch({ control, name: "jobSupplies" });
 
@@ -115,6 +118,11 @@ export default function CreateJobForm({
           {errors.jobSupplies?.message && (
             <FieldError errors={[{ message: errors.jobSupplies.message }]} />
           )}
+          <ControlledInput
+            control={control}
+            name="areaInMeters"
+            label={engToGreek.get(season.landUnit) || season.landUnit}
+          />
 
           <Controller
             control={control}
@@ -203,6 +211,7 @@ export default function CreateJobForm({
             Προσθήκη εφοδίων
           </Button>
         </FieldGroup>
+        {state && <ServerErrors errors={state} />}
       </form>
     </BaseForm>
   );

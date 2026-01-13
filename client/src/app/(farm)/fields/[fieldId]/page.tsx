@@ -44,17 +44,22 @@ export default async function FieldPage({
           </Tooltip>
         </Link>
         <ShowFieldGroup groupName="Λεπτομέρειες">
-          <ShowFieldsData fieldName="Τ.Μ τετραγωνικά μέτρα">
-            {field.areaInMeters.toString()}
-          </ShowFieldsData>
-          <ShowFieldsData fieldName="Ιδιόκτητο">
-            {field.isOwned ? "ναι" : "όχι"}
-          </ShowFieldsData>
+          <ShowFieldsData
+            fieldName="Τ.Μ τετραγωνικά μέτρα"
+            value={field.areaInMeters.toString()}
+          />
+
+          <ShowFieldsData
+            fieldName="Ιδιόκτητο"
+            value={field.isOwned ? "ναι" : "όχι"}
+          />
         </ShowFieldGroup>
         <ShowFieldGroup groupName="Τοποθεσία">
-          <ShowFieldsData fieldName="Τοποθεσία">
-            {field.fieldLocation.toString()}
-          </ShowFieldsData>
+          <ShowFieldsData
+            fieldName="Τοποθεσία"
+            value={field.fieldLocation.toString()}
+          />
+
           <Link href={"#"}>
             <MapPin />
           </Link>

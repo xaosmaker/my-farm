@@ -18,11 +18,13 @@ type jobSupplyParams struct {
 }
 
 type requestParams struct {
-	JobType     string             `json:"jobType" validate:"required,jobtype"`
-	Description *string            `json:"description"`
-	JobDate     pgtype.Timestamptz `json:"jobDate" validate:"required"`
-	FieldID     int64              `json:"fieldId" validate:"required"`
-	JobSupplies []jobSupplyParams  `json:"jobSupplies" validate:"required"`
+	JobType      string             `json:"jobType" validate:"required,jobtype"`
+	Description  *string            `json:"description"`
+	JobDate      pgtype.Timestamptz `json:"jobDate" validate:"required"`
+	SeasonID     int64              `json:"seasonId" validate:"required"`
+	FieldID      int64              `json:"fieldId" validate:"required"`
+	AreaInMeters float64            `json:"areaInMeters" validate:"required"`
+	JobSupplies  []jobSupplyParams  `json:"jobSupplies" validate:"required"`
 }
 
 func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +42,7 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 	}
 	if slices.Contains(httpx.JobTypesWithSupplies(), requestData.JobType) {
 		if len(requestData.JobSupplies) == 0 {
-			httpx.GeneralError(400, "JobSupplies should be [{quantity greater than 0 , SupplyId greater than 0}]")(w, r)
+			httpx.GeneralError(400, "JobSupplies should be [{quantity: greater than 0 , supplyId: the id of a supply object}]")(w, r)
 			return
 
 		}
@@ -54,10 +56,18 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 		}
 		hasSupplies = true
 	}
-
 	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		UserID:  user.ID,
 		FieldID: requestData.FieldID,
+		UserID:  user.ID,
+	})
+	if err != nil {
+		httpx.GeneralError(400, err.Error())(w, r)
+		return
+	}
+
+	_, err = q.DB.GetSeasonById(r.Context(), db.GetSeasonByIdParams{
+		FieldID: requestData.FieldID,
+		ID:      requestData.SeasonID,
 	})
 	if err != nil {
 		httpx.GeneralError(400, err.Error())(w, r)
@@ -65,10 +75,11 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 	}
 
 	job, err := q.DB.CreateJob(r.Context(), db.CreateJobParams{
-		JobType:     requestData.JobType,
-		Description: requestData.Description,
-		JobDate:     requestData.JobDate,
-		SeasonID:    1,
+		JobType:      requestData.JobType,
+		Description:  requestData.Description,
+		JobDate:      requestData.JobDate,
+		SeasonID:     requestData.SeasonID,
+		AreaInMeters: requestData.AreaInMeters * float64(httpx.UnitConverter(user.LandUnit)),
 	})
 	if err != nil {
 		httpx.GeneralError(400, err.Error())(w, r)
@@ -99,28 +110,14 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	//WARN:  need better validation if season is in the current user
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	fieldId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
-	}
-
-	field, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		FieldID: fieldId,
-		UserID:  user.ID,
-	})
-
-	if err != nil {
-		httpx.GeneralError(400, "This Field Doesnt Exist")
-	}
-
-	jobs, err := q.DB.GetAllJobs(r.Context(), field.ID)
+	jobs, err := q.DB.GetAllJobs(r.Context(), seasonId)
 	if err != nil {
 		httpx.GeneralError(400, err.Error())(w, r)
 		return

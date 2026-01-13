@@ -1,9 +1,6 @@
 import { z } from "zod/v4";
-import {
-  JOB_TYPES,
-  JOB_TYPES_WITH_SUPPLIES,
-  JobTypesWithSupplies,
-} from "./types";
+import { JobTypesWithSupplies } from "./types";
+import { JOB_TYPES, JOB_TYPES_WITH_SUPPLIES } from "@/types/sharedTypes";
 
 export const JobTypesEnum = z.enum(JOB_TYPES);
 
@@ -16,10 +13,20 @@ export const jobSuppliesValidator = z.object({
 
 export const jobValidator = z
   .object({
+    seasonId: z.number().positive(),
     fieldId: z.number().positive(),
     jobDate: z.date(),
     description: z.string(),
     jobType: JobTypesEnum.nullish(),
+
+    areaInMeters: z
+      .string()
+      .refine((value) => value.match(/^\d+(\.\d+)?$/), {
+        error: "Required and use . for decimal",
+      })
+      .refine((value) => parseFloat(value) > 0, {
+        error: "Should be greater than 0",
+      }),
     jobSupplies: z.array(jobSuppliesValidator),
   })
   .superRefine((data, ctx) => {

@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { engToGreek } from "@/lib/translateMap";
-import { Season } from "./types/seasonTypes";
+import { Season } from "@/types/sharedTypes";
 
 export const seasonsTable: ColumnDef<Season>[] = [
   {
@@ -25,7 +25,9 @@ export const seasonsTable: ColumnDef<Season>[] = [
 
     cell: ({ row }) => {
       return (
-        <Link href={`/seasons/${row.original.fieldId}/${row.original.id}`}>
+        <Link
+          href={`/fields/${row.original.fieldId}/seasons/${row.original.id}`}
+        >
           {row.original.name}
         </Link>
       );
