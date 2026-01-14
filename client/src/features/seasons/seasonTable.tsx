@@ -7,6 +7,7 @@ import { Season } from "@/types/sharedTypes";
 import ActionMenu from "@/components/ActionMenu";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteSeasonAction } from "./actions/seasonActions";
+import EditItem from "@/components/EditItem";
 
 export const seasonsTable: ColumnDef<Season>[] = [
   {
@@ -58,7 +59,7 @@ export const seasonsTable: ColumnDef<Season>[] = [
     header: "",
     cell: ({
       row: {
-        original: { name, id },
+        original: { name, id, fieldId },
       },
     }) => {
       return (
@@ -68,7 +69,7 @@ export const seasonsTable: ColumnDef<Season>[] = [
             name={name}
             formAction={deleteSeasonAction}
           />
-          {/* <EditItem url={`/supplies/${id}/update`} /> */}
+          <EditItem url={`/fields/${fieldId}/seasons/${id}/update`} />
         </ActionMenu>
       );
     },

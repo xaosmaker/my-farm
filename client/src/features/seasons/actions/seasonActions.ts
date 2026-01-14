@@ -5,6 +5,39 @@ import { toResponseError } from "@/lib/responseError";
 import { SERVER_URL } from "@/lib/serverUrl";
 import { redirect } from "next/navigation";
 
+export async function updateSeasonAction(
+  _prevState: unknown,
+  formData: unknown,
+) {
+  if (typeof formData !== "object") {
+    return [{ message: "unknow type of data" }];
+  }
+  if (formData && "areaInMeters" in formData) {
+    formData.areaInMeters = parseFloat(formData.areaInMeters as string);
+  }
+  if (formData && "crop" in formData) {
+    formData.crop = parseInt(formData.crop as string);
+  }
+  if (formData && !("id" in formData)) {
+    return [{ message: "field id Doesnt exist" }];
+  }
+  if (formData && Object.keys(formData).length <= 1) {
+    return;
+  }
+
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/seasons/${formData?.id}`,
+    method: "PATCH",
+    body: JSON.stringify(formData),
+  });
+
+  if (res.ok) {
+    redirect(`/fields`);
+  }
+  const data = await res.json();
+  return toResponseError(data);
+}
+
 export async function createSeasonAction(
   _prevState: unknown,
   formData: unknown,

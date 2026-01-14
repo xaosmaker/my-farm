@@ -2,7 +2,7 @@
 
 import BaseForm from "@/components/BaseForm";
 import { engToGreek } from "@/lib/translateMap";
-import { Field as FieldData, Supply } from "@/types/sharedTypes";
+import { Field as FieldData, Season, Supply } from "@/types/sharedTypes";
 import { Controller, useForm } from "react-hook-form";
 import { SeasonRequest, seasonValidators } from "../validators";
 import ControlledInput from "@/components/ControlledInput";
@@ -13,34 +13,57 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { useActionState, useTransition } from "react";
 import ServerErrors from "@/components/ServerErrors";
-import { createSeasonAction } from "../actions/seasonActions";
+import {
+  createSeasonAction,
+  updateSeasonAction,
+} from "../actions/seasonActions";
+import dynamic from "next/dynamic";
 
-export default function CreateSeasonForm({
+function CreateSeasonForm({
   field,
   supplies,
+  season,
 }: {
   field: FieldData;
   supplies: Supply[];
+  season?: Season;
 }) {
-  const { control, reset, handleSubmit } = useForm<SeasonRequest>({
+  const { control, reset, handleSubmit, formState } = useForm<SeasonRequest>({
     mode: "onChange",
     resolver: zodResolver(seasonValidators),
     criteriaMode: "all",
     defaultValues: {
-      name: "",
-      areaInMeters: field.areaInMeters.toString(),
-      crop: undefined,
+      name: season?.name || "",
+      areaInMeters:
+        season?.areaInMeters.toString() || field.areaInMeters.toString(),
+      crop: season?.crop.toString() || undefined,
       fieldId: field.id,
-      startSeason: undefined,
-      finishSeason: undefined,
+      startSeason: season ? new Date(season.startSeason) : undefined,
+      finishSeason: season?.finishSeason
+        ? new Date(season.finishSeason)
+        : undefined,
     },
   });
 
-  const [state, action] = useActionState(createSeasonAction, undefined);
+  const [state, action] = useActionState(
+    season ? updateSeasonAction : createSeasonAction,
+    undefined,
+  );
+  const dirty = formState.dirtyFields;
   const [isPending, startTransition] = useTransition();
   function onFormSubmit(data: SeasonRequest) {
+    let sendData: { [key: string]: unknown } = {};
+    if (season) {
+      sendData["id"] = season.id;
+      for (const key in dirty) {
+        const k = key as keyof SeasonRequest;
+        sendData[key] = data[k];
+      }
+    } else {
+      sendData = { ...data };
+    }
     startTransition(() => {
-      action(data);
+      action(sendData);
     });
   }
 
@@ -112,3 +135,4 @@ export default function CreateSeasonForm({
     </BaseForm>
   );
 }
+export default dynamic(() => Promise.resolve(CreateSeasonForm), { ssr: false });

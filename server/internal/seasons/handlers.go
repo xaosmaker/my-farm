@@ -10,6 +10,75 @@ import (
 	"github.com/xaosmaker/server/internal/utils"
 )
 
+func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
+	// TODO: need to think how i set the area in meters correct here
+	// for now this method is unused
+	type seasonRequest struct {
+		Name         *string  `json:"name" validate:"omitnil,alphanumspace"`
+		StartSeason  *string  `json:"startSeason" validate:"omitnil,isTimestamptz"`
+		FinishSeason *string  `json:"finishSeason" validate:"omitnil,isTimestamptz"`
+		Crop         *int64   `json:"crop" validate:"omitnil,number"`
+		AreaInMeters *float64 `json:"areaInMeters" validate:"omitnil,number"`
+	}
+
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	seasonBoby := seasonRequest{}
+	if httpErr := httpx.DecodeAndValidate(r, &seasonBoby); httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
+	if err != nil {
+		httpx.GeneralError(404, "resourse not found")
+	}
+
+	if seasonBoby.AreaInMeters != nil {
+		*seasonBoby.AreaInMeters = *seasonBoby.AreaInMeters * float64(httpx.UnitConverter(user.LandUnit))
+
+	}
+
+	if val, _ := q.DB.GetRemainingAreaOfFieldForSeason(r.Context(), season.FieldID); val < *seasonBoby.AreaInMeters {
+		httpx.GeneralError(400, fmt.Sprintf("No area to cultivate, remaining area: %.2f", val/float64(httpx.UnitConverter(user.LandUnit))))(w, r)
+		return
+	}
+
+	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+		FieldID: season.FieldID,
+		UserID:  user.ID,
+	})
+	if err != nil {
+		httpx.GeneralError(400, "Field doent exist")(w, r)
+		return
+	}
+
+	w.WriteHeader(700)
+
+	// _, err = q.DB.CreateSeason(r.Context(), db.CreateSeasonParams{
+	// 	Name:         seasonBoby.Name,
+	// 	FieldID:      fieldId,
+	// 	Crop:         seasonBoby.Crop,
+	// 	AreaInMeters: seasonBoby.AreaInMeters,
+	// 	StartSeason:  *utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason),
+	// })
+	// if err != nil {
+	// 	httpx.GeneralError(400, err.Error())(w, r)
+	// }
+	// w.WriteHeader(201)
+
+}
+
 func (q seasonsQueries) deleteSeason(w http.ResponseWriter, r *http.Request) {
 	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
