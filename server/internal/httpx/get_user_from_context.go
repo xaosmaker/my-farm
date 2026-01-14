@@ -1,8 +1,9 @@
 package httpx
 
 import (
-	"github.com/xaosmaker/server/internal/db"
 	"net/http"
+
+	"github.com/xaosmaker/server/internal/db"
 )
 
 func GetUserFromContext(r *http.Request) (db.GetUserByIdWithSettingsRow, HttpErrorResponse) {
@@ -15,7 +16,7 @@ func GetUserFromContext(r *http.Request) (db.GetUserByIdWithSettingsRow, HttpErr
 		if !ok {
 			return db.GetUserByIdWithSettingsRow{}, GeneralError(500, "Cant cast type user")
 		}
-		if user.FarmID == nil {
+		if user.FarmID == nil && (r.URL.String() != "/api/farms" && r.Method == "POST") {
 			return user, GeneralError(400, "Create a farm before continue")
 		}
 		return user, nil
