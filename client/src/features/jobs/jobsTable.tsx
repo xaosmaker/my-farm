@@ -53,13 +53,15 @@ export const jobsTable: ColumnDef<Job>[] = [
             <AccordionContent>
               {original.jobsSupplies.map((item) => (
                 <div key={item.supplyName + item.id.toString()}>
-                  <span>Ποσότητα: </span>
-                  <span>{item.quantity} </span>
+                  <span> {item.supplyName}: </span>
+                  <span>{item.quantity / original.areaInMeters} </span>
                   <span>
                     {engToGreek.get(item.supplyMeasurementUnit) ||
                       item.supplyMeasurementUnit}
                   </span>
-                  <span> {item.supplyName}</span>
+                  <span>
+                    /{engToGreek.get(original.landUnit) || original.landUnit}
+                  </span>
                 </div>
               ))}
             </AccordionContent>

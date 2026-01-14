@@ -7,6 +7,7 @@ export interface Job {
   jobDate: Date;
   seasonID: number;
   areaInMeters: number;
+  landUnit: string;
   boundary: Array<[number, number]>;
   createdAt: Date;
   updatedAt: Date;

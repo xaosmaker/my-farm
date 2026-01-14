@@ -112,6 +112,15 @@ func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
 		httpErr(w, r)
 		return
 	}
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || farmId != *user.FarmID {
+		httpx.GeneralError(404, "Resourse not found")(w, r)
+		return
+	}
 
 	if _, err := q.DB.GetSeasonById(r.Context(), seasonId); err != nil {
 		httpx.GeneralError(404, "Resource not found")
@@ -127,7 +136,7 @@ func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
 
 	jJobs := []jobResponse{}
 	for _, job := range jobs {
-		jJobs = append(jJobs, toJobResponse(job))
+		jJobs = append(jJobs, toJobResponse(job, user.LandUnit))
 	}
 
 	data, err := json.Marshal(jJobs)
