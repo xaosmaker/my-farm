@@ -72,7 +72,7 @@ type Season struct {
 	FieldID      int64
 	Name         *string
 	StartSeason  time.Time
-	FinishSeason pgtype.Timestamptz
+	FinishSeason *time.Time
 	Crop         int64
 	Boundary     *json.RawMessage
 	AreaInMeters float64

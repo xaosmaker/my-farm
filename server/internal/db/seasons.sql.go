@@ -115,7 +115,7 @@ type GetSeasonByIdRow struct {
 	FieldID           int64
 	Name              *string
 	StartSeason       time.Time
-	FinishSeason      pgtype.Timestamptz
+	FinishSeason      *time.Time
 	Crop              int64
 	Boundary          *json.RawMessage
 	AreaInMeters      float64
@@ -169,7 +169,7 @@ type GetSeasonsByFieldIdRow struct {
 	FieldID           int64
 	Name              *string
 	StartSeason       time.Time
-	FinishSeason      pgtype.Timestamptz
+	FinishSeason      *time.Time
 	Crop              int64
 	Boundary          *json.RawMessage
 	AreaInMeters      float64
@@ -214,4 +214,36 @@ func (q *Queries) GetSeasonsByFieldId(ctx context.Context, fieldID int64) ([]Get
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateSeason = `-- name: UpdateSeason :exec
+UPDATE seasons set
+name = COALESCE($2,name),
+crop = COALESCE($3,crop),
+area_in_meters = COALESCE($4,area_in_meters),
+start_season = COALESCE($5,start_season),
+finish_season = COALESCE($6,finish_season),
+updated_at = CURRENT_TIMESTAMP
+WHERE id = $1
+`
+
+type UpdateSeasonParams struct {
+	ID           int64
+	Name         *string
+	Crop         *int64
+	AreaInMeters *float64
+	StartSeason  *time.Time
+	FinishSeason *time.Time
+}
+
+func (q *Queries) UpdateSeason(ctx context.Context, arg UpdateSeasonParams) error {
+	_, err := q.db.Exec(ctx, updateSeason,
+		arg.ID,
+		arg.Name,
+		arg.Crop,
+		arg.AreaInMeters,
+		arg.StartSeason,
+		arg.FinishSeason,
+	)
+	return err
 }

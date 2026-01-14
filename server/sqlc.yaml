@@ -20,7 +20,13 @@ sql:
                   #   go_type:
                   #       type: "time.Time"
                   #       pointer: true
+                  - column: "seasons.finish_season"
+                    nullable: true
+                    go_type:
+                        type: "time.Time"
+                        pointer: true
                   - column: "seasons.start_season"
+                    nullable: true
                     go_type: "time.Time"
                   - db_type: json
                     nullable: true

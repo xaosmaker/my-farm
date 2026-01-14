@@ -38,44 +38,37 @@ func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
 		httpErr(w, r)
 		return
 	}
+	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || farmId != *user.FarmID {
+		httpx.GeneralError(404, "resourse not found")(w, r)
+		return
+	}
 
 	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
 	if err != nil {
-		httpx.GeneralError(404, "resourse not found")
+		httpx.GeneralError(404, "resourse not found")(w, r)
+		return
 	}
 
 	if seasonBoby.AreaInMeters != nil {
 		*seasonBoby.AreaInMeters = *seasonBoby.AreaInMeters * float64(httpx.UnitConverter(user.LandUnit))
-
+		if *seasonBoby.AreaInMeters > season.AreaInMeters {
+			dif := *seasonBoby.AreaInMeters - season.AreaInMeters
+			if val, _ := q.DB.GetRemainingAreaOfFieldForSeason(r.Context(), season.FieldID); val < dif {
+				httpx.GeneralError(400, fmt.Sprintf("No area to cultivate, remaining area: %.2f", val/float64(httpx.UnitConverter(user.LandUnit))))(w, r)
+				return
+			}
+		}
 	}
 
-	if val, _ := q.DB.GetRemainingAreaOfFieldForSeason(r.Context(), season.FieldID); val < *seasonBoby.AreaInMeters {
-		httpx.GeneralError(400, fmt.Sprintf("No area to cultivate, remaining area: %.2f", val/float64(httpx.UnitConverter(user.LandUnit))))(w, r)
-		return
-	}
-
-	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		FieldID: season.FieldID,
-		UserID:  user.ID,
+	err = q.DB.UpdateSeason(r.Context(), db.UpdateSeasonParams{
+		ID:           seasonId,
+		Name:         seasonBoby.Name,
+		Crop:         seasonBoby.Crop,
+		AreaInMeters: seasonBoby.AreaInMeters,
+		StartSeason:  utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason),
+		FinishSeason: utils.UnsafeStrToTimeConverter(seasonBoby.FinishSeason),
 	})
-	if err != nil {
-		httpx.GeneralError(400, "Field doent exist")(w, r)
-		return
-	}
-
-	w.WriteHeader(700)
-
-	// _, err = q.DB.CreateSeason(r.Context(), db.CreateSeasonParams{
-	// 	Name:         seasonBoby.Name,
-	// 	FieldID:      fieldId,
-	// 	Crop:         seasonBoby.Crop,
-	// 	AreaInMeters: seasonBoby.AreaInMeters,
-	// 	StartSeason:  *utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason),
-	// })
-	// if err != nil {
-	// 	httpx.GeneralError(400, err.Error())(w, r)
-	// }
-	// w.WriteHeader(201)
+	w.WriteHeader(204)
 
 }
 
@@ -181,7 +174,7 @@ func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
 		FieldID:      fieldId,
 		Crop:         seasonBoby.Crop,
 		AreaInMeters: seasonBoby.AreaInMeters,
-		StartSeason:  *utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason),
+		StartSeason:  *utils.UnsafeStrToTimeConverter(&seasonBoby.StartSeason),
 	})
 	if err != nil {
 		httpx.GeneralError(400, err.Error())(w, r)

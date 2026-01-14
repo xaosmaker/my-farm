@@ -52,3 +52,13 @@ AND fields.deleted_at IS NULL
 AND seasons.deleted_at IS NULL
 WHERE seasons.id = $1;
 
+
+-- name: UpdateSeason :exec
+UPDATE seasons set
+name = COALESCE(sqlc.narg('name'),name),
+crop = COALESCE(sqlc.narg('crop'),crop),
+area_in_meters = COALESCE(sqlc.narg('area_in_meters'),area_in_meters),
+start_season = COALESCE(sqlc.narg('start_season'),start_season),
+finish_season = COALESCE(sqlc.narg('finish_season'),finish_season),
+updated_at = CURRENT_TIMESTAMP
+WHERE id = $1;

@@ -10,6 +10,7 @@ func (q seasonsQueries) protectedSeasonRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Post("/{fieldId}", q.createSeason)
 	r.Delete("/{seasonId}", q.deleteSeason)
+	r.Patch("/{seasonId}", q.updateSeason)
 
 	return r
 
