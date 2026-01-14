@@ -9,6 +9,7 @@ import (
 func protectedRoutes(q suppliesQueries) *chi.Mux {
 	r := chi.NewRouter()
 	r.Post("/", q.createSupply)
+	r.Patch("/{supplyId}", q.updateSupply)
 	r.Delete("/{supplyId}", q.deleteSupply)
 	return r
 }

@@ -5,31 +5,49 @@ import { FieldGroup } from "@/components/ui/field";
 import { SuppliesRequest, suppliesValidator } from "../validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionState, useTransition } from "react";
-import { createSupplyAction } from "../actions/createSuppliesActions";
+import {
+  createSupplyAction,
+  updateSupplyAction,
+} from "../actions/createSuppliesActions";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import ControlledSelect from "@/components/ControlledSelect";
-import { MEASUREMENT_UNITS, SUPPLIES_TYPES } from "@/types/sharedTypes";
+import { MEASUREMENT_UNITS, SUPPLIES_TYPES, Supply } from "@/types/sharedTypes";
 import { engToGreek } from "@/lib/translateMap";
 
-export default function CreateSupplyForm() {
-  const { control, reset, handleSubmit } = useForm<SuppliesRequest>({
+export default function CreateSupplyForm({ supply }: { supply?: Supply }) {
+  const { control, reset, handleSubmit, formState } = useForm<SuppliesRequest>({
     mode: "onChange",
     resolver: zodResolver(suppliesValidator),
     shouldFocusError: true,
     defaultValues: {
-      name: "",
-      nickname: "",
-      supplyType: "",
-      measurementUnit: "",
+      name: supply?.name || "",
+      nickname: supply?.nickname || "",
+      supplyType: supply?.supplyType || "",
+      measurementUnit: supply?.measurementUnit || "",
     },
   });
-  const [_, action] = useActionState(createSupplyAction, undefined);
+  const [_, action] = useActionState(
+    supply ? updateSupplyAction : createSupplyAction,
+    undefined,
+  );
   const [isPending, startTransition] = useTransition();
+  const dirty = formState.dirtyFields;
 
   function onSubmit(data: SuppliesRequest) {
+    let sendData: { [key: string]: unknown } = {};
+    if (supply) {
+      sendData["id"] = supply.id;
+      for (const key in dirty) {
+        const k = key as keyof SuppliesRequest;
+        sendData[key] = data[k];
+      }
+    } else {
+      sendData = { ...(data as object) };
+    }
+
     startTransition(() => {
-      action(data);
+      action(sendData);
     });
   }
   return (

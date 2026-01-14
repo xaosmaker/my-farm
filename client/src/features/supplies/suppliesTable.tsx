@@ -13,6 +13,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { deleteSupplyAction } from "./actions/createSuppliesActions";
+import EditItem from "@/components/EditItem";
 export const suppliesTable: ColumnDef<Supply>[] = [
   {
     accessorKey: "id",
@@ -84,6 +85,7 @@ export const suppliesTable: ColumnDef<Supply>[] = [
           name={name}
           formAction={deleteSupplyAction}
         />
+        <EditItem url={`/supplies/${id}/update`} />
       </ActionMenu>
     ),
   },

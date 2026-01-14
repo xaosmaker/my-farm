@@ -9,6 +9,51 @@ import (
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
+func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
+	supplyId, httpErr := httpx.GetPathValueToInt64(r, "supplyId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	type supplyRequest struct {
+		SupplyType      *string `json:"supplyType" validate:"omitnil,supplyTypeVal"`
+		Nickname        *string `json:"nickname"`
+		Name            *string `json:"name" validate:"omitnil"`
+		MeasurementUnit *string `json:"measurementUnit" validate:"omitnil,measurementUnitsVal"`
+	}
+	rb := supplyRequest{}
+	if httpErr := httpx.DecodeAndValidate(r, &rb); httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	if _, err := q.DB.GetSupplyDetails(r.Context(), db.GetSupplyDetailsParams{
+		FarmID: *user.FarmID,
+		ID:     supplyId,
+	}); err != nil {
+		httpx.GeneralError(404, "Resourse not found")(w, r)
+		return
+	}
+	err := q.DB.UpdateSupply(r.Context(), db.UpdateSupplyParams{
+		ID:              supplyId,
+		SupplyType:      rb.SupplyType,
+		Name:            rb.Name,
+		Nickname:        rb.Nickname,
+		MeasurementUnit: rb.MeasurementUnit,
+	})
+	if err != nil {
+		httpx.GeneralError(400, err.Error())(w, r)
+		return
+	}
+	w.WriteHeader(204)
+
+}
+
 func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
 	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {

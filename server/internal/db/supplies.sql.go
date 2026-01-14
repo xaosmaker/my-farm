@@ -140,3 +140,32 @@ func (q *Queries) GetSupplyDetails(ctx context.Context, arg GetSupplyDetailsPara
 	)
 	return i, err
 }
+
+const updateSupply = `-- name: UpdateSupply :exec
+UPDATE supplies set
+supply_type = COALESCE($2,supply_type),
+nickname = COALESCE($3,nickname),
+name = COALESCE($4,name),
+measurement_unit = COALESCE($5,measurement_unit),
+updated_at = CURRENT_TIMESTAMP
+WHERE supplies.id = $1
+`
+
+type UpdateSupplyParams struct {
+	ID              int64
+	SupplyType      *string
+	Nickname        *string
+	Name            *string
+	MeasurementUnit *string
+}
+
+func (q *Queries) UpdateSupply(ctx context.Context, arg UpdateSupplyParams) error {
+	_, err := q.db.Exec(ctx, updateSupply,
+		arg.ID,
+		arg.SupplyType,
+		arg.Nickname,
+		arg.Name,
+		arg.MeasurementUnit,
+	)
+	return err
+}

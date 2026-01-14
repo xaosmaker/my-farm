@@ -33,3 +33,12 @@ DELETE FROM supplies
 WHERE supplies.deleted_at IS NULL 
 AND supplies.farm_id = $1 AND id = $2;
 
+-- name: UpdateSupply :exec
+UPDATE supplies set
+supply_type = COALESCE(sqlc.narg('supply_type'),supply_type),
+nickname = COALESCE(sqlc.narg('nickname'),nickname),
+name = COALESCE(sqlc.narg('name'),name),
+measurement_unit = COALESCE(sqlc.narg('measurement_unit'),measurement_unit),
+updated_at = CURRENT_TIMESTAMP
+WHERE supplies.id = $1;
+
