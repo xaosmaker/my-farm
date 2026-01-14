@@ -21,20 +21,13 @@ func (q seasonsQueries) deleteSeason(w http.ResponseWriter, r *http.Request) {
 		httpErr(w, r)
 		return
 	}
-	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
-	if err != nil {
-		httpx.GeneralError(404, "Resourse not found")(w, r)
-		return
-	}
-	if _, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
-		UserID:  user.ID,
-		FieldID: season.FieldID,
-	}); err != nil {
-		httpx.GeneralError(404, "Resourse not found")(w, r)
-		return
 
+	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil && farmId != *user.FarmID {
+		httpx.GeneralError(404, "Resourse not found")(w, r)
+		return
 	}
-	err = q.DB.DeleteSeason(r.Context(), seasonId)
+
+	err := q.DB.DeleteSeason(r.Context(), seasonId)
 	if err != nil {
 		httpx.GeneralError(404, err.Error())(w, r)
 		return

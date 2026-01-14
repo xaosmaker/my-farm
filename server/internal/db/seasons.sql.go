@@ -61,6 +61,22 @@ func (q *Queries) DeleteSeason(ctx context.Context, id int64) error {
 	return err
 }
 
+const getFarmIdFromSeasonId = `-- name: GetFarmIdFromSeasonId :one
+SELECT fields.farm_id FROM seasons
+JOIN fields
+ON fields.id = seasons.field_id
+AND fields.deleted_at IS NULL
+AND seasons.deleted_at IS NULL
+WHERE seasons.id = $1
+`
+
+func (q *Queries) GetFarmIdFromSeasonId(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRow(ctx, getFarmIdFromSeasonId, id)
+	var farm_id int64
+	err := row.Scan(&farm_id)
+	return farm_id, err
+}
+
 const getRemainingAreaOfFieldForSeason = `-- name: GetRemainingAreaOfFieldForSeason :one
 SELECT
     f.area_in_meters - COALESCE(SUM(s.area_in_meters), 0) AS field_remaining_area

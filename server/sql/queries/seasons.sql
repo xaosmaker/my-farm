@@ -44,3 +44,11 @@ AND s.id = $1;
 -- name: DeleteSeason :exec
 DELETE FROM seasons WHERE id = $1;
 
+-- name: GetFarmIdFromSeasonId :one
+SELECT fields.farm_id FROM seasons
+JOIN fields
+ON fields.id = seasons.field_id
+AND fields.deleted_at IS NULL
+AND seasons.deleted_at IS NULL
+WHERE seasons.id = $1;
+
