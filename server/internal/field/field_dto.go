@@ -2,24 +2,24 @@ package field
 
 import (
 	"encoding/json"
+	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
 type fieldResponse struct {
-	ID               int64              `json:"id"`
-	Name             string             `json:"name"`
-	Epsg2100Boundary *json.RawMessage   `json:"epsg2100Boundary"`
-	Epsg4326Boundary *json.RawMessage   `json:"epsg4326Boundary"`
-	MapLocation      *json.RawMessage   `json:"mapLocation"`
-	FieldLocation    *string            `json:"fieldLocation"`
-	AreaInMeters     float64            `json:"areaInMeters"`
-	IsOwned          bool               `json:"isOwned"`
-	CreatedAt        pgtype.Timestamptz `json:"createdAt"`
-	UpdatedAt        pgtype.Timestamptz `json:"updatedAt"`
-	LandUnit         any                `json:"landUnit"`
+	ID               int64            `json:"id"`
+	Name             string           `json:"name"`
+	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary"`
+	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary"`
+	MapLocation      *json.RawMessage `json:"mapLocation"`
+	FieldLocation    *string          `json:"fieldLocation"`
+	AreaInMeters     float64          `json:"areaInMeters"`
+	IsOwned          bool             `json:"isOwned"`
+	CreatedAt        *time.Time       `json:"createdAt"`
+	UpdatedAt        *time.Time       `json:"updatedAt"`
+	LandUnit         any              `json:"landUnit"`
 	// FarmID           int64              `json:"farmId"`
 }
 

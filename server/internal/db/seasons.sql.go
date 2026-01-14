@@ -9,8 +9,6 @@ import (
 	"context"
 	"encoding/json"
 	"time"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createSeason = `-- name: CreateSeason :one
@@ -119,9 +117,9 @@ type GetSeasonByIdRow struct {
 	Crop              int64
 	Boundary          *json.RawMessage
 	AreaInMeters      float64
-	CreatedAt         pgtype.Timestamptz
-	UpdatedAt         pgtype.Timestamptz
-	DeletedAt         pgtype.Timestamptz
+	CreatedAt         *time.Time
+	UpdatedAt         *time.Time
+	DeletedAt         *time.Time
 	FieldName         string
 	FieldAreaInMeters float64
 	CropName          string
@@ -173,9 +171,9 @@ type GetSeasonsByFieldIdRow struct {
 	Crop              int64
 	Boundary          *json.RawMessage
 	AreaInMeters      float64
-	CreatedAt         pgtype.Timestamptz
-	UpdatedAt         pgtype.Timestamptz
-	DeletedAt         pgtype.Timestamptz
+	CreatedAt         *time.Time
+	UpdatedAt         *time.Time
+	DeletedAt         *time.Time
 	FieldName         string
 	FieldAreaInMeters float64
 	CropName          string

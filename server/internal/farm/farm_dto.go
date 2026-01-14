@@ -1,15 +1,16 @@
 package farm
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
+
 	"github.com/xaosmaker/server/internal/db"
 )
 
 type farmResponse struct {
-	ID        int64              `json:"id"`
-	Name      string             `json:"name"`
-	CreatedAt pgtype.Timestamptz `json:"createdAt"`
-	UpdatedAt pgtype.Timestamptz `json:"updatedAt"`
+	ID        int64      `json:"id"`
+	Name      string     `json:"name"`
+	CreatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"updatedAt"`
 }
 
 func toFarmResponse(s db.Farm) farmResponse {

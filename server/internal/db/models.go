@@ -7,16 +7,14 @@ package db
 import (
 	"encoding/json"
 	"time"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Farm struct {
 	ID        int64
 	Name      string
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *time.Time
 }
 
 type Field struct {
@@ -29,32 +27,32 @@ type Field struct {
 	AreaInMeters     float64
 	IsOwned          bool
 	FarmID           int64
-	CreatedAt        pgtype.Timestamptz
-	UpdatedAt        pgtype.Timestamptz
-	DeletedAt        pgtype.Timestamptz
+	CreatedAt        *time.Time
+	UpdatedAt        *time.Time
+	DeletedAt        *time.Time
 }
 
 type Job struct {
 	ID           int64
 	JobType      string
 	Description  *string
-	JobDate      pgtype.Timestamptz
+	JobDate      time.Time
 	AreaInMeters float64
 	Boundary     *json.RawMessage
 	SeasonID     int64
-	CreatedAt    pgtype.Timestamptz
-	UpdatedAt    pgtype.Timestamptz
-	DeletedAt    pgtype.Timestamptz
+	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
+	DeletedAt    *time.Time
 }
 
 type JobsObservation struct {
 	ID              int64
-	ObservationDate pgtype.Timestamptz
+	ObservationDate time.Time
 	Observations    string
 	JobID           int64
-	CreatedAt       pgtype.Timestamptz
-	UpdatedAt       pgtype.Timestamptz
-	DeletedAt       pgtype.Timestamptz
+	CreatedAt       *time.Time
+	UpdatedAt       *time.Time
+	DeletedAt       *time.Time
 }
 
 type JobsSupply struct {
@@ -62,9 +60,9 @@ type JobsSupply struct {
 	Quantity  float64
 	JobID     *int64
 	SupplyID  *int64
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *time.Time
 }
 
 type Season struct {
@@ -76,39 +74,39 @@ type Season struct {
 	Crop         int64
 	Boundary     *json.RawMessage
 	AreaInMeters float64
-	CreatedAt    pgtype.Timestamptz
-	UpdatedAt    pgtype.Timestamptz
-	DeletedAt    pgtype.Timestamptz
+	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
+	DeletedAt    *time.Time
 }
 
 type Setting struct {
 	ID        int64
 	UserID    int64
 	LandUnit  string
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *time.Time
 }
 
 type SuppliesDetail struct {
 	ID          int64
-	BuyDate     pgtype.Timestamptz
+	BuyDate     time.Time
 	Description string
 	SupplyID    int64
-	CreatedAt   pgtype.Timestamptz
-	UpdatedAt   pgtype.Timestamptz
-	DeletedAt   pgtype.Timestamptz
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+	DeletedAt   *time.Time
 }
 
 type SuppliesPrice struct {
 	ID        int64
 	Price     float64
 	Quantity  float64
-	BuyDate   pgtype.Timestamptz
+	BuyDate   *time.Time
 	SupplyID  int64
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *time.Time
 }
 
 type Supply struct {
@@ -118,9 +116,9 @@ type Supply struct {
 	Name            string
 	MeasurementUnit string
 	FarmID          int64
-	CreatedAt       pgtype.Timestamptz
-	UpdatedAt       pgtype.Timestamptz
-	DeletedAt       pgtype.Timestamptz
+	CreatedAt       *time.Time
+	UpdatedAt       *time.Time
+	DeletedAt       *time.Time
 }
 
 type User struct {
@@ -128,7 +126,7 @@ type User struct {
 	Email     string
 	Password  string
 	FarmID    *int64
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *time.Time
 }

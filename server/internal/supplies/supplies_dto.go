@@ -1,18 +1,19 @@
 package supplies
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
+
 	"github.com/xaosmaker/server/internal/db"
 )
 
 type supplyResponse struct {
-	ID              int64              `json:"id"`
-	SupplyType      any                `json:"supplyType"`
-	Nickname        *string            `json:"nickname"`
-	Name            string             `json:"name"`
-	MeasurementUnit any                `json:"measurementUnit"`
-	CreatedAt       pgtype.Timestamptz `json:"createdAt"`
-	UpdatedAt       pgtype.Timestamptz `json:"updatedAt"`
+	ID              int64      `json:"id"`
+	SupplyType      any        `json:"supplyType"`
+	Nickname        *string    `json:"nickname"`
+	Name            string     `json:"name"`
+	MeasurementUnit any        `json:"measurementUnit"`
+	CreatedAt       *time.Time `json:"createdAt"`
+	UpdatedAt       *time.Time `json:"updatedAt"`
 }
 
 func toSupplyResponse(s db.Supply) supplyResponse {

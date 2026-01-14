@@ -7,8 +7,7 @@ package db
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
 
 const createFarm = `-- name: CreateFarm :one
@@ -35,9 +34,9 @@ type CreateFarmParams struct {
 type CreateFarmRow struct {
 	ID        int64
 	Name      string
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *time.Time
 }
 
 func (q *Queries) CreateFarm(ctx context.Context, arg CreateFarmParams) (CreateFarmRow, error) {

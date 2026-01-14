@@ -8,8 +8,7 @@ package db
 import (
 	"context"
 	"encoding/json"
-
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
 
 const createJob = `-- name: CreateJob :one
@@ -36,7 +35,7 @@ VALUES(
 type CreateJobParams struct {
 	JobType      string
 	Description  *string
-	JobDate      pgtype.Timestamptz
+	JobDate      time.Time
 	SeasonID     int64
 	AreaInMeters float64
 }
@@ -135,12 +134,12 @@ type GetAllJobsRow struct {
 	ID           int64
 	JobType      string
 	Description  *string
-	JobDate      pgtype.Timestamptz
+	JobDate      time.Time
 	SeasonID     int64
 	AreaInMeters float64
 	Boundary     *json.RawMessage
-	CreatedAt    pgtype.Timestamptz
-	UpdatedAt    pgtype.Timestamptz
+	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
 	JobsSupplies *json.RawMessage
 }
 
@@ -211,12 +210,12 @@ type GetJobDetailsRow struct {
 	ID           int64
 	JobType      string
 	Description  *string
-	JobDate      pgtype.Timestamptz
+	JobDate      time.Time
 	SeasonID     int64
 	AreaInMeters float64
 	Boundary     *json.RawMessage
-	CreatedAt    pgtype.Timestamptz
-	UpdatedAt    pgtype.Timestamptz
+	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
 	JobsSupplies *json.RawMessage
 }
 

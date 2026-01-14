@@ -7,8 +7,7 @@ package db
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
 
 const createUser = `-- name: CreateUser :exec
@@ -125,15 +124,15 @@ type GetUserByIdWithSettingsRow struct {
 	Email       string
 	Password    string
 	FarmID      *int64
-	CreatedAt   pgtype.Timestamptz
-	UpdatedAt   pgtype.Timestamptz
-	DeletedAt   pgtype.Timestamptz
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+	DeletedAt   *time.Time
 	ID_2        int64
 	UserID      int64
 	LandUnit    string
-	CreatedAt_2 pgtype.Timestamptz
-	UpdatedAt_2 pgtype.Timestamptz
-	DeletedAt_2 pgtype.Timestamptz
+	CreatedAt_2 *time.Time
+	UpdatedAt_2 *time.Time
+	DeletedAt_2 *time.Time
 }
 
 func (q *Queries) GetUserByIdWithSettings(ctx context.Context, id int64) (GetUserByIdWithSettingsRow, error) {

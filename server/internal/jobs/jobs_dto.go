@@ -2,22 +2,22 @@ package jobs
 
 import (
 	"encoding/json"
+	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
 )
 
 type jobResponse struct {
-	ID           int64              `json:"id"`
-	JobType      string             `json:"jobType"`
-	Description  *string            `json:"description"`
-	SeasonID     int64              `json:"seasonId"`
-	JobDate      pgtype.Timestamptz `json:"jobDate"`
-	AreaInMeters float64            `json:"areaInMeters"`
-	Boundary     *json.RawMessage   `json:"boundary"`
-	CreatedAt    pgtype.Timestamptz `json:"createdAt"`
-	UpdatedAt    pgtype.Timestamptz `json:"updatedAt"`
-	JobsSupplies *json.RawMessage   `json:"jobsSupplies"`
+	ID           int64            `json:"id"`
+	JobType      string           `json:"jobType"`
+	Description  *string          `json:"description"`
+	SeasonID     int64            `json:"seasonId"`
+	JobDate      time.Time        `json:"jobDate"`
+	AreaInMeters float64          `json:"areaInMeters"`
+	Boundary     *json.RawMessage `json:"boundary"`
+	CreatedAt    *time.Time       `json:"createdAt"`
+	UpdatedAt    *time.Time       `json:"updatedAt"`
+	JobsSupplies *json.RawMessage `json:"jobsSupplies"`
 }
 
 func toJobResponse(f db.GetAllJobsRow) jobResponse {

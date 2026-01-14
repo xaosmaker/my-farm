@@ -4,26 +4,25 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
 type seasonResponse struct {
-	ID                int64              `json:"id"`
-	FieldID           int64              `json:"fieldId"`
-	Name              *string            `json:"name"`
-	StartSeason       time.Time          `json:"startSeason"`
-	FinishSeason      *time.Time         `json:"finishSeason"`
-	Crop              int64              `json:"crop"`
-	Boundary          *json.RawMessage   `json:"boundary"`
-	AreaInMeters      float64            `json:"areaInMeters"`
-	CreatedAt         pgtype.Timestamptz `json:"createdAt"`
-	UpdatedAt         pgtype.Timestamptz `json:"updatedAt"`
-	LandUnit          string             `json:"landUnit"`
-	CropName          string             `json:"cropName"`
-	FieldName         string             `json:"fieldName"`
-	FieldAreaInMeters float64            `json:"fieldAreaInMeters"`
+	ID                int64            `json:"id"`
+	FieldID           int64            `json:"fieldId"`
+	Name              *string          `json:"name"`
+	StartSeason       time.Time        `json:"startSeason"`
+	FinishSeason      *time.Time       `json:"finishSeason"`
+	Crop              int64            `json:"crop"`
+	Boundary          *json.RawMessage `json:"boundary"`
+	AreaInMeters      float64          `json:"areaInMeters"`
+	CreatedAt         *time.Time       `json:"createdAt"`
+	UpdatedAt         *time.Time       `json:"updatedAt"`
+	LandUnit          string           `json:"landUnit"`
+	CropName          string           `json:"cropName"`
+	FieldName         string           `json:"fieldName"`
+	FieldAreaInMeters float64          `json:"fieldAreaInMeters"`
 }
 
 func toSeasonResponse(s db.GetSeasonsByFieldIdRow, landUnit string) seasonResponse {

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"slices"
+	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 )
@@ -18,13 +18,13 @@ type jobSupplyParams struct {
 }
 
 type requestParams struct {
-	JobType      string             `json:"jobType" validate:"required,jobtype"`
-	Description  *string            `json:"description"`
-	JobDate      pgtype.Timestamptz `json:"jobDate" validate:"required"`
-	SeasonID     int64              `json:"seasonId" validate:"required"`
-	FieldID      int64              `json:"fieldId" validate:"required"`
-	AreaInMeters float64            `json:"areaInMeters" validate:"required"`
-	JobSupplies  []jobSupplyParams  `json:"jobSupplies" validate:"required"`
+	JobType      string            `json:"jobType" validate:"required,jobtype"`
+	Description  *string           `json:"description"`
+	JobDate      time.Time         `json:"jobDate" validate:"required"`
+	SeasonID     int64             `json:"seasonId" validate:"required"`
+	FieldID      int64             `json:"fieldId" validate:"required"`
+	AreaInMeters float64           `json:"areaInMeters" validate:"required"`
+	JobSupplies  []jobSupplyParams `json:"jobSupplies" validate:"required"`
 }
 
 func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {

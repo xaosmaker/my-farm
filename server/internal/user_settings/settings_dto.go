@@ -1,16 +1,17 @@
 package usersettings
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
+
 	"github.com/xaosmaker/server/internal/db"
 )
 
 type SettingsResponse struct {
-	ID        int64              `json:"id"`
-	UserID    int64              `json:"userId"`
-	LandUnit  any                `json:"landUnit"`
-	CreatedAt pgtype.Timestamptz `json:"createdAt"`
-	UpdatedAt pgtype.Timestamptz `json:"updatedAt"`
+	ID        int64      `json:"id"`
+	UserID    int64      `json:"userId"`
+	LandUnit  any        `json:"landUnit"`
+	CreatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"updatedAt"`
 }
 
 func toSettingsResponse(s db.Setting) SettingsResponse {
