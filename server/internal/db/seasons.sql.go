@@ -52,6 +52,15 @@ func (q *Queries) CreateSeason(ctx context.Context, arg CreateSeasonParams) (Sea
 	return i, err
 }
 
+const deleteSeason = `-- name: DeleteSeason :exec
+DELETE FROM seasons WHERE id = $1
+`
+
+func (q *Queries) DeleteSeason(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteSeason, id)
+	return err
+}
+
 const getRemainingAreaOfFieldForSeason = `-- name: GetRemainingAreaOfFieldForSeason :one
 SELECT
     f.area_in_meters - COALESCE(SUM(s.area_in_meters), 0) AS field_remaining_area

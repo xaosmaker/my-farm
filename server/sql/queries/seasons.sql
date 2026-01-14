@@ -41,3 +41,6 @@ ON f.id = s.field_id
 WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
 AND s.id = $1;
 
+-- name: DeleteSeason :exec
+DELETE FROM seasons WHERE id = $1;
+

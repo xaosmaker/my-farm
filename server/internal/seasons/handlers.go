@@ -10,6 +10,39 @@ import (
 	"github.com/xaosmaker/server/internal/utils"
 )
 
+func (q seasonsQueries) deleteSeason(w http.ResponseWriter, r *http.Request) {
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
+	if err != nil {
+		httpx.GeneralError(404, "Resourse not found")(w, r)
+		return
+	}
+	if _, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+		UserID:  user.ID,
+		FieldID: season.FieldID,
+	}); err != nil {
+		httpx.GeneralError(404, "Resourse not found")(w, r)
+		return
+
+	}
+	err = q.DB.DeleteSeason(r.Context(), seasonId)
+	if err != nil {
+		httpx.GeneralError(404, err.Error())(w, r)
+		return
+	}
+	w.WriteHeader(204)
+
+}
+
 func (q seasonsQueries) getSeasonDetails(w http.ResponseWriter, r *http.Request) {
 	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {

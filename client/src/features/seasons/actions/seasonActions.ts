@@ -32,3 +32,17 @@ export async function createSeasonAction(
   const data = await res.json();
   return toResponseError(data);
 }
+export async function deleteSeasonAction(
+  _prevState: undefined,
+  seasonId: string,
+) {
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/seasons/${seasonId}`,
+    method: "DELETE",
+    body: undefined,
+  });
+  if (res.ok) {
+    redirect("/fields");
+  }
+  return undefined;
+}

@@ -4,6 +4,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { engToGreek } from "@/lib/translateMap";
 import { Season } from "@/types/sharedTypes";
+import ActionMenu from "@/components/ActionMenu";
+import DeleteItem from "@/components/DeleteItem";
+import { deleteSeasonAction } from "./actions/seasonActions";
 
 export const seasonsTable: ColumnDef<Season>[] = [
   {
@@ -53,5 +56,21 @@ export const seasonsTable: ColumnDef<Season>[] = [
   {
     id: "createSeason",
     header: "",
+    cell: ({
+      row: {
+        original: { name, id },
+      },
+    }) => {
+      return (
+        <ActionMenu>
+          <DeleteItem
+            id={id.toString()}
+            name={name}
+            formAction={deleteSeasonAction}
+          />
+          {/* <EditItem url={`/supplies/${id}/update`} /> */}
+        </ActionMenu>
+      );
+    },
   },
 ];
