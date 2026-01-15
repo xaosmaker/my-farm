@@ -57,7 +57,11 @@ export default async function SeasonPage({
           />
         </ShowFieldGroup>
       </ShowFieldPage>
-      <DataTable columns={jobsTable} data={jobs} />
+      <DataTable
+        columns={jobsTable}
+        data={jobs}
+        showColumns={{ description: false, id: false }}
+      />
     </>
   );
 }

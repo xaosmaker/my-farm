@@ -26,7 +26,7 @@ export default function NavBar({
   return (
     <div className="flex h-14 items-center justify-between px-5 pl-2 shadow shadow-current/10">
       {children}
-      <p className="text-2xl font-bold">{session?.user?.farmName}</p>
+      <p className="text-2xl font-bold md:text-lg">{session?.user?.farmName}</p>
       <DropdownMenu>
         <DropdownMenuTrigger>{session?.user?.email}</DropdownMenuTrigger>
         <DropdownMenuContent>

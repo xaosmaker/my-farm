@@ -10,7 +10,9 @@ export default function ShowFieldPage({
   return (
     <>
       <ShowH1>{title}</ShowH1>
-      <div className="relative my-10 grid grid-cols-2 gap-2">{children}</div>
+      <div className="relative my-10 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-2">
+        {children}
+      </div>
     </>
   );
 }

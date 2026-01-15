@@ -64,7 +64,10 @@ export default async function FieldPage({
             <MapPin />
           </Link>
         </ShowFieldGroup>
-        <ShowFieldGroup groupName="Actions" className="col-span-2 mt-10 gap-1">
+        <ShowFieldGroup
+          groupName="Actions"
+          className="col-span-full mt-10 gap-1"
+        >
           <DeleteItem
             name={field.name}
             formAction={deleteFieldAction}
@@ -74,7 +77,15 @@ export default async function FieldPage({
           <EditItem url={`/fields/${field.id}/edit`} />
         </ShowFieldGroup>
       </ShowFieldPage>
-      <DataTable columns={seasonsTable} data={seasons} />
+      <DataTable
+        columns={seasonsTable}
+        data={seasons}
+        showColumns={{
+          landUnit: false,
+          finishSeason: false,
+          areaInMeters: false,
+        }}
+      />
     </>
   );
 }

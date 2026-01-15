@@ -80,10 +80,189 @@ farm_id
 ('Permit','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
 ('Dash','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
 ('GLORIA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
+('26-0-0','fertilizers','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
 ('PVL','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
 ('DIVA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com'));
 
+INSERT INTO seasons (
+crop,
+name,
+field_id,
+area_in_meters,
+updated_at,
+created_at,
+start_season
+)
+VALUES(
+  (select id FROM supplies WHERE supplies.name = 'DIVA'),
+  'season 2025',
+  (select id FROM fields WHERE name = 'γουρουνια'),
+  (select area_in_meters FROM fields WHERE name = 'γουρουνια'),
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP,
+  '2025-05-11T22:00:00Z'
+  );
+
+WITH new_job AS (
+    INSERT INTO jobs (
+        job_type,
+        description,
+        job_date,
+        area_in_meters,
+        season_id
+    )
+    VALUES (
+        'sowing',
+        'spora',
+        '2025-05-10T22:00:00Z',
+  (SELECT area_in_meters FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια')),
+  (SELECT id FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια'))
+    )
+    RETURNING id
+)
+INSERT INTO jobs_supplies (
+    quantity,
+    job_id,
+    supply_id
+)
+VALUES
+  (560,(SELECT id FROM new_job),
+    (SELECT id FROM supplies WHERE name = 'DIVA')
+);
+
+WITH new_job AS (
+    INSERT INTO jobs (
+        job_type,
+        description,
+        job_date,
+        area_in_meters,
+        season_id
+    )
+    VALUES (
+        'spraying',
+        'sprayin mix multiple chemicals',
+        '2025-05-30T22:00:00Z',
+  (SELECT area_in_meters FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια')),
+  (SELECT id FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια'))
+    )
+    RETURNING id
+)
+INSERT INTO jobs_supplies (
+    quantity,
+    job_id,
+    supply_id
+)
+VALUES
+  (7,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = 'Dash')
+),
+  (7,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = 'Focus')
+),
+  (7,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = 'Permit')
+);
+
+WITH new_job AS (
+    INSERT INTO jobs (
+        job_type,
+        description,
+        job_date,
+        area_in_meters,
+        season_id
+    )
+    VALUES (
+        'spraying',
+        'sprayin mix multiple chemicals',
+        '2025-06-11T22:00:00Z',
+  (SELECT area_in_meters FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια')),
+  (SELECT id FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια'))
+    )
+    RETURNING id
+)
+INSERT INTO jobs_supplies (
+    quantity,
+    job_id,
+    supply_id
+)
+VALUES
+  (7,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = 'Dash')
+),
+  (17.5,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = 'Focus')
+),
+  (7,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = 'Permit')
+);
+
+WITH new_job AS (
+    INSERT INTO jobs (
+        job_type,
+        description,
+        job_date,
+        area_in_meters,
+        season_id
+    )
+    VALUES (
+        'fertilizing',
+        'fertilizing one or many doent mater',
+        '2025-07-11T22:00:00Z',
+  (SELECT area_in_meters FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια')),
+  (SELECT id FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια'))
+    )
+    RETURNING id
+)
+INSERT INTO jobs_supplies (
+    quantity,
+    job_id,
+    supply_id
+)
+VALUES
+  (577.5,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = '26-0-0')
+);
+
+WITH new_job AS (
+    INSERT INTO jobs (
+        job_type,
+        description,
+        job_date,
+        area_in_meters,
+        season_id
+    )
+    VALUES (
+        'harvesting',
+        'fertilizing one or many doent mater',
+        '2025-09-11T22:00:00Z',
+  (SELECT area_in_meters FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια')),
+  (SELECT id FROM seasons WHERE seasons.name ='season 2025' AND seasons.field_id =
+  (select id FROM fields WHERE name = 'γουρουνια'))
+    )
+    RETURNING id
+)
+INSERT INTO jobs_supplies (
+    quantity,
+    job_id,
+    supply_id
+)
+VALUES
+  (35040,(SELECT id FROM new_job),
+(SELECT id FROM supplies WHERE name = 'DIVA')
+);
+
 -- +goose down
+DELETE FROM seasons WHERE name = 'season 2025' AND field_id = (select id FROM fields WHERE name = 'γουρουνια');
+
 DELETE FROM supplies
 WHERE farm_id = (select id FROM farms WHERE name = 'Δροσος Χωραφια');
 

@@ -1,10 +1,14 @@
-import { JOB_TYPES, JOB_TYPES_WITH_SUPPLIES } from "@/types/sharedTypes";
+import {
+  DateSTR,
+  JOB_TYPES,
+  JOB_TYPES_WITH_SUPPLIES,
+} from "@/types/sharedTypes";
 
 export interface Job {
   id: number;
   jobType: string;
   description: null | string;
-  jobDate: Date;
+  jobDate: DateSTR;
   seasonID: number;
   areaInMeters: number;
   landUnit: string;
@@ -18,8 +22,8 @@ export interface JobSupplies {
   id: number;
   quantity: number;
   jobId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DateSTR;
+  updatedAt: DateSTR;
   supplyId: number;
   supplyName: string;
   supplyAlias: string;

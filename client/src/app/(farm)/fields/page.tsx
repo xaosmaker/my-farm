@@ -9,7 +9,15 @@ export default async function FieldsPages() {
   return (
     <>
       <ShowH1>Χωράφια</ShowH1>
-      <DataTable columns={fieldsTable} data={fields} />
+      <DataTable
+        columns={fieldsTable}
+        data={fields}
+        showColumns={{
+          landUnit: false,
+          fieldLocation: false,
+          mapLocation: false,
+        }}
+      />
     </>
   );
 }

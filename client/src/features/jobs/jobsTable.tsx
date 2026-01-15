@@ -9,6 +9,8 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import dynamic from "next/dynamic";
+import LocalDate from "@/components/LocalDate";
 
 export const jobsTable: ColumnDef<Job>[] = [
   {
@@ -26,7 +28,11 @@ export const jobsTable: ColumnDef<Job>[] = [
     }) => engToGreek.get(jobType) || jobType,
   },
 
-  { accessorKey: "jobDate", header: "Ημερομηνία" },
+  {
+    accessorKey: "jobDate",
+    header: "Ημερομηνία",
+    cell: ({ row }) => <LocalDate date={row.original.jobDate} />,
+  },
 
   {
     accessorKey: "description",
@@ -54,7 +60,9 @@ export const jobsTable: ColumnDef<Job>[] = [
               {original.jobsSupplies.map((item) => (
                 <div key={item.supplyName + item.id.toString()}>
                   <span> {item.supplyName}: </span>
-                  <span>{item.quantity / original.areaInMeters} </span>
+                  <span>
+                    {(item.quantity / original.areaInMeters).toFixed(2)}{" "}
+                  </span>
                   <span>
                     {engToGreek.get(item.supplyMeasurementUnit) ||
                       item.supplyMeasurementUnit}

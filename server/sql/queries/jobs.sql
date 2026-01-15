@@ -60,7 +60,8 @@ ON j.id = js.job_id
 LEFT JOIN supplies AS s
 ON js.supply_id = s.id
 WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND  j.season_id=$1
-GROUP BY j.id;
+GROUP BY j.id
+ORDER BY job_date DESC;
 
 
 

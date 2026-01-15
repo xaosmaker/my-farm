@@ -9,7 +9,11 @@ export default async function SuppliesPage() {
   return (
     <>
       <ShowH1>Εφόδια</ShowH1>
-      <DataTable data={supplies} columns={suppliesTable} />
+      <DataTable
+        data={supplies}
+        columns={suppliesTable}
+        showColumns={{ nickname: false, measurementUnit: false }}
+      />
     </>
   );
 }
