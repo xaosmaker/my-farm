@@ -1,0 +1,77 @@
+services:
+  farm-nginx:
+    container_name: "farm-nginx"
+    build:
+      context: .
+      dockerfile: docker/prod/nginx/Dockerfile
+    volumes:
+      - ./docker/prod/nginx/nginx.conf:/etc/nginx/nginx.conf:s
+    expose:
+      - 80
+    networks:
+      - "farm_nw"
+      - "prod-nginx-net"
+    depends_on:
+      - farm-server
+      - farm-client
+
+  farm-server:
+    container_name: farm-server
+    build:
+      context: .
+      dockerfile: ./docker/prod/server/Dockerfile
+    expose:
+      - "8090"
+    env_file:
+      - ./.prod.env
+    networks:
+      - "farm_nw"
+      - farm_db_nw
+    command: ./start_server.sh
+    depends_on:
+      farm-postgres-db:
+        condition: service_healthy
+
+  farm-client:
+    build:
+      context: .
+      dockerfile: ./docker/prod/client/Dockerfile
+    image: farm-client
+    container_name: farm-client
+    expose:
+      - "3000"
+    env_file:
+      - ./.prod.env
+    networks:
+      - "farm_nw"
+    command: pnpm start
+
+  farm-postgres-db:
+    build:
+      context: .
+      dockerfile: ./docker/prod/postgres/Dockerfile
+    image: farm-postgres-db
+    container_name: farm-postgres-db
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 1s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - farm_postgres_db_data:/var/lib/postgresql/data
+    env_file:
+      - ./.prod.env
+    networks:
+      - farm_db_nw
+networks:
+  farm_nw:
+  farm_db_nw:
+  prod-nginx-net:
+    external: true
+
+volumes:
+  farm_postgres_db_data: {}

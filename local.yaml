@@ -40,7 +40,8 @@ services:
       - farm_db_nw
     command: go run .
     depends_on:
-      - farm-postgres-db
+      farm-postgres-db:
+        condition: service_healthy
 
   farm-orm:
     container_name: "farm-orm"
@@ -87,6 +88,12 @@ services:
       - "5432:5432"
     volumes:
       - farm_postgres_db_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 1s
+      timeout: 10s
+      retries: 5
     env_file:
       - ./.local.env
     networks:
