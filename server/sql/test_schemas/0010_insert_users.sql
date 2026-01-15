@@ -19,8 +19,10 @@ farm_id
 )values(
 CURRENT_TIMESTAMP,
 CURRENT_TIMESTAMP,
-'xaos@xaos.com',
- '$argon2id$v=19$m=65536,t=1,p=8$6hu5WXopdNfDoXsURWtaCA$0cdNGayvCSGyX8mf1Nl4g4naC5LRaZlM5ZjrmZbn+jk',
+'test@test.com',
+-- 'xaos@xaos.com',
+'$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo',
+ -- '$argon2id$v=19$m=65536,t=1,p=8$6hu5WXopdNfDoXsURWtaCA$0cdNGayvCSGyX8mf1Nl4g4naC5LRaZlM5ZjrmZbn+jk',
   (select id FROM farms WHERE name = 'Δροσος Χωραφια' LIMIT  1)
 )RETURNING *
 )
@@ -73,16 +75,16 @@ measurement_unit,
 farm_id
 )
  VALUES
-('Akito','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('Ortiva','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('Tonik','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('Focus','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('Permit','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('Dash','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('GLORIA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('26-0-0','fertilizers','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('PVL','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com')),
-('DIVA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'xaos@xaos.com'));
+('Akito','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('Ortiva','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('Tonik','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('Focus','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('Permit','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('Dash','chemicals','L',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('GLORIA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('26-0-0','fertilizers','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('PVL','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com')),
+('DIVA','seeds','KG',(SELECT farm_id from users  WHERE deleted_at IS NULL AND users.email = 'test@test.com'));
 
 INSERT INTO seasons (
 crop,
@@ -270,7 +272,7 @@ DELETE FROM fields
 WHERE farm_id = (select id FROM farms WHERE name = 'Δροσος Χωραφια');
 
 DELETE FROM users
-WHERE users.email = 'xaos@xaos.com';
+WHERE users.email = 'test@test.com';
 
 DELETE FROM farms
 WHERE name = 'Δροσος Χωραφια';

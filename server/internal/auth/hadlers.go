@@ -93,16 +93,17 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	type UserRequest struct {
 		Email           string `json:"email" validate:"required,email"`
-		Password        string `json:"password" validate:"required,strongPassword=12"`
+		Password        string `json:"password" validate:"required"`
 		ConfirmPassword string `json:"confirmPassword" validate:"required,eqfield=Password"`
 	}
 	reqUser := UserRequest{}
 	fieldError := httpx.DecodeAndValidate(r, &reqUser)
 	if fieldError != nil {
-		httpx.GeneralError(400, fieldError)(w, r)
+		fieldError(w, r)
 		return
 	}
 
+	fmt.Println(reqUser)
 	password, _ := HashPassword(reqUser.Password)
 	err := q.DB.CreateUser(r.Context(), db.CreateUserParams{
 		Email:    reqUser.Email,

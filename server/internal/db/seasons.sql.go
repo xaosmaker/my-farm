@@ -51,7 +51,7 @@ func (q *Queries) CreateSeason(ctx context.Context, arg CreateSeasonParams) (Sea
 }
 
 const deleteSeason = `-- name: DeleteSeason :exec
-DELETE FROM seasons WHERE id = $1
+DELETE FROM seasons WHERE id = $1 AND finish_season IS NULL
 `
 
 func (q *Queries) DeleteSeason(ctx context.Context, id int64) error {
@@ -222,7 +222,7 @@ area_in_meters = COALESCE($4,area_in_meters),
 start_season = COALESCE($5,start_season),
 finish_season = COALESCE($6,finish_season),
 updated_at = CURRENT_TIMESTAMP
-WHERE id = $1
+WHERE id = $1 AND finish_season IS NULL
 `
 
 type UpdateSeasonParams struct {

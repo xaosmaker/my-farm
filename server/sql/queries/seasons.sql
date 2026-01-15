@@ -42,7 +42,7 @@ WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
 AND s.id = $1;
 
 -- name: DeleteSeason :exec
-DELETE FROM seasons WHERE id = $1;
+DELETE FROM seasons WHERE id = $1 AND finish_season IS NULL;
 
 -- name: GetFarmIdFromSeasonId :one
 SELECT fields.farm_id FROM seasons
@@ -61,4 +61,5 @@ area_in_meters = COALESCE(sqlc.narg('area_in_meters'),area_in_meters),
 start_season = COALESCE(sqlc.narg('start_season'),start_season),
 finish_season = COALESCE(sqlc.narg('finish_season'),finish_season),
 updated_at = CURRENT_TIMESTAMP
-WHERE id = $1;
+WHERE id = $1 AND finish_season IS NULL;
+

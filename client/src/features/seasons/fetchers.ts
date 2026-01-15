@@ -9,18 +9,6 @@ export async function getAllSeasons(fieldId: string) {
     body: undefined,
   });
   const data: Season[] = await res.json();
-  data.map((item) => {
-    console.log(item.startSeason, new Date(item.startSeason).toString(), 123);
-    item.startSeason = new Date(item.startSeason).toLocaleDateString();
-    console.log(item.startSeason);
-
-    if (item.finishSeason) {
-      item.finishSeason = new Date(item.finishSeason).toLocaleDateString();
-    }
-    item.createdAt = new Date(item.createdAt).toLocaleDateString();
-    item.updatedAt = new Date(item.updatedAt).toLocaleDateString();
-    return item;
-  });
   return data;
 }
 

@@ -8,6 +8,7 @@ import ActionMenu from "@/components/ActionMenu";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteSeasonAction } from "./actions/seasonActions";
 import EditItem from "@/components/EditItem";
+import LocalDate from "@/components/LocalDate";
 
 export const seasonsTable: ColumnDef<Season>[] = [
   {
@@ -52,8 +53,17 @@ export const seasonsTable: ColumnDef<Season>[] = [
   {
     accessorKey: "startSeason",
     header: "Έναρξη σεζόν",
+    cell: ({ row }) => <LocalDate date={row.original.startSeason} />,
   },
-  { accessorKey: "finishSeason", header: "Λήξη σεζόν" },
+  {
+    accessorKey: "finishSeason",
+    header: "Λήξη σεζόν",
+    cell: ({ row: { original } }) => {
+      if (original.finishSeason) {
+        return <LocalDate date={original.finishSeason} />;
+      }
+    },
+  },
   {
     id: "createSeason",
     header: "",

@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/data-table";
+import NoSSRWrapper from "@/components/NoSSRWrapper";
 import ShowFieldGroup from "@/components/ShowFieldGroup";
 import ShowFieldPage from "@/components/ShowFieldPage";
 import ShowFieldsData from "@/components/ShowFieldsData";
@@ -46,15 +47,23 @@ export default async function SeasonPage({
             fieldName="Καλλιεργούνται"
             value={`${season.areaInMeters.toString()} από τα ${season.fieldAreaInMeters.toString()} ${engToGreek.get(season.landUnit)}`}
           />
-          <ShowFieldsData
-            fieldName="Αρχή καλλιέργειάς"
-            value={season.startSeason}
-          />
+          <NoSSRWrapper>
+            <ShowFieldsData
+              fieldName="Αρχή καλλιέργειάς"
+              value={new Date(season.startSeason).toLocaleDateString()}
+            />
+          </NoSSRWrapper>
 
-          <ShowFieldsData
-            fieldName="Τέλος καλλιέργειάς"
-            value={season.finishSeason || ""}
-          />
+          <NoSSRWrapper>
+            <ShowFieldsData
+              fieldName="Τέλος καλλιέργειάς"
+              value={
+                season.finishSeason
+                  ? new Date(season.startSeason).toLocaleDateString()
+                  : ""
+              }
+            />
+          </NoSSRWrapper>
         </ShowFieldGroup>
       </ShowFieldPage>
       <DataTable
