@@ -93,7 +93,7 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	type UserRequest struct {
 		Email           string `json:"email" validate:"required,email"`
-		Password        string `json:"password" validate:"required"`
+		Password        string `json:"password" validate:"required,strongPassword=12"`
 		ConfirmPassword string `json:"confirmPassword" validate:"required,eqfield=Password"`
 	}
 	reqUser := UserRequest{}
