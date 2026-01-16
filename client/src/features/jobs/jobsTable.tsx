@@ -69,6 +69,13 @@ export const jobsTable: ColumnDef<Job>[] = [
                   <span>
                     /{engToGreek.get(original.landUnit) || original.landUnit}
                   </span>
+                  <br />
+                  <span> Σύνολο: </span>
+                  <span>{item.quantity} </span>
+                  <span>
+                    {engToGreek.get(item.supplyMeasurementUnit) ||
+                      item.supplyMeasurementUnit}
+                  </span>
                 </div>
               ))}
             </AccordionContent>
