@@ -13,7 +13,11 @@ func UnsafeStrToTimeConverter(s *string) *time.Time {
 	if s == nil {
 		return nil
 	}
-	t, _ := time.Parse(time.RFC3339, *s)
+
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil
+	}
 	return &t
 
 }

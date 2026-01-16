@@ -13,6 +13,10 @@ build-prod:
 
 django-inspectdb:
 	docker exec -it farm-orm /py/bin/python3 manage.py inspectdb > orm/ui/models.py
+test-server:
+	cd server && go test ./... -coverpkg=./... -coverprofile=coverage.out
+test-server-show:
+	cd server && go tool cover -html=coverage.out
 
 down:
 	docker compose -f local.yaml down
