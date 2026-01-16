@@ -1,8 +1,10 @@
 import { DataTable } from "@/components/data-table";
-import NoSSRWrapper from "@/components/NoSSRWrapper";
+import DeleteItem from "@/components/DeleteItem";
+import EditItem from "@/components/EditItem";
 import ShowFieldGroup from "@/components/ShowFieldGroup";
 import ShowFieldPage from "@/components/ShowFieldPage";
 import ShowFieldsData from "@/components/ShowFieldsData";
+import ShowFieldsDate from "@/components/ShowFieldsDate";
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { GetAllJobs } from "@/features/jobs/jobsFetchers";
 import { jobsTable } from "@/features/jobs/jobsTable";
+import { deleteSeasonAction } from "@/features/seasons/actions/seasonActions";
 import { getSeasonById } from "@/features/seasons/fetchers";
 import { engToGreek } from "@/lib/translateMap";
 import { Plus } from "lucide-react";
@@ -27,6 +30,7 @@ export default async function SeasonPage({
   if (!season) {
     return <div>No resourse found</div>;
   }
+  console.log(season.finishSeason);
   return (
     <>
       <ShowFieldPage title={`Σεζόν ${season.fieldName}`}>
@@ -47,23 +51,23 @@ export default async function SeasonPage({
             fieldName="Καλλιεργούνται"
             value={`${season.areaInMeters.toString()} από τα ${season.fieldAreaInMeters.toString()} ${engToGreek.get(season.landUnit)}`}
           />
-          <NoSSRWrapper>
-            <ShowFieldsData
-              fieldName="Αρχή καλλιέργειάς"
-              value={new Date(season.startSeason).toLocaleDateString()}
-            />
-          </NoSSRWrapper>
+          <ShowFieldsDate
+            fieldName="Αρχή καλλιέργειάς"
+            value={season.startSeason}
+          />
 
-          <NoSSRWrapper>
-            <ShowFieldsData
-              fieldName="Τέλος καλλιέργειάς"
-              value={
-                season.finishSeason
-                  ? new Date(season.startSeason).toLocaleDateString()
-                  : ""
-              }
-            />
-          </NoSSRWrapper>
+          <ShowFieldsDate
+            fieldName="Τέλος καλλιέργειάς"
+            value={season.finishSeason}
+          />
+        </ShowFieldGroup>
+        <ShowFieldGroup groupName="Actions" className="col-span-full">
+          <DeleteItem
+            id={season.id.toString()}
+            name={season.name}
+            formAction={deleteSeasonAction}
+          />
+          <EditItem url={`/fields/${fieldId}/seasons/${season.id}/update`} />
         </ShowFieldGroup>
       </ShowFieldPage>
       <DataTable

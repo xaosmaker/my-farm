@@ -6,6 +6,7 @@ import { SERVER_URL } from "@/lib/serverUrl";
 import { redirect } from "next/navigation";
 
 export async function updateSeasonAction(
+  fieldId: string,
   _prevState: unknown,
   formData: unknown,
 ) {
@@ -32,7 +33,7 @@ export async function updateSeasonAction(
   });
 
   if (res.ok) {
-    redirect(`/fields`);
+    redirect(`/fields/${fieldId}`);
   }
   console.log(res);
   const data = await res.json();
@@ -40,6 +41,7 @@ export async function updateSeasonAction(
 }
 
 export async function createSeasonAction(
+  _fieldId: string,
   _prevState: unknown,
   formData: unknown,
 ) {

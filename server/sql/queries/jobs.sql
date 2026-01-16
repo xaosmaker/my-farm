@@ -91,3 +91,16 @@ ON js.supply_id = s.id
 WHERE j.deleted_at IS NULL AND js.deleted_at IS NULL AND s.deleted_at IS NULL AND job_id=$1 AND  j.season_id=$2
 GROUP BY j.id;
 
+-- name: GetLastJobBySeasonId :one
+select *
+FROM jobs j 
+WHERE j.deleted_at IS NULL  AND j.season_id=$1
+ORDER BY job_date DESC
+LIMIT 1;
+
+-- name: GetFirstJobBySeasonId :one
+select *
+FROM jobs j 
+WHERE j.deleted_at IS NULL  AND j.season_id=$1
+ORDER BY job_date ASC
+LIMIT 1;

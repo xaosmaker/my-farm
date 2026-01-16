@@ -52,8 +52,8 @@ export default function CreateSupplyForm({ supply }: { supply?: Supply }) {
   }
   return (
     <BaseForm
-      cardTitle="Δημιουργία εφοδίων"
-      cardDescription="Δημιουργία εφοδίων για τη φάρμα σας"
+      cardTitle={`${supply ? "Επεξεργασία" : "Δημιουργία"} εφοδίων`}
+      cardDescription={`${supply ? "Επεξεργασία" : "Δημιουργία"} εφοδίων για τη φάρμα σας`}
       buttonChildren={
         <>
           <Button
@@ -65,7 +65,7 @@ export default function CreateSupplyForm({ supply }: { supply?: Supply }) {
             Reset
           </Button>
           <Button type="submit" form="create-field-form" disabled={isPending}>
-            Δημιουργία
+            {supply ? "Ενημέρωση" : "Δημιουργία"}
           </Button>
         </>
       }

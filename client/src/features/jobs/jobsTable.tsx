@@ -9,7 +9,6 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import dynamic from "next/dynamic";
 import LocalDate from "@/components/LocalDate";
 
 export const jobsTable: ColumnDef<Job>[] = [

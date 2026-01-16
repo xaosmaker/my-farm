@@ -175,6 +175,32 @@ func (q *Queries) GetAllJobs(ctx context.Context, seasonID int64) ([]GetAllJobsR
 	return items, nil
 }
 
+const getFirstJobBySeasonId = `-- name: GetFirstJobBySeasonId :one
+select id, job_type, description, job_date, area_in_meters, boundary, season_id, created_at, updated_at, deleted_at
+FROM jobs j 
+WHERE j.deleted_at IS NULL  AND j.season_id=$1
+ORDER BY job_date ASC
+LIMIT 1
+`
+
+func (q *Queries) GetFirstJobBySeasonId(ctx context.Context, seasonID int64) (Job, error) {
+	row := q.db.QueryRow(ctx, getFirstJobBySeasonId, seasonID)
+	var i Job
+	err := row.Scan(
+		&i.ID,
+		&i.JobType,
+		&i.Description,
+		&i.JobDate,
+		&i.AreaInMeters,
+		&i.Boundary,
+		&i.SeasonID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const getJobDetails = `-- name: GetJobDetails :one
 select j.id,j.job_type,j.description,j.job_date,j.season_id,j.area_in_meters,j.boundary,j.created_at,j.updated_at,
   COALESCE(
@@ -234,6 +260,32 @@ func (q *Queries) GetJobDetails(ctx context.Context, arg GetJobDetailsParams) (G
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.JobsSupplies,
+	)
+	return i, err
+}
+
+const getLastJobBySeasonId = `-- name: GetLastJobBySeasonId :one
+select id, job_type, description, job_date, area_in_meters, boundary, season_id, created_at, updated_at, deleted_at
+FROM jobs j 
+WHERE j.deleted_at IS NULL  AND j.season_id=$1
+ORDER BY job_date DESC
+LIMIT 1
+`
+
+func (q *Queries) GetLastJobBySeasonId(ctx context.Context, seasonID int64) (Job, error) {
+	row := q.db.QueryRow(ctx, getLastJobBySeasonId, seasonID)
+	var i Job
+	err := row.Scan(
+		&i.ID,
+		&i.JobType,
+		&i.Description,
+		&i.JobDate,
+		&i.AreaInMeters,
+		&i.Boundary,
+		&i.SeasonID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }

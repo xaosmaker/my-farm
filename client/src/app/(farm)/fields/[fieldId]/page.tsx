@@ -82,7 +82,6 @@ export default async function FieldPage({
         data={seasons}
         showColumns={{
           landUnit: false,
-          finishSeason: false,
           areaInMeters: false,
         }}
       />

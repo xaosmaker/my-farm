@@ -46,7 +46,9 @@ function CreateSeasonForm({
   });
 
   const [state, action] = useActionState(
-    season ? updateSeasonAction : createSeasonAction,
+    season
+      ? updateSeasonAction.bind(null, field.id.toString())
+      : createSeasonAction.bind(null, field.id.toString()),
     undefined,
   );
   const dirty = formState.dirtyFields;
@@ -69,15 +71,15 @@ function CreateSeasonForm({
 
   return (
     <BaseForm
-      cardTitle="Δημιουργία σεζόν"
-      cardDescription={`Δημιουργία σεζόν για το χωράφι \n ${field.name} ${field.areaInMeters} ${engToGreek.get(field.landUnit) || field.landUnit}`}
+      cardTitle={`${season ? "Ενημέρωση " : "Δημιουργία "} σεζόν`}
+      cardDescription={`${season ? "Ενημέρωση " : "Δημιουργία "} σεζόν για το χωράφι \n ${field.name} ${field.areaInMeters} ${engToGreek.get(field.landUnit) || field.landUnit}`}
       buttonChildren={
         <>
           <Button disabled={isPending} onClick={() => reset()}>
             Reset
           </Button>
           <Button disabled={isPending} type="submit" form="create-season-form">
-            Δημιουργία σεζόν
+            {season ? "Ενημέρωση " : "Δημιουργία "} σεζόν
           </Button>
         </>
       }

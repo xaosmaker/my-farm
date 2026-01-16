@@ -10,9 +10,10 @@ import (
 	"github.com/xaosmaker/server/internal/utils"
 )
 
+//TODO: need to make a validation to not add or edit data on finished season
+// on finished season WE CAN ADD NOTHING!
+
 func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
-	// TODO: need to think how i set the area in meters correct here
-	// for now this method is unused
 	type seasonRequest struct {
 		Name         *string  `json:"name" validate:"omitnil,alphanumspace"`
 		StartSeason  *string  `json:"startSeason" validate:"omitnil,isTimestamptz"`
@@ -46,6 +47,33 @@ func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
 	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
 	if err != nil {
 		httpx.GeneralError(404, "resourse not found")(w, r)
+		return
+	}
+
+	// here we check if the finishSeason date in > the last job
+	// then finish season can't be lower than the last job
+	if seasonBoby.FinishSeason != nil {
+		finishSeasonTime := *utils.UnsafeStrToTimeConverter(seasonBoby.FinishSeason)
+		lastJob, _ := q.DB.GetLastJobBySeasonId(r.Context(), seasonId)
+		if lastJob.JobDate.After(finishSeasonTime) {
+			httpx.GeneralError(400, fmt.Sprintf("The Date to finish season must be greater of the last job: greater Than %v", lastJob.JobDate))(w, r)
+			return
+		}
+	}
+	// hehe we check if the startSeason < the first job
+	// the startSeason can't be greater than the first job
+	if seasonBoby.StartSeason != nil {
+		startSeason := *utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason)
+		firstJob, err := q.DB.GetFirstJobBySeasonId(r.Context(), seasonId)
+		if err == nil && firstJob.JobDate.Before(startSeason) {
+			httpx.GeneralError(400, fmt.Sprintf("The Date to start season must be lower of the first job: lower Than %v", firstJob.JobDate))(w, r)
+			return
+
+		}
+	}
+
+	if season.FinishSeason != nil {
+		httpx.GeneralError(400, "Cannot Edit season when a season is finished")(w, r)
 		return
 	}
 

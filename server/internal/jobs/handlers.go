@@ -11,6 +11,8 @@ import (
 )
 
 //WARN: overwite the seasonId
+//TODO: cannot add or edit job when a season is finish
+//TODO: when we add a job the jobdate cant be lower from the season start
 
 type jobSupplyParams struct {
 	Quantity float64 `json:"quantity" validate:"required"`
@@ -65,9 +67,13 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = q.DB.GetSeasonById(r.Context(), requestData.SeasonID)
+	season, err := q.DB.GetSeasonById(r.Context(), requestData.SeasonID)
 	if err != nil {
 		httpx.GeneralError(400, err.Error())(w, r)
+		return
+	}
+	if season.FinishSeason != nil {
+		httpx.GeneralError(400, "Cannot Add Job when a season is finished")(w, r)
 		return
 	}
 
