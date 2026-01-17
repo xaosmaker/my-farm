@@ -28,6 +28,8 @@ services:
       dockerfile: ./docker/test/postgres/Dockerfile
     image: farm-test-db
     container_name: farm-test-db
+    ports:
+      - "1212:5432"
     expose:
       - "5432"
 

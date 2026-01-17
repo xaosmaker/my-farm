@@ -95,12 +95,6 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	farm, err := q.DB.GetFarm(r.Context(), user.ID)
-	if err != nil {
-		httpx.GeneralError(400, "Need to create farm before you create Field")(w, r)
-		return
-	}
-
 	fields := createFieldRequestParams{}
 
 	if err := httpx.DecodeAndValidate(r, &fields); err != nil {
@@ -115,7 +109,7 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 		AreaInMeters:     fields.AreaInMeters * float64(httpx.UnitConverter(user.LandUnit)),
 		MapLocation:      fields.MapLocation,
 		FieldLocation:    fields.FieldLocation,
-		FarmID:           farm.ID,
+		FarmID:           *user.FarmID,
 		IsOwned:          fields.IsOwned,
 	}
 
@@ -126,7 +120,8 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		httpx.GeneralError(400, err.Error())
+		httpx.GeneralError(400, err.Error())(w, r)
+		return
 	}
 	data, _ := json.Marshal([]fieldResponse{toFieldResponse(field, user.LandUnit)})
 	w.WriteHeader(201)
@@ -186,8 +181,7 @@ func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	listData := []fieldResponse{toFieldResponse(data, user.LandUnit)}
-	jData, err := json.Marshal(listData)
+	jData, err := json.Marshal(toFieldResponse(data, user.LandUnit))
 	if err != nil {
 		httpx.GeneralError(500, "Internal Server Error")
 		return
