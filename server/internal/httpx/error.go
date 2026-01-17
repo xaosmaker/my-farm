@@ -20,7 +20,7 @@ func validateMessages(s any) any {
 		if s == "login" {
 			return []string{"Login to continue"}
 		}
-		return []Message{Message{s.(string)}}
+		return []Message{{s.(string)}}
 	case []string:
 		return s
 	case FieldErrors:

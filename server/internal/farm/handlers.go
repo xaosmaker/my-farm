@@ -2,7 +2,6 @@ package farm
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/xaosmaker/server/internal/db"
@@ -22,26 +21,24 @@ func (q farmQeuries) createFarm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := q.DB.GetFarm(r.Context(), user.ID)
-	if err == nil {
-		httpx.GeneralError(400, []string{"Farm already Exist can create another"})(w, r)
+	if httpErr := httpx.DecodeAndValidate(r, &farmFields); httpErr != nil {
+		httpErr(w, r)
 		return
 	}
-	if httpErr := httpx.DecodeAndValidate(r, &farmFields); httpErr != nil {
-		fmt.Println("Create farm errors ", err)
-		httpErr(w, r)
+
+	_, err := q.DB.GetFarm(r.Context(), user.ID)
+	if err == nil {
+		httpx.GeneralError(400, "Farm already Exist cannot create another")(w, r)
 		return
 	}
 	f, err := q.DB.CreateFarm(r.Context(), db.CreateFarmParams{Name: farmFields.Name, ID: user.ID})
 	if err != nil {
-		fmt.Println("Create farm in DB errors ", err)
 		httpx.GeneralError(500, []string{"internal server error"})(w, r)
 		return
 	}
 
 	data, err := json.Marshal([]farmResponse{toFarmResponse(db.Farm(f))})
 	if err != nil {
-		fmt.Println("Create farm in DB errors ", err)
 		httpx.GeneralError(500, nil)(w, r)
 		return
 
@@ -61,10 +58,11 @@ func (q farmQeuries) getFarm(w http.ResponseWriter, r *http.Request) {
 
 	farm, err := q.DB.GetFarm(r.Context(), user.ID)
 	if err != nil {
-		httpx.GeneralError(400, "Farm Not Found")(w, r)
+		//this code never run it is validated in the middleware
+		httpx.GeneralError(404, "Farm Not Found")(w, r)
 		return
 	}
-	data, err := json.Marshal([]farmResponse{toFarmResponse(farm)})
+	data, err := json.Marshal(toFarmResponse(farm))
 	if err != nil {
 		httpx.GeneralError(500, nil)(w, r)
 		return

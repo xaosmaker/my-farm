@@ -16,7 +16,7 @@ services:
       - "farm_nw"
       - farm_db_nw
     entrypoint: /data/start_server.sh
-    command: go test ./... -coverpkg=./... -coverprofile=coverage.out
+    command: go test ./... -coverpkg=./... -coverprofile=coverage.out -count=1
     # command: go run .
     depends_on:
       farm-test-db:

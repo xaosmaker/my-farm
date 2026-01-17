@@ -10,13 +10,14 @@ func GetUserFromContext(r *http.Request) (db.GetUserByIdWithSettingsRow, HttpErr
 	// Here we asume the user exist from the middleware so the user error
 	// will never run
 	v := r.Context().Value("user")
+	isCreateFarm := (r.URL.String() == "/api/farms" && r.Method == "POST")
 
 	if v != nil {
 		user, ok := v.(db.GetUserByIdWithSettingsRow)
 		if !ok {
 			return db.GetUserByIdWithSettingsRow{}, GeneralError(500, "Cant cast type user")
 		}
-		if user.FarmID == nil && (r.URL.String() != "/api/farms" && r.Method == "POST") {
+		if user.FarmID == nil && !isCreateFarm {
 			return user, GeneralError(400, "Create a farm before continue")
 		}
 		return user, nil
