@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/xaosmaker/server/internal/app"
 	"github.com/xaosmaker/server/internal/db"
 )
 
@@ -13,7 +14,7 @@ func main() {
 	conn := db.ConnectDb(ctx)
 	defer conn.Close()
 
-	r := MainRouter(conn)
+	r := app.MainRouter(conn)
 
 	server := &http.Server{
 

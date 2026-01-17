@@ -25,7 +25,6 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&fields)
 	if err := httpx.ValidateFields(fields); err != nil {
-		fmt.Println("Error validating fields", err)
 		httpx.GeneralError(400, err)(w, r)
 		return
 	}
@@ -33,11 +32,11 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	user, err := q.DB.GetUserByEmail(r.Context(), fields.Email)
 
 	if err != nil {
-		httpx.GeneralError(401, []string{"Invalid Credentials"})(w, r)
+		httpx.GeneralError(401, "Invalid Credentials")(w, r)
 		return
 	}
 	if !ComparePassword(user.Password, fields.Password) {
-		httpx.GeneralError(401, []string{"Invalid Credentials"})(w, r)
+		httpx.GeneralError(401, "Invalid Credentials")(w, r)
 		return
 	}
 	user.Password = "****"
