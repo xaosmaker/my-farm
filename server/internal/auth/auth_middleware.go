@@ -19,27 +19,27 @@ func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 
 		val, err := GetCookie(r, "access")
 		if err != nil {
-			fmt.Println("auth Error", err)
+			fmt.Println("auth Error 1", err)
 			httpx.GeneralError(401, "Login to continue")(w, r)
 			return
 		}
 		strId, err := ValidateJwt(val)
 
 		if err != nil {
-			fmt.Println("auth Error", err)
+			fmt.Println("auth Error 2", err)
 			httpx.GeneralError(401, "Login to continue")(w, r)
 			return
 		}
 		id, err := strconv.ParseInt(strId, 10, 64)
 
 		if err != nil {
-			fmt.Println("auth Error", err)
+			fmt.Println("auth Error 3", err)
 			httpx.GeneralError(401, "Login to continue")(w, r)
 			return
 		}
 		user, err := q.DB.GetUserByIdWithSettings(r.Context(), id)
 		if err != nil {
-			fmt.Println("auth Error", err)
+			fmt.Println("auth Error 4", err)
 			httpx.GeneralError(401, "Login to continue")(w, r)
 			return
 		}

@@ -9,6 +9,17 @@ INSERT INTO farms (
   );
 
 
+INSERT INTO farms (
+ name,created_at,updated_at 
+) VALUES ( 
+'nofields',
+'2025-09-11T10:00:00Z',
+'2025-09-11T10:00:00Z'
+  );
+
+
+
+
 WITH new_user AS (
 INSERT INTO users (
 created_at,
@@ -40,10 +51,8 @@ farm_id
 '2025-09-11T10:00:00Z',
 '2025-09-11T10:00:00Z',
 'nosettingsuser@test.com',
--- 'xaos@xaos.com',
 '$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo', -- pass:test
- -- '$argon2id$v=19$m=65536,t=1,p=8$6hu5WXopdNfDoXsURWtaCA$0cdNGayvCSGyX8mf1Nl4g4naC5LRaZlM5ZjrmZbn+jk',
-  (select id FROM farms WHERE name = 'Δροσος Χωραφια' LIMIT  1)
+  (select id FROM farms WHERE name = 'nofields' LIMIT  1)
 )RETURNING *;
 
 WITH new_user AS (
@@ -57,6 +66,26 @@ password
 '2025-09-11T10:00:00Z',
 'nofarmuser@test.com',
 '$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo' -- pass:test
+)RETURNING *
+)
+INSERT INTO settings(
+user_id
+)
+select id from new_user;
+
+WITH new_user AS (
+INSERT INTO users (
+created_at,
+updated_at,
+email,
+password,
+farm_id
+)values(
+'2025-09-11T10:00:00Z',
+'2025-09-11T10:00:00Z',
+'nofieldsuser@test.com',
+'$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo', -- pass:test
+  (select id FROM farms WHERE name = 'nofields' LIMIT  1)
 )RETURNING *
 )
 INSERT INTO settings(

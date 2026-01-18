@@ -123,7 +123,7 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 		httpx.GeneralError(400, err.Error())(w, r)
 		return
 	}
-	data, _ := json.Marshal([]fieldResponse{toFieldResponse(field, user.LandUnit)})
+	data, _ := json.Marshal(toFieldResponse(field, user.LandUnit))
 	w.WriteHeader(201)
 	w.Write(data)
 
@@ -146,7 +146,7 @@ func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.GeneralError(400, "Farm Field does not exist")(w, r)
+		httpx.GeneralError(404, "Field not found")(w, r)
 		return
 	}
 	err = q.DB.DeleteField(r.Context(), id)
@@ -177,13 +177,13 @@ func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpx.GeneralError(404, "No Field found")(w, r)
+		httpx.GeneralError(404, "Field not found")(w, r)
 		return
 	}
 
 	jData, err := json.Marshal(toFieldResponse(data, user.LandUnit))
 	if err != nil {
-		httpx.GeneralError(500, "Internal Server Error")
+		httpx.GeneralError(500, "Internal Server Error")(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -214,7 +214,7 @@ func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
 	jData, err := json.Marshal(listData)
 
 	if err != nil {
-		httpx.GeneralError(500, "Internal Server Error")
+		httpx.GeneralError(500, "Internal Server Error")(w, r)
 		return
 	}
 
