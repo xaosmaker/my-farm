@@ -67,7 +67,6 @@ export async function updateFieldAction(
       body: JSON.stringify(d),
     });
 
-    console.log(res);
     if (res.ok) {
       return redirect("/fields");
     }

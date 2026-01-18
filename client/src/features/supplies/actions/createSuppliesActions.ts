@@ -5,7 +5,6 @@ import { SERVER_URL } from "@/lib/serverUrl";
 import { redirect } from "next/navigation";
 
 export async function updateSupplyAction(_state: undefined, formData: unknown) {
-  console.log(formData, 123);
   if (
     typeof formData === "object" &&
     formData &&
@@ -23,7 +22,6 @@ export async function updateSupplyAction(_state: undefined, formData: unknown) {
     method: "PATCH",
     body: JSON.stringify(formData),
   });
-  console.log(res, formData);
 
   if (res.ok) {
     redirect("/supplies");

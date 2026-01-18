@@ -35,7 +35,6 @@ export async function updateSeasonAction(
   if (res.ok) {
     redirect(`/fields/${fieldId}`);
   }
-  console.log(res);
   const data = await res.json();
   return toResponseError(data);
 }
