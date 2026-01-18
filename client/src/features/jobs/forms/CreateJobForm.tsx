@@ -1,7 +1,12 @@
 "use client";
+// TODO: this can be better for now is working
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { JobFormData, jobValidator } from "../jobValidators";
+import {
+  JobFormData,
+  JobSuppliesFormData,
+  jobValidator,
+} from "../jobValidators";
 import { JOB_TYPES, Season, Supply } from "@/types/sharedTypes";
 import BaseForm from "@/components/BaseForm";
 import {
@@ -13,15 +18,17 @@ import {
 import { DateTimePicker } from "@/components/DateTimePicker";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { useActionState, useTransition } from "react";
+import { useActionState, useEffect, useTransition } from "react";
 import { createJobAction } from "../actions/createJobAction";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { engToGreek } from "@/lib/translateMap";
 import ControlledSelect from "@/components/ControlledSelect";
 import ControlledInput from "@/components/ControlledInput";
 import ServerErrors from "@/components/ServerErrors";
+import { roundTo6 } from "@/lib/utils";
 
+type JobSuppliesFormDataArea = JobSuppliesFormData & { area: string };
+let jobSuppliesRef: JobSuppliesFormDataArea[] = [];
 export default function CreateJobForm({
   fieldId,
   season,
@@ -34,7 +41,7 @@ export default function CreateJobForm({
   const {
     control,
     reset,
-    register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<JobFormData>({
@@ -57,13 +64,75 @@ export default function CreateJobForm({
   });
   const [state, action] = useActionState(createJobAction, undefined);
   const [isPending, startTransition] = useTransition();
-  const jobSupplies = useWatch({ control, name: "jobSupplies" });
+  const [jobSupplies, areaInMeters] = useWatch({
+    control,
+    name: ["jobSupplies", "areaInMeters"],
+  });
 
   const onSubmit = (data: JobFormData) => {
     startTransition(() => {
       action(data);
     });
   };
+  useEffect(() => {
+    if (jobSuppliesRef.length > 0) {
+      jobSuppliesRef = [];
+    }
+  }, []);
+
+  useEffect(() => {
+    for (let i = 0; i < jobSupplies.length; i++) {
+      //update the supply id if change
+      if (jobSuppliesRef[i].supplyId != jobSupplies[i].supplyId) {
+        jobSuppliesRef[i].supplyId = jobSupplies[i].supplyId;
+      }
+      // update the quantity
+      if (
+        jobSuppliesRef[i].quantityPerUnit != jobSupplies[i].quantityPerUnit ||
+        areaInMeters != jobSuppliesRef[i].area
+      ) {
+        jobSuppliesRef[i].quantityPerUnit = jobSupplies[i].quantityPerUnit;
+        const quantity = roundTo6(
+          parseFloat(jobSupplies[i].quantityPerUnit) *
+            (parseFloat(areaInMeters) || 1),
+        );
+        setValue(
+          `jobSupplies.${i}.quantity`,
+          isNaN(quantity) ? "0" : quantity.toString(),
+          { shouldValidate: true },
+        );
+        jobSuppliesRef[i].quantity = isNaN(quantity)
+          ? "0"
+          : quantity.toString();
+
+        if (jobSuppliesRef[i].area != areaInMeters) {
+          jobSuppliesRef[i].area = areaInMeters;
+          continue;
+        }
+        break;
+      }
+
+      //update the quantity per unit
+      if (jobSuppliesRef[i].quantity != jobSupplies[i].quantity) {
+        const quantityPerUnit = roundTo6(
+          parseFloat(jobSupplies[i].quantity) / (parseFloat(areaInMeters) || 1),
+        );
+
+        jobSuppliesRef[i].quantity = jobSupplies[i].quantity;
+        setValue(
+          `jobSupplies.${i}.quantityPerUnit`,
+          isNaN(quantityPerUnit) ? "0" : quantityPerUnit.toString(),
+          { shouldValidate: true },
+        );
+
+        jobSuppliesRef[i].quantityPerUnit = isNaN(quantityPerUnit)
+          ? "0"
+          : quantityPerUnit.toString();
+
+        break;
+      }
+    }
+  }, [jobSupplies, areaInMeters, setValue]);
 
   return (
     <BaseForm
@@ -152,7 +221,12 @@ export default function CreateJobForm({
               type="button"
               variant="ghost"
               className="absolute top-0 right-0 -translate-y-full"
-              onClick={() => remove(index)}
+              onClick={() => {
+                remove(index);
+                jobSuppliesRef = jobSuppliesRef.filter((item, ind) =>
+                  ind != index ? item : undefined,
+                );
+              }}
             >
               <X />
             </Button>
@@ -166,45 +240,31 @@ export default function CreateJobForm({
                 label: supply.name,
               }))}
             />
-            <Field
-              data-invalid={
-                errors.jobSupplies && errors.jobSupplies[index]?.quantity
-              }
-            >
-              <FieldLabel htmlFor={`quantity${index}`}>Ποσότητα</FieldLabel>
-              <div className="flex items-center gap-2">
-                <Input
-                  id={`quantity${index}`}
-                  {...register(`jobSupplies.${index}.quantity`, {
-                    valueAsNumber: true,
-                  })}
-                />
-                {supplies &&
-                  supplies.find(
-                    (ele) =>
-                      ele.id ===
-                      parseInt(
-                        jobSupplies ? jobSupplies[index]?.supplyId : "0",
-                      ),
-                  )?.measurementUnit}
-              </div>
-              {errors.jobSupplies && errors.jobSupplies[index]?.quantity && (
-                <FieldError
-                  errors={[
-                    {
-                      message: errors.jobSupplies[index].quantity.message,
-                    },
-                  ]}
-                />
-              )}
-            </Field>
+            <ControlledInput
+              control={control}
+              name={`jobSupplies.${index}.quantity`}
+              label={`${engToGreek.get(supplies.find((item) => item.id == parseInt(jobSupplies[index || 0]?.supplyId))?.measurementUnit || "") || "Ποσότητα"}`}
+            />
+            <ControlledInput
+              control={control}
+              name={`jobSupplies.${index}.quantityPerUnit`}
+              label={`${engToGreek.get(supplies.find((item) => item.id == parseInt(jobSupplies[index || 0]?.supplyId))?.measurementUnit || "") || "Ποσότητα"} ανα ${engToGreek.get(season.landUnit) || season.landUnit}`}
+            />
           </FieldGroup>
         ))}
         <FieldGroup className="flex w-full flex-row">
           <Button
             variant="ghost"
             className="text-xs"
-            onClick={() => append({ quantity: 0, supplyId: "" })}
+            onClick={() => {
+              append({ quantity: "", supplyId: "", quantityPerUnit: "" });
+              jobSuppliesRef.push({
+                quantity: "",
+                supplyId: "",
+                quantityPerUnit: "",
+                area: areaInMeters,
+              });
+            }}
             type="button"
             disabled={isPending}
           >

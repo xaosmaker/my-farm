@@ -33,7 +33,7 @@ export async function createJobAction(_prevState: unknown, data: JobFormData) {
   };
   for (let i = 0; i < data.jobSupplies.length; i++) {
     sendData.jobSupplies.push({
-      quantity: data.jobSupplies[i].quantity,
+      quantity: parseFloat(data.jobSupplies[i].quantity),
       supplyId: parseInt(data.jobSupplies[i].supplyId),
     });
   }

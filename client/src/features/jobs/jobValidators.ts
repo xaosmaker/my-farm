@@ -5,10 +5,26 @@ import { JOB_TYPES, JOB_TYPES_WITH_SUPPLIES } from "@/types/sharedTypes";
 export const JobTypesEnum = z.enum(JOB_TYPES);
 
 export const jobSuppliesValidator = z.object({
-  quantity: z.number().positive("Quantity must be > 0"),
+  quantity: z
+    .string()
+    .refine((value) => value.match(/^\d+(\.\d+)?$/), {
+      error: "Required and use . for decimal",
+    })
+    .refine((value) => parseFloat(value) > 0, {
+      error: "Should be greater than 0",
+    }),
+  quantityPerUnit: z
+    .string()
+    .refine((value) => value.match(/^\d+(\.\d+)?$/), {
+      error: "Required and use . for decimal",
+    })
+    .refine((value) => parseFloat(value) > 0, {
+      error: "Should be greater than 0",
+    }),
+
   supplyId: z
     .string()
-    .refine((val) => parseInt(val) > 0, { error: "supply ID must be > 0" }),
+    .refine((val) => parseInt(val) > 0, { error: "select a supply" }),
 });
 
 export const jobValidator = z
@@ -44,3 +60,4 @@ export const jobValidator = z
 // schema.ts
 
 export type JobFormData = z.infer<typeof jobValidator>;
+export type JobSuppliesFormData = z.infer<typeof jobSuppliesValidator>;

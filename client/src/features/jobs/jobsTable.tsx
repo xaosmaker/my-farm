@@ -10,6 +10,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import LocalDate from "@/components/LocalDate";
+import { roundTo6 } from "@/lib/utils";
 
 export const jobsTable: ColumnDef<Job>[] = [
   {
@@ -60,7 +61,7 @@ export const jobsTable: ColumnDef<Job>[] = [
                 <div key={item.supplyName + item.id.toString()}>
                   <span> {item.supplyName}: </span>
                   <span>
-                    {(item.quantity / original.areaInMeters).toFixed(2)}{" "}
+                    {roundTo6(item.quantity / original.areaInMeters)}{" "}
                   </span>
                   <span>
                     {engToGreek.get(item.supplyMeasurementUnit) ||
@@ -71,7 +72,7 @@ export const jobsTable: ColumnDef<Job>[] = [
                   </span>
                   <br />
                   <span> Σύνολο: </span>
-                  <span>{item.quantity} </span>
+                  <span>{roundTo6(item.quantity)} </span>
                   <span>
                     {engToGreek.get(item.supplyMeasurementUnit) ||
                       item.supplyMeasurementUnit}
