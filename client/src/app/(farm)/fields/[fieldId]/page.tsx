@@ -22,11 +22,10 @@ export default async function FieldPage({
   params: Promise<{ fieldId: string }>;
 }) {
   const { fieldId } = await params;
-  const fields = await getFieldById(fieldId);
-  if (fields.length != 1) {
+  const field = await getFieldById(fieldId);
+  if (!field) {
     return <div>No Field Found</div>;
   }
-  const field = fields[0];
   const seasons = await getAllSeasons(fieldId);
 
   return (

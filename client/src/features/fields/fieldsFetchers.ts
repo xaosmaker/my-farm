@@ -15,7 +15,7 @@ export async function getAllFields() {
   return [];
 }
 
-export async function getFieldById(id: string): Promise<Field[]> {
+export async function getFieldById(id: string): Promise<Field | undefined> {
   const res = await baseRequest({
     url: `${SERVER_URL}/api/fields/${id}`,
     method: "GET",
@@ -24,5 +24,5 @@ export async function getFieldById(id: string): Promise<Field[]> {
   if (res.ok) {
     return res.json();
   }
-  return [];
+  return undefined;
 }

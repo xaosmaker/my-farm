@@ -10,6 +10,9 @@ export default async function CreateSeasonPage({
   const { fieldId } = await params;
   const field = await getFieldById(fieldId);
   const supplies = await getAllSupplies();
+  if (!field) {
+    throw new Error("field does not exist");
+  }
 
-  return <CreateSeasonForm field={field[0]} supplies={supplies} />;
+  return <CreateSeasonForm field={field} supplies={supplies} />;
 }

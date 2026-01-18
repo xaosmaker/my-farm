@@ -8,10 +8,10 @@ export default async function FieldEditPage({
   params: Promise<{ fieldId: string }>;
 }) {
   const { fieldId } = await params;
-  const fields = await getFieldById(fieldId);
+  const field = await getFieldById(fieldId);
   const userSettings = await getSettings();
-  if (fields.length !== 1) {
-    return <div>No field found</div>;
+  if (!field) {
+    throw new Error("you can't update a field that not exist");
   }
-  return <CreateFieldForm oldData={fields[0]} landUnit={userSettings} />;
+  return <CreateFieldForm oldData={field} landUnit={userSettings} />;
 }

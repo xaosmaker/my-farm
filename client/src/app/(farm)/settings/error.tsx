@@ -7,5 +7,5 @@ export default function SettingsError({
 }: {
   error: Error & { digest?: string };
 }) {
-  return <GeneralPageError error={error} title="Settings Error" />;
+  return <GeneralPageError error={error} title="Settings" />;
 }
