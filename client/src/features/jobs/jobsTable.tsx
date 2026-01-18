@@ -11,6 +11,13 @@ import {
 } from "@/components/ui/accordion";
 import LocalDate from "@/components/LocalDate";
 import { roundTo6 } from "@/lib/utils";
+import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Plus } from "lucide-react";
 
 export const jobsTable: ColumnDef<Job>[] = [
   {
@@ -87,5 +94,28 @@ export const jobsTable: ColumnDef<Job>[] = [
   },
   {
     id: "jobActions",
+    header: ({ table: { options } }) => {
+      if (options.meta?.formId) {
+        const data = options.meta.formId.split(",");
+        if (data.length != 2) {
+          throw new Error("form id want 2 values and get more");
+        }
+        const [fieldId, seasonId] = data;
+
+        return (
+          <Link
+            href={`/fields/${fieldId}/seasons/${seasonId}/jobs/create`}
+            className="text-green-500"
+          >
+            <Tooltip>
+              <TooltipTrigger>
+                <Plus />
+              </TooltipTrigger>
+              <TooltipContent>Δημιουργία εργασίας</TooltipContent>
+            </Tooltip>
+          </Link>
+        );
+      }
+    },
   },
 ];

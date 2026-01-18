@@ -5,18 +5,11 @@ import ShowFieldGroup from "@/components/ShowFieldGroup";
 import ShowFieldPage from "@/components/ShowFieldPage";
 import ShowFieldsData from "@/components/ShowFieldsData";
 import ShowFieldsDate from "@/components/ShowFieldsDate";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { GetAllJobs } from "@/features/jobs/jobsFetchers";
 import { jobsTable } from "@/features/jobs/jobsTable";
 import { deleteSeasonAction } from "@/features/seasons/actions/seasonActions";
 import { getSeasonById } from "@/features/seasons/fetchers";
 import { engToGreek } from "@/lib/translateMap";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 
 export default async function SeasonPage({
   params,
@@ -33,17 +26,6 @@ export default async function SeasonPage({
   return (
     <>
       <ShowFieldPage title={`Σεζόν ${season.fieldName}`}>
-        <Link
-          href={`/fields/${fieldId}/seasons/${season.id}/jobs/create`}
-          className="absolute -top-10 right-0 text-green-500"
-        >
-          <Tooltip>
-            <TooltipTrigger>
-              <Plus />
-            </TooltipTrigger>
-            <TooltipContent>Δημιουργία εργασίας</TooltipContent>
-          </Tooltip>
-        </Link>
         <ShowFieldGroup groupName="Λεπτομέρειες">
           <ShowFieldsData fieldName="ποικιλία" value={season.cropName} />
           <ShowFieldsData
@@ -70,6 +52,7 @@ export default async function SeasonPage({
         </ShowFieldGroup>
       </ShowFieldPage>
       <DataTable
+        formId={`${fieldId},${season.id}`}
         columns={jobsTable}
         data={jobs}
         showColumns={{ description: false, id: false }}

@@ -9,6 +9,12 @@ import DeleteItem from "@/components/DeleteItem";
 import { deleteSeasonAction } from "./actions/seasonActions";
 import EditItem from "@/components/EditItem";
 import LocalDate from "@/components/LocalDate";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Plus } from "lucide-react";
 
 export const seasonsTable: ColumnDef<Season>[] = [
   {
@@ -66,7 +72,24 @@ export const seasonsTable: ColumnDef<Season>[] = [
   },
   {
     id: "createSeason",
-    header: "",
+    header: ({ table }) => {
+      console.log(table.options.meta?.formId);
+      if (table.options.meta?.formId) {
+        return (
+          <Link
+            href={`/fields/${table.options.meta.formId}/seasons/create`}
+            className="text-green-500"
+          >
+            <Tooltip>
+              <TooltipTrigger>
+                <Plus />
+              </TooltipTrigger>
+              <TooltipContent>Δημιουργία σεζόν</TooltipContent>
+            </Tooltip>
+          </Link>
+        );
+      }
+    },
     cell: ({
       row: {
         original: { name, id, fieldId },

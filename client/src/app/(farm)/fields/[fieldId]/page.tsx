@@ -4,16 +4,11 @@ import EditItem from "@/components/EditItem";
 import ShowFieldGroup from "@/components/ShowFieldGroup";
 import ShowFieldPage from "@/components/ShowFieldPage";
 import ShowFieldsData from "@/components/ShowFieldsData";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { deleteFieldAction } from "@/features/fields/actions/actions";
 import { getFieldById } from "@/features/fields/fieldsFetchers";
 import { getAllSeasons } from "@/features/seasons/fetchers";
 import { seasonsTable } from "@/features/seasons/seasonTable";
-import { MapPin, Plus } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Link from "next/link";
 
 export default async function FieldPage({
@@ -31,17 +26,6 @@ export default async function FieldPage({
   return (
     <>
       <ShowFieldPage title={`Χωράφι ${field.name}`}>
-        <Link
-          href={`/fields/${fieldId}/seasons/create`}
-          className="absolute -top-10 right-0 text-green-500"
-        >
-          <Tooltip>
-            <TooltipTrigger>
-              <Plus />
-            </TooltipTrigger>
-            <TooltipContent>Δημιουργία σεζόν</TooltipContent>
-          </Tooltip>
-        </Link>
         <ShowFieldGroup groupName="Λεπτομέρειες">
           <ShowFieldsData
             fieldName="Τ.Μ τετραγωνικά μέτρα"
@@ -77,6 +61,7 @@ export default async function FieldPage({
         </ShowFieldGroup>
       </ShowFieldPage>
       <DataTable
+        formId={field.id.toString()}
         columns={seasonsTable}
         data={seasons}
         showColumns={{

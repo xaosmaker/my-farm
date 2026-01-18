@@ -31,12 +31,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   showColumns?: VisibilityState;
+  formId?: string;
 }
 
 export function DataTable<TData, TValue>({
   showColumns = {},
   columns,
   data,
+  formId = "",
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnVisibility, setColumnVisibility] =
@@ -52,6 +54,9 @@ export function DataTable<TData, TValue>({
     state: {
       globalFilter,
       columnVisibility,
+    },
+    meta: {
+      formId,
     },
   });
 
