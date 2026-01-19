@@ -40,12 +40,16 @@ func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) {
 		httpErr(w, r)
 		return
 	}
-	_, err := q.DB.JobExists(r.Context(), db.JobExistsParams{
+	finishSeason, err := q.DB.JobExistsReturnFinishSeason(r.Context(), db.JobExistsReturnFinishSeasonParams{
 		FarmID: *user.FarmID,
 		JobID:  jobId,
 	})
 	if err != nil {
 		httpx.GeneralError(404, "Job not found")(w, r)
+		return
+	}
+	if finishSeason != nil {
+		httpx.GeneralError(404, "Can't delete season is Closed")(w, r)
 		return
 	}
 	err = q.DB.DeleteJob(r.Context(), jobId)

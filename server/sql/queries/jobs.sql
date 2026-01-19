@@ -1,8 +1,8 @@
 -- name: DeleteJob :exec
 DELETE FROM jobs
 WHERE id = $1;
--- name: JobExists :one
-SELECT farms.id FROM jobs
+-- name: JobExistsReturnFinishSeason :one
+SELECT seasons.finish_season FROM jobs
 JOIN seasons
 ON season_id = seasons.id
 AND jobs.id = sqlc.arg('job_id')

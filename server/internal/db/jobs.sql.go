@@ -300,8 +300,8 @@ func (q *Queries) GetLastJobBySeasonId(ctx context.Context, seasonID int64) (Job
 	return i, err
 }
 
-const jobExists = `-- name: JobExists :one
-SELECT farms.id FROM jobs
+const jobExistsReturnFinishSeason = `-- name: JobExistsReturnFinishSeason :one
+SELECT seasons.finish_season FROM jobs
 JOIN seasons
 ON season_id = seasons.id
 AND jobs.id = $1
@@ -311,14 +311,14 @@ JOIN farms
 ON farms.id = $2
 `
 
-type JobExistsParams struct {
+type JobExistsReturnFinishSeasonParams struct {
 	JobID  int64
 	FarmID int64
 }
 
-func (q *Queries) JobExists(ctx context.Context, arg JobExistsParams) (int64, error) {
-	row := q.db.QueryRow(ctx, jobExists, arg.JobID, arg.FarmID)
-	var id int64
-	err := row.Scan(&id)
-	return id, err
+func (q *Queries) JobExistsReturnFinishSeason(ctx context.Context, arg JobExistsReturnFinishSeasonParams) (*time.Time, error) {
+	row := q.db.QueryRow(ctx, jobExistsReturnFinishSeason, arg.JobID, arg.FarmID)
+	var finish_season *time.Time
+	err := row.Scan(&finish_season)
+	return finish_season, err
 }
