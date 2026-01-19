@@ -8,7 +8,10 @@ import ShowFieldsDate from "@/components/ShowFieldsDate";
 import { GetAllJobs } from "@/features/jobs/jobsFetchers";
 import { jobsTable } from "@/features/jobs/jobsTable";
 import { deleteSeasonAction } from "@/features/seasons/actions/seasonActions";
-import { getSeasonById } from "@/features/seasons/fetchers";
+import {
+  getSeasonById,
+  getSeasonStatistics,
+} from "@/features/seasons/fetchers";
 import { engToGreek } from "@/lib/translateMap";
 
 export default async function SeasonPage({
@@ -17,12 +20,14 @@ export default async function SeasonPage({
   params: Promise<{ fieldId: string; seasonId: string }>;
 }) {
   const { seasonId, fieldId } = await params;
+  const seasonStatistics = await getSeasonStatistics(seasonId);
 
   const jobs = await GetAllJobs(seasonId);
   const season = await getSeasonById(fieldId, seasonId);
   if (!season) {
     return <div>No resourse found</div>;
   }
+  console.log(seasonStatistics);
   return (
     <>
       <ShowFieldPage title={`Σεζόν ${season.fieldName}`}>
@@ -41,6 +46,17 @@ export default async function SeasonPage({
             fieldName="Τέλος καλλιέργειάς"
             value={season.finishSeason}
           />
+        </ShowFieldGroup>
+        <ShowFieldGroup groupName="Στατιστικά">
+          {seasonStatistics.length
+            ? seasonStatistics.map((stat) => (
+                <ShowFieldsData
+                  key={stat.supplyId}
+                  fieldName={stat.supplyName}
+                  value={`Χρησιμοποιήθηκαν: ${stat.totalQuantity} ${stat.harvestQuantity ? "μαζεύτηκαν: " + stat.harvestQuantity : ""} ${stat.measurementUnit}`}
+                />
+              ))
+            : "No statistics available"}
         </ShowFieldGroup>
         <ShowFieldGroup groupName="Actions" className="col-span-full">
           <DeleteItem

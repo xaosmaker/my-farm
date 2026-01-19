@@ -325,17 +325,13 @@ VALUES
 );
 
 -- +goose down
-DELETE FROM seasons WHERE name = 'season 2025' AND field_id = (select id FROM fields WHERE name = 'γουρουνια');
+DELETE FROM seasons;
 
-DELETE FROM supplies
-WHERE farm_id = (select id FROM farms WHERE name = 'Δροσος Χωραφια');
+DELETE FROM supplies;
 
-DELETE FROM fields
-WHERE farm_id = (select id FROM farms WHERE name = 'Δροσος Χωραφια');
+DELETE FROM fields;
 
-DELETE FROM users
-WHERE users.email = 'test@test.com';
+DELETE FROM users;
 
-DELETE FROM farms
-WHERE name = 'Δροσος Χωραφια';
+DELETE FROM farms;
 

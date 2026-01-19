@@ -8,6 +8,25 @@ import (
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
+type seasonStatisticsResponse struct {
+	TotalQuantity   float64 `json:"totalQuantity"`
+	HarvestQuantity float64 `json:"harvestQuantity"`
+	SupplyID        *int64  `json:"supplyId"`
+	SupplyName      *string `json:"supplyName"`
+	MeasurementUnit *string `json:"measurementUnit"`
+}
+
+func toSeasonStatisticsResponse(s db.GetSeasonStatisticsRow) seasonStatisticsResponse {
+	return seasonStatisticsResponse{
+		TotalQuantity:   s.TotalQuantity,
+		HarvestQuantity: s.HarvestQuantity,
+		SupplyID:        s.SupplyID,
+		SupplyName:      s.SupplyName,
+		MeasurementUnit: s.MeasurementUnit,
+	}
+
+}
+
 type seasonResponse struct {
 	ID                int64            `json:"id"`
 	FieldID           int64            `json:"fieldId"`
