@@ -20,7 +20,9 @@ export const suppliesTable: ColumnDef<Supply>[] = [
     header: "ID",
     cell: ({ row }) => {
       return (
-        <Link href={`/supplies/${row.original.id}`}>{row.original.id}</Link>
+        <Link href={`/supplies/${row.original.id}`} className="py-2">
+          {row.original.id}
+        </Link>
       );
     },
   },
@@ -30,7 +32,9 @@ export const suppliesTable: ColumnDef<Supply>[] = [
 
     cell: ({ row }) => {
       return (
-        <Link href={`/supplies/${row.original.id}`}>{row.original.name}</Link>
+        <Link href={`/supplies/${row.original.id}`} className="py-2">
+          {row.original.name}
+        </Link>
       );
     },
   },
@@ -41,7 +45,7 @@ export const suppliesTable: ColumnDef<Supply>[] = [
 
     cell: ({ row }) => {
       return (
-        <Link href={`/supplies/${row.original.id}`}>
+        <Link href={`/supplies/${row.original.id}`} className="py-2">
           {row.original.nickname}
         </Link>
       );

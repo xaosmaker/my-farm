@@ -24,6 +24,7 @@ export const seasonsTable: ColumnDef<Season>[] = [
       return (
         <Link
           href={`/fields/${row.original.fieldId}/seasons/${row.original.id}`}
+          className="py-2"
         >
           {row.original.id}
         </Link>
@@ -37,6 +38,7 @@ export const seasonsTable: ColumnDef<Season>[] = [
     cell: ({ row }) => {
       return (
         <Link
+          className="py-2"
           href={`/fields/${row.original.fieldId}/seasons/${row.original.id}`}
         >
           {row.original.name}
@@ -47,6 +49,13 @@ export const seasonsTable: ColumnDef<Season>[] = [
   {
     accessorKey: "fieldName",
     header: "Όνομα χωραφιου",
+    cell: ({ row }) => {
+      return (
+        <Link className="py-2" href={`/fields/${row.original.fieldId}`}>
+          {row.original.fieldName}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "areaInMeters",
@@ -59,7 +68,17 @@ export const seasonsTable: ColumnDef<Season>[] = [
       return engToGreek.get(row.original.landUnit);
     },
   },
-  { accessorKey: "cropName", header: "Καλλιέργεια" },
+  {
+    accessorKey: "cropName",
+    header: "Καλλιέργεια",
+    cell: ({ row }) => {
+      return (
+        <Link className="py-2" href={`/supplies/${row.original.crop}`}>
+          {row.original.cropName}
+        </Link>
+      );
+    },
+  },
   {
     accessorKey: "startSeason",
     header: "Έναρξη σεζόν",

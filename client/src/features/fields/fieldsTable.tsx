@@ -20,7 +20,11 @@ export const fieldsTable: ColumnDef<Field>[] = [
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => {
-      return <Link href={`/fields/${row.original.id}`}>{row.original.id}</Link>;
+      return (
+        <Link href={`/fields/${row.original.id}`} className="py-2">
+          {row.original.id}
+        </Link>
+      );
     },
   },
   {
@@ -29,7 +33,9 @@ export const fieldsTable: ColumnDef<Field>[] = [
 
     cell: ({ row }) => {
       return (
-        <Link href={`/fields/${row.original.id}`}>{row.original.name}</Link>
+        <Link href={`/fields/${row.original.id}`} className="py-2">
+          {row.original.name}
+        </Link>
       );
     },
   },
