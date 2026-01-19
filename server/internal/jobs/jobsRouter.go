@@ -10,6 +10,7 @@ func jobProtectedRouter(q jobsQueries) *chi.Mux {
 
 	r := chi.NewRouter()
 	r.Post("/", q.createJob)
+	r.Delete("/{jobId}", q.deleteJob)
 	return r
 
 }

@@ -102,6 +102,16 @@ func (q *Queries) CreateJobSupplies(ctx context.Context, arg CreateJobSuppliesPa
 	return i, err
 }
 
+const deleteJob = `-- name: DeleteJob :exec
+DELETE FROM jobs
+WHERE id = $1
+`
+
+func (q *Queries) DeleteJob(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteJob, id)
+	return err
+}
+
 const getAllJobs = `-- name: GetAllJobs :many
 
 select j.id,j.job_type,j.description,j.job_date,j.season_id,j.area_in_meters,j.boundary,j.created_at,j.updated_at,
@@ -288,4 +298,27 @@ func (q *Queries) GetLastJobBySeasonId(ctx context.Context, seasonID int64) (Job
 		&i.DeletedAt,
 	)
 	return i, err
+}
+
+const jobExists = `-- name: JobExists :one
+SELECT farms.id FROM jobs
+JOIN seasons
+ON season_id = seasons.id
+AND jobs.id = $1
+JOIN fields
+ON fields.id = seasons.field_id
+JOIN farms
+ON farms.id = $2
+`
+
+type JobExistsParams struct {
+	JobID  int64
+	FarmID int64
+}
+
+func (q *Queries) JobExists(ctx context.Context, arg JobExistsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, jobExists, arg.JobID, arg.FarmID)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
 }

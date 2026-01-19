@@ -18,6 +18,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Plus } from "lucide-react";
+import ActionMenu from "@/components/ActionMenu";
+import DeleteItem from "@/components/DeleteItem";
+import { deleteJobAction } from "./actions/createJobAction";
 
 export const jobsTable: ColumnDef<Job>[] = [
   {
@@ -116,6 +119,17 @@ export const jobsTable: ColumnDef<Job>[] = [
           </Link>
         );
       }
+    },
+    cell: ({ row: { original } }) => {
+      return (
+        <ActionMenu>
+          <DeleteItem
+            id={original.id.toString()}
+            name={engToGreek.get(original.jobType) || original.jobType}
+            formAction={deleteJobAction}
+          />
+        </ActionMenu>
+      );
     },
   },
 ];

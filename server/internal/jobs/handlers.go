@@ -29,6 +29,35 @@ type requestParams struct {
 	JobSupplies  []jobSupplyParams `json:"jobSupplies" validate:"required"`
 }
 
+func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) {
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	jobId, httpErr := httpx.GetPathValueToInt64(r, "jobId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	_, err := q.DB.JobExists(r.Context(), db.JobExistsParams{
+		FarmID: *user.FarmID,
+		JobID:  jobId,
+	})
+	if err != nil {
+		httpx.GeneralError(404, "Job not found")(w, r)
+		return
+	}
+	err = q.DB.DeleteJob(r.Context(), jobId)
+	if err != nil {
+		httpx.GeneralError(404, err.Error())(w, r)
+		return
+
+	}
+	w.WriteHeader(204)
+
+}
+
 func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 	hasSupplies := false
 

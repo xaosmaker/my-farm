@@ -20,6 +20,20 @@ type JobSupplies = {
   quantity: number;
   supplyId: number;
 };
+export async function deleteJobAction(
+  _prevState: unknown,
+  jobId: string | number,
+) {
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/jobs/${jobId}`,
+    method: "DELETE",
+    body: undefined,
+  });
+  if (res.ok) {
+    redirect("/seasons");
+  }
+  return undefined;
+}
 
 export async function createJobAction(_prevState: unknown, data: JobFormData) {
   const sendData: JobRequest = {

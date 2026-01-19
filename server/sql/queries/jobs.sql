@@ -1,3 +1,16 @@
+-- name: DeleteJob :exec
+DELETE FROM jobs
+WHERE id = $1;
+-- name: JobExists :one
+SELECT farms.id FROM jobs
+JOIN seasons
+ON season_id = seasons.id
+AND jobs.id = sqlc.arg('job_id')
+JOIN fields
+ON fields.id = seasons.field_id
+JOIN farms
+ON farms.id = sqlc.arg('farm_id');
+
 -- name: CreateJob :one
 INSERT INTO jobs(
 job_type,
@@ -17,6 +30,7 @@ VALUES(
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP
   ) returning *;
+
 
 -- name: CreateJobSupplies :one
 INSERT INTO jobs_supplies (
