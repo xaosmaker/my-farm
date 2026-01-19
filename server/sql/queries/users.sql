@@ -4,7 +4,7 @@ select * from users;
 
 -- name: GetUserByEmail :one
 SELECT * FROM users
-WHERE users.deleted_at IS NULL AND email = $1;
+WHERE users.deleted_at IS NULL AND users.is_active = TRUE AND email = $1;
 
 -- name: GetUserBYId :one
 SELECT * FROM users

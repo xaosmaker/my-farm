@@ -26,12 +26,14 @@ created_at,
 updated_at,
 email,
 password,
+is_active,
 farm_id
 )values(
 '2025-09-11T10:00:00Z',
 '2025-09-11T10:00:00Z',
 'test@test.com',
 '$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo', -- pass:test
+  TRUE,
   (select id FROM farms WHERE name = 'Δροσος Χωραφια' LIMIT  1)
 )RETURNING *
 )
@@ -46,12 +48,14 @@ created_at,
 updated_at,
 email,
 password,
+is_active,
 farm_id
 )values(
 '2025-09-11T10:00:00Z',
 '2025-09-11T10:00:00Z',
 'nosettingsuser@test.com',
 '$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo', -- pass:test
+  TRUE,
   (select id FROM farms WHERE name = 'nofields' LIMIT  1)
 )RETURNING *;
 
@@ -59,11 +63,13 @@ WITH new_user AS (
 INSERT INTO users (
 created_at,
 updated_at,
+is_active,
 email,
 password
 )values(
 '2025-09-11T10:00:00Z',
 '2025-09-11T10:00:00Z',
+TRUE,
 'nofarmuser@test.com',
 '$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo' -- pass:test
 )RETURNING *
@@ -79,12 +85,14 @@ created_at,
 updated_at,
 email,
 password,
+is_active,
 farm_id
 )values(
 '2025-09-11T10:00:00Z',
 '2025-09-11T10:00:00Z',
 'nofieldsuser@test.com',
 '$argon2id$v=19$m=65536,t=1,p=12$/Z96OO2/okqF5KHP/XjbdQ$CFppbcEbwqP1kIxGHDvK8jA+qaH6W9RD/KpfdgwOdIo', -- pass:test
+  TRUE,
   (select id FROM farms WHERE name = 'nofields' LIMIT  1)
 )RETURNING *
 )

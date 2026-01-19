@@ -22,7 +22,7 @@ CURRENT_TIMESTAMP,
 CURRENT_TIMESTAMP,
     $1,
     $2
-)RETURNING id, email, password, farm_id, created_at, updated_at, deleted_at
+)RETURNING id, email, password, farm_id, created_at, updated_at, deleted_at, is_active
 )
 INSERT INTO settings(
 user_id
@@ -41,7 +41,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-select id, email, password, farm_id, created_at, updated_at, deleted_at from users
+select id, email, password, farm_id, created_at, updated_at, deleted_at, is_active from users
 `
 
 func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
@@ -61,6 +61,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
+			&i.IsActive,
 		); err != nil {
 			return nil, err
 		}
@@ -73,7 +74,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const getUserBYId = `-- name: GetUserBYId :one
-SELECT id, email, password, farm_id, created_at, updated_at, deleted_at FROM users
+SELECT id, email, password, farm_id, created_at, updated_at, deleted_at, is_active FROM users
 WHERE users.deleted_at IS NULL AND id = $1
 `
 
@@ -88,13 +89,14 @@ func (q *Queries) GetUserBYId(ctx context.Context, id int64) (User, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.IsActive,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, password, farm_id, created_at, updated_at, deleted_at FROM users
-WHERE users.deleted_at IS NULL AND email = $1
+SELECT id, email, password, farm_id, created_at, updated_at, deleted_at, is_active FROM users
+WHERE users.deleted_at IS NULL AND users.is_active = TRUE AND email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -108,12 +110,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.IsActive,
 	)
 	return i, err
 }
 
 const getUserByIdWithSettings = `-- name: GetUserByIdWithSettings :one
-SELECT users.id, email, password, farm_id, users.created_at, users.updated_at, users.deleted_at, settings.id, user_id, land_unit, settings.created_at, settings.updated_at, settings.deleted_at FROM users
+SELECT users.id, email, password, farm_id, users.created_at, users.updated_at, users.deleted_at, is_active, settings.id, user_id, land_unit, settings.created_at, settings.updated_at, settings.deleted_at FROM users
 JOIN settings
 ON users.id = settings.user_id
 WHERE users.deleted_at IS NULL AND users.id = $1
@@ -127,6 +130,7 @@ type GetUserByIdWithSettingsRow struct {
 	CreatedAt   *time.Time
 	UpdatedAt   *time.Time
 	DeletedAt   *time.Time
+	IsActive    bool
 	ID_2        int64
 	UserID      int64
 	LandUnit    string
@@ -146,6 +150,7 @@ func (q *Queries) GetUserByIdWithSettings(ctx context.Context, id int64) (GetUse
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.IsActive,
 		&i.ID_2,
 		&i.UserID,
 		&i.LandUnit,
