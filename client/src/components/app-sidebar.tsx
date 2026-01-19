@@ -29,6 +29,12 @@ const items = [
     url: "/supplies",
     icon: Container,
   },
+
+  {
+    title: "Σεζόνς",
+    url: "/seasons",
+    icon: Container,
+  },
 ];
 
 export function AppSidebar() {

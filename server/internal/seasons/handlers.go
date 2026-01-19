@@ -13,6 +13,24 @@ import (
 //TODO: need to make a validation to not add or edit data on finished season
 // on finished season WE CAN ADD NOTHING!
 
+func (q seasonsQueries) getAllActiveSeasons(w http.ResponseWriter, r *http.Request) {
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+	}
+	seasons, err := q.DB.GetALLActiveSeasons(r.Context(), *user.FarmID)
+	if err != nil {
+		httpx.GeneralError(400, err.Error())(w, r)
+	}
+	seasonRes := make([]seasonResponse, 0, len(seasons))
+	for _, s := range seasons {
+		seasonRes = append(seasonRes, toAllSeasonResponse(s, user.LandUnit))
+	}
+	data, err := json.Marshal(seasonRes)
+	w.WriteHeader(200)
+	w.Write(data)
+}
+
 func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
 	type seasonRequest struct {
 		Name         *string  `json:"name" validate:"omitnil,alphanumspace"`

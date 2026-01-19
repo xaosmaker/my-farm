@@ -59,6 +59,75 @@ func (q *Queries) DeleteSeason(ctx context.Context, id int64) error {
 	return err
 }
 
+const getALLActiveSeasons = `-- name: GetALLActiveSeasons :many
+SELECT 
+s.id,s.field_id,s.name,s.start_season,s.finish_season,s.crop,s.boundary,
+  s.area_in_meters,s.created_at,s.updated_at,s.deleted_at,f.name as field_name,f.area_in_meters as field_area_in_meters,
+  supplies.name as crop_name
+FROM seasons s
+LEFT JOIN fields f
+ON f.id = s.field_id
+AND s.finish_season IS NULL
+LEFT JOIN supplies
+ON supplies.id = crop
+WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
+AND f.deleted_at IS NULL
+AND f.farm_id = $1
+ORDER BY finish_season IS NULL DESC, updated_at DESC
+`
+
+type GetALLActiveSeasonsRow struct {
+	ID                int64
+	FieldID           int64
+	Name              *string
+	StartSeason       time.Time
+	FinishSeason      *time.Time
+	Crop              int64
+	Boundary          *json.RawMessage
+	AreaInMeters      float64
+	CreatedAt         *time.Time
+	UpdatedAt         *time.Time
+	DeletedAt         *time.Time
+	FieldName         string
+	FieldAreaInMeters float64
+	CropName          string
+}
+
+func (q *Queries) GetALLActiveSeasons(ctx context.Context, farmID int64) ([]GetALLActiveSeasonsRow, error) {
+	rows, err := q.db.Query(ctx, getALLActiveSeasons, farmID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetALLActiveSeasonsRow
+	for rows.Next() {
+		var i GetALLActiveSeasonsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.FieldID,
+			&i.Name,
+			&i.StartSeason,
+			&i.FinishSeason,
+			&i.Crop,
+			&i.Boundary,
+			&i.AreaInMeters,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.FieldName,
+			&i.FieldAreaInMeters,
+			&i.CropName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getFarmIdFromSeasonId = `-- name: GetFarmIdFromSeasonId :one
 SELECT fields.farm_id FROM seasons
 JOIN fields

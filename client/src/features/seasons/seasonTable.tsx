@@ -45,6 +45,10 @@ export const seasonsTable: ColumnDef<Season>[] = [
     },
   },
   {
+    accessorKey: "fieldName",
+    header: "Όνομα χωραφιου",
+  },
+  {
     accessorKey: "areaInMeters",
     header: "Εκταση",
   },

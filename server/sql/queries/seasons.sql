@@ -63,3 +63,18 @@ finish_season = COALESCE(sqlc.narg('finish_season'),finish_season),
 updated_at = CURRENT_TIMESTAMP
 WHERE id = $1 AND finish_season IS NULL;
 
+-- name: GetALLActiveSeasons :many
+SELECT 
+s.id,s.field_id,s.name,s.start_season,s.finish_season,s.crop,s.boundary,
+  s.area_in_meters,s.created_at,s.updated_at,s.deleted_at,f.name as field_name,f.area_in_meters as field_area_in_meters,
+  supplies.name as crop_name
+FROM seasons s
+LEFT JOIN fields f
+ON f.id = s.field_id
+AND s.finish_season IS NULL
+LEFT JOIN supplies
+ON supplies.id = crop
+WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
+AND f.deleted_at IS NULL
+AND f.farm_id = $1
+ORDER BY finish_season IS NULL DESC, updated_at DESC;

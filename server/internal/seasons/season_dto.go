@@ -62,3 +62,22 @@ func toSeasonDetailResponse(s db.GetSeasonByIdRow, landUnit string) seasonRespon
 		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpx.UnitConverter(landUnit)),
 	}
 }
+
+func toAllSeasonResponse(s db.GetALLActiveSeasonsRow, landUnit string) seasonResponse {
+	return seasonResponse{
+		ID:                s.ID,
+		FieldID:           s.FieldID,
+		Name:              s.Name,
+		StartSeason:       s.StartSeason,
+		FinishSeason:      s.FinishSeason,
+		Crop:              s.Crop,
+		Boundary:          s.Boundary,
+		AreaInMeters:      s.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		CreatedAt:         s.CreatedAt,
+		UpdatedAt:         s.UpdatedAt,
+		LandUnit:          landUnit,
+		CropName:          s.CropName,
+		FieldName:         s.FieldName,
+		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpx.UnitConverter(landUnit)),
+	}
+}

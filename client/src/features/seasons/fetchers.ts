@@ -12,6 +12,16 @@ export async function getAllSeasons(fieldId: string) {
   return data;
 }
 
+export async function getAllActiveSeasons() {
+  const res = await baseRequest({
+    url: `${SERVER_URL}/api/seasons`,
+    method: "GET",
+    body: undefined,
+  });
+  const data: Season[] = await res.json();
+  return data;
+}
+
 export async function getSeasonById(fieldId: string, seasonId: string) {
   const res = await baseRequest({
     url: `${SERVER_URL}/api/seasons/${fieldId}/${seasonId}`,

@@ -67,6 +67,7 @@ export default async function FieldPage({
         showColumns={{
           landUnit: false,
           areaInMeters: false,
+          fieldName: false,
         }}
       />
     </>
