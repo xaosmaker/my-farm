@@ -134,6 +134,11 @@ func (q seasonsQueries) deleteSeason(w http.ResponseWriter, r *http.Request) {
 		httpx.GeneralError(404, "Resourse not found")(w, r)
 		return
 	}
+	if season, _ := q.DB.GetSeasonById(r.Context(), seasonId); season.FinishSeason != nil {
+		httpx.GeneralError(400, "Can't delete a finished season")(w, r)
+		return
+
+	}
 
 	err := q.DB.DeleteSeason(r.Context(), seasonId)
 	if err != nil {

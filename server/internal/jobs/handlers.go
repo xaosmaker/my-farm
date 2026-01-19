@@ -49,7 +49,7 @@ func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if finishSeason != nil {
-		httpx.GeneralError(404, "Can't delete season is Closed")(w, r)
+		httpx.GeneralError(400, "Can't delete season is Closed")(w, r)
 		return
 	}
 	err = q.DB.DeleteJob(r.Context(), jobId)
