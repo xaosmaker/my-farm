@@ -12,6 +12,8 @@ import {
   AlertDialogTrigger,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
+import ServerErrors from "./ServerErrors";
+import { ResponseError } from "@/lib/responseError";
 
 export default function DeleteItem({
   id,
@@ -20,9 +22,12 @@ export default function DeleteItem({
 }: {
   id: string;
   name: string;
-  formAction: (state: undefined, id: string) => Promise<undefined>;
+  formAction: (
+    state: ResponseError[] | undefined,
+    id: string,
+  ) => Promise<ResponseError[] | undefined>;
 }) {
-  const [_, action] = useActionState(formAction, undefined);
+  const [state, action] = useActionState(formAction, undefined);
   const [isPending, startTransition] = useTransition();
   function onSubmit() {
     startTransition(() => {
@@ -44,6 +49,7 @@ export default function DeleteItem({
             Αυτή η διαδικασία είναι μόνιμή! Θες αν συνεχίσεις?
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {state && <ServerErrors errors={state} />}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Ακύρωσή</AlertDialogCancel>
           <Button

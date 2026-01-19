@@ -1,4 +1,4 @@
-type ResponseError = { message: string };
+export type ResponseError = { message: string };
 export function toResponseError(data: unknown): ResponseError[] | undefined {
   if (typeof data === "object" && data && "errors" in data) {
     if (Array.isArray(data.errors) && data.errors) {

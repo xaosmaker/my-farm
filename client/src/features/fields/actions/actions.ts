@@ -77,7 +77,7 @@ export async function updateFieldAction(
   return undefined;
 }
 
-export async function deleteFieldAction(_previousState: undefined, id: string) {
+export async function deleteFieldAction(_previousState: unknown, id: string) {
   const res = await baseRequest({
     url: `${SERVER_URL}/api/fields/${id}`,
     method: "DELETE",
@@ -86,5 +86,6 @@ export async function deleteFieldAction(_previousState: undefined, id: string) {
   if (res.ok) {
     redirect("/fields");
   }
-  return undefined;
+  const data = await res.json();
+  return toResponseError(data);
 }

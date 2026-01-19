@@ -68,7 +68,7 @@ export async function createSeasonAction(
   return toResponseError(data);
 }
 export async function deleteSeasonAction(
-  _prevState: undefined,
+  _prevState: unknown,
   seasonId: string,
 ) {
   const res = await baseRequest({
@@ -79,5 +79,6 @@ export async function deleteSeasonAction(
   if (res.ok) {
     redirect("/fields");
   }
-  return undefined;
+  const data = await res.json();
+  return toResponseError(data);
 }

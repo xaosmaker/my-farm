@@ -32,7 +32,8 @@ export async function deleteJobAction(
   if (res.ok) {
     redirect("/seasons");
   }
-  return undefined;
+  const body = await res.json();
+  return toResponseError(body);
 }
 
 export async function createJobAction(_prevState: unknown, data: JobFormData) {

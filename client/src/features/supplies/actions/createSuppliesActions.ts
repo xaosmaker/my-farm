@@ -1,6 +1,7 @@
 "use server";
 
 import { baseRequest } from "@/lib/baseRequest";
+import { toResponseError } from "@/lib/responseError";
 import { SERVER_URL } from "@/lib/serverUrl";
 import { redirect } from "next/navigation";
 
@@ -41,7 +42,7 @@ export async function createSupplyAction(_state: undefined, formData: unknown) {
   return undefined;
 }
 
-export async function deleteSupplyAction(_prevState: undefined, id: string) {
+export async function deleteSupplyAction(_prevState: unknown, id: string) {
   const res = await baseRequest({
     url: `${SERVER_URL}/api/supplies/${id}`,
     method: "DELETE",
@@ -50,5 +51,6 @@ export async function deleteSupplyAction(_prevState: undefined, id: string) {
   if (res.ok) {
     redirect("/supplies");
   }
-  return undefined;
+  const data = await res.json();
+  return toResponseError(data);
 }
