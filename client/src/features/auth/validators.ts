@@ -5,6 +5,9 @@ export const loginValidate = z.object({
   password: z.string().nonempty("This Field is required"),
 });
 
+export const emailValidator = z.object({
+  email: z.email("Enter a valid email"),
+});
 export const registerValidate = z
   .object({
     email: z.email("Enter a valid email"),
@@ -33,3 +36,4 @@ export const registerValidate = z
 
 export type LoginFormData = z.infer<typeof loginValidate>;
 export type RegFormData = z.infer<typeof registerValidate>;
+export type EmailFormData = z.infer<typeof emailValidator>;

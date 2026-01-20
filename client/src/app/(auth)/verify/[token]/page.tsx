@@ -1,7 +1,9 @@
 "use server";
 import ServerErrors from "@/components/ServerErrors";
+import { Button } from "@/components/ui/button";
 import { verifyEmailAction } from "@/features/auth/actions/authActions";
 import { auth } from "@/lib/auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function VerifyPage({
@@ -21,11 +23,18 @@ export default async function VerifyPage({
   if (state.success) {
     redirect("/");
   }
+  await new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
-      <p>waiting form verification</p>
+    <div className="flex h-full w-full flex-col items-center justify-center gap-2">
       <div>{state.errors && <ServerErrors errors={state.errors} />}</div>
+      <Button asChild>
+        <Link href="/verify/resend" className="">
+          Resend Verification Code
+        </Link>
+      </Button>
     </div>
   );
 }

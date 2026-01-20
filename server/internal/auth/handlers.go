@@ -13,11 +13,11 @@ import (
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 	"github.com/xaosmaker/server/internal/utils"
-	"gopkg.in/gomail.v2"
 )
 
 const (
-	expires = time.Hour
+	expires       = time.Hour
+	verifyExpires = time.Hour * 2
 )
 
 func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
@@ -92,13 +92,52 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
+
+	rd := struct {
+		Email string `json:"email" validate:"required"`
+	}{}
+
+	if httpErr := httpx.DecodeAndValidate(r, &rd); httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+	user, err := q.DB.GetUserByEmailNotActive(r.Context(), rd.Email)
+	if err != nil {
+		w.WriteHeader(200)
+		return
+	}
+
+	hostAddr := os.Getenv("NEXTAUTH_URL")
+	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
+
+	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, verifyExpires)
+	if err != nil {
+		httpx.GeneralError(500, nil)(w, r)
+		return
+	}
+	m := utils.MailMessage(user.Email, "Confirmation Email",
+		fmt.Sprintf("Hello %v welcome to My farm to activate your account pls click on this link\n %v/verify/%v", user.Email, hostAddr, jwt),
+	)
+
+	d := utils.MailDialer()
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(err)
+		httpx.GeneralError(500, nil)(w, r)
+		return
+	}
+	w.WriteHeader(200)
+
+}
 func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
+	//TODO: later check if the user exists and if the users exists more option
 	rd := struct {
 		Token string `json:"token" validate:"required"`
 	}{}
 
 	if httpErr := httpx.DecodeAndValidate(r, &rd); httpErr != nil {
 		httpErr(w, r)
+		return
 	}
 
 	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
@@ -152,30 +191,23 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	//TODO: finish emailVerification
 
-	hostAddr, _ := os.LookupEnv("NEXTAUTH_URL")
-	hostSmtpEmail, _ := os.LookupEnv("EMAIL_HOST_USER")
-	hostSmtpPassword, _ := os.LookupEnv("EMAIL_HOST_PASSWORD")
-	hostSmtp, _ := os.LookupEnv("EMAIL_HOST")
-	hostSmtpPort, _ := os.LookupEnv("EMAIL_PORT")
-	hostSmtpPortNumber, err := strconv.Atoi(hostSmtpPort)
+	hostAddr := os.Getenv("NEXTAUTH_URL")
 	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
 
+	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, verifyExpires)
 	if err != nil {
 		httpx.GeneralError(500, nil)(w, r)
 		return
 	}
+	m := utils.MailMessage(user.Email, "Confirmation Email",
+		fmt.Sprintf("Hello %v welcome to My farm to activate your account pls click on this link\n %v/verify/%v", user.Email, hostAddr, jwt),
+	)
 
-	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, time.Hour*2)
-	m := gomail.NewMessage()
-
-	m.SetHeader("From", hostSmtpEmail)
-	m.SetHeader("To", user.Email)
-	m.SetBody("text/html", fmt.Sprintf("Hello %v welcome to My farm to activate your account pls click on this link\n %v/verify/%v", user.Email, hostAddr, jwt))
-
-	d := gomail.NewDialer(hostSmtp, hostSmtpPortNumber, hostSmtpEmail, hostSmtpPassword)
+	d := utils.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
-		panic(err)
+		httpx.GeneralError(500, nil)(w, r)
+		return
 	}
 
 	w.WriteHeader(201)

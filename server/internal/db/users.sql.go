@@ -141,6 +141,27 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	return i, err
 }
 
+const getUserByEmailNotActive = `-- name: GetUserByEmailNotActive :one
+SELECT id, email, password, farm_id, created_at, updated_at, deleted_at, is_active FROM users
+WHERE users.deleted_at IS NULL AND email = $1
+`
+
+func (q *Queries) GetUserByEmailNotActive(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmailNotActive, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.IsActive,
+	)
+	return i, err
+}
+
 const getUserByIdWithSettings = `-- name: GetUserByIdWithSettings :one
 SELECT users.id, email, password, farm_id, users.created_at, users.updated_at, users.deleted_at, is_active, settings.id, user_id, land_unit, settings.created_at, settings.updated_at, settings.deleted_at FROM users
 JOIN settings

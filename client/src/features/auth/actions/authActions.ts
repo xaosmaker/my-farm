@@ -1,6 +1,6 @@
 "use server";
 
-import { RegFormData } from "../validators";
+import { EmailFormData, RegFormData } from "../validators";
 import { SERVER_URL } from "@/lib/serverUrl";
 import { toResponseError } from "@/lib/responseError";
 import { redirect } from "next/navigation";
@@ -21,6 +21,24 @@ export async function createUserAction(
     // return { success: true, errors: undefined };
   }
 
+  const data = await res.json();
+  return { success: false, errors: toResponseError(data) };
+}
+
+export async function resendVerifyEmailAction(
+  _prevState: unknown,
+  formData: EmailFormData,
+) {
+  const res = await fetch(`${SERVER_URL}/api/users/resendverify`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+  if (res.ok) {
+    return { success: true, errors: undefined };
+  }
   const data = await res.json();
   return { success: false, errors: toResponseError(data) };
 }
