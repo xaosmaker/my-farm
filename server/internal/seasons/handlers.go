@@ -68,20 +68,19 @@ func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// here we check if the finishSeason date in > the last job
-	// then finish season can't be lower than the last job
-	if seasonBoby.FinishSeason != nil {
-		finishSeasonTime := *utils.UnsafeStrToTimeConverter(seasonBoby.FinishSeason)
-		lastJob, _ := q.DB.GetLastJobBySeasonId(r.Context(), seasonId)
-		if lastJob.JobDate.After(finishSeasonTime) {
-			httpx.GeneralError(400, fmt.Sprintf("The Date to finish season must be greater of the last job: greater Than %v", lastJob.JobDate))(w, r)
-			return
-		}
-	}
 	// hehe we check if the startSeason < the first job
 	// the startSeason can't be greater than the first job
+
 	if seasonBoby.StartSeason != nil {
+
 		startSeason := *utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason)
+		if lastSeason, err := q.DB.GetLastFinishSeason(r.Context(), season.FieldID); err == nil {
+			if startSeason.Before(*lastSeason.FinishSeason) {
+				httpx.GeneralError(400, fmt.Sprintf("season can't start before the previous season create season after %v", lastSeason.FinishSeason))(w, r)
+				return
+
+			}
+		}
 		firstJob, err := q.DB.GetFirstJobBySeasonId(r.Context(), seasonId)
 		if err == nil && firstJob.JobDate.Before(startSeason) {
 			httpx.GeneralError(400, fmt.Sprintf("The Date to start season must be lower of the first job: lower Than %v", firstJob.JobDate))(w, r)
@@ -93,6 +92,27 @@ func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
 	if season.FinishSeason != nil {
 		httpx.GeneralError(400, "Cannot Edit season when a season is finished")(w, r)
 		return
+	}
+
+	// here we check if the finishSeason date in > the last job
+	// then finish season can't be lower than the last job
+	if seasonBoby.FinishSeason != nil {
+		finishSeasonTime := *utils.UnsafeStrToTimeConverter(seasonBoby.FinishSeason)
+		lastJob, _ := q.DB.GetLastJobBySeasonId(r.Context(), seasonId)
+		if lastJob.JobDate.After(finishSeasonTime) {
+			httpx.GeneralError(400, fmt.Sprintf("The Date to finish season must be greater of the last job: greater Than %v", lastJob.JobDate))(w, r)
+			return
+		}
+		startSeason := season.StartSeason
+		if seasonBoby.StartSeason != nil {
+			startSeason = *utils.UnsafeStrToTimeConverter(seasonBoby.StartSeason)
+
+		}
+		if startSeason.After(finishSeasonTime) {
+			httpx.GeneralError(400, "finish seasons can't be before start season")(w, r)
+			return
+
+		}
 	}
 
 	if seasonBoby.AreaInMeters != nil {
@@ -206,6 +226,15 @@ func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
 	if httpErr != nil {
 		httpErr(w, r)
 		return
+	}
+
+	if lastSeason, err := q.DB.GetLastFinishSeason(r.Context(), fieldId); err == nil {
+		curentStartSeason := *utils.UnsafeStrToTimeConverter(&seasonBoby.StartSeason)
+		if curentStartSeason.Before(*lastSeason.FinishSeason) {
+			httpx.GeneralError(400, fmt.Sprintf("season can't start before the previous season create season after %v", lastSeason.FinishSeason))(w, r)
+			return
+
+		}
 	}
 
 	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{

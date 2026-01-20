@@ -144,6 +144,32 @@ func (q *Queries) GetFarmIdFromSeasonId(ctx context.Context, id int64) (int64, e
 	return farm_id, err
 }
 
+const getLastFinishSeason = `-- name: GetLastFinishSeason :one
+select id, field_id, name, start_season, finish_season, crop, boundary, area_in_meters, created_at, updated_at, deleted_at from seasons WHERE finish_season IS NOT NULL
+AND field_id= $1
+ORDER BY finish_season desc
+LIMIT 1
+`
+
+func (q *Queries) GetLastFinishSeason(ctx context.Context, fieldID int64) (Season, error) {
+	row := q.db.QueryRow(ctx, getLastFinishSeason, fieldID)
+	var i Season
+	err := row.Scan(
+		&i.ID,
+		&i.FieldID,
+		&i.Name,
+		&i.StartSeason,
+		&i.FinishSeason,
+		&i.Crop,
+		&i.Boundary,
+		&i.AreaInMeters,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const getRemainingAreaOfFieldForSeason = `-- name: GetRemainingAreaOfFieldForSeason :one
 SELECT
     f.area_in_meters - COALESCE(SUM(s.area_in_meters), 0) AS field_remaining_area

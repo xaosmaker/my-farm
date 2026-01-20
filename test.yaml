@@ -1,11 +1,11 @@
 services:
-  farm-server:
-    container_name: farm-server
+  farm-server-test:
+    container_name: farm-server-test
     build:
       context: .
       dockerfile: ./docker/test/server/Dockerfile
     ports:
-      - "8090:8090"
+      - "8010:8090"
     expose:
       - 8090
     env_file:
@@ -13,8 +13,8 @@ services:
     volumes:
       - ./server:/server
     networks:
-      - "farm_nw"
-      - farm_db_nw
+      - "farm_test_nw"
+      - farm_test_db_nw
     entrypoint: /data/start_server.sh
     command: go test ./... -coverpkg=./... -coverprofile=coverage.out -count=1
     # command: go run .
@@ -41,9 +41,7 @@ services:
     env_file:
       - ./.test.env
     networks:
-      - farm_db_nw
+      - farm_test_db_nw
 networks:
-  farm_nw:
-  farm_db_nw:
-  local-nginx-net:
-    external: true
+  farm_test_nw:
+  farm_test_db_nw:

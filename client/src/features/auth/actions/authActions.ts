@@ -3,7 +3,6 @@
 import { EmailFormData, RegFormData } from "../validators";
 import { SERVER_URL } from "@/lib/serverUrl";
 import { toResponseError } from "@/lib/responseError";
-import { redirect } from "next/navigation";
 
 export async function createUserAction(
   _prevState: unknown,
@@ -17,8 +16,7 @@ export async function createUserAction(
     body: JSON.stringify(formData),
   });
   if (res.ok) {
-    redirect("/login");
-    // return { success: true, errors: undefined };
+    return { success: true, errors: undefined };
   }
 
   const data = await res.json();

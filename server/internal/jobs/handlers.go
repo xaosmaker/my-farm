@@ -109,6 +109,10 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 		httpx.GeneralError(400, "Cannot Add Job when a season is finished")(w, r)
 		return
 	}
+	if requestData.JobDate.Before(season.StartSeason) {
+		httpx.GeneralError(400, "Cannot add job before the season start")(w, r)
+		return
+	}
 
 	job, err := q.DB.CreateJob(r.Context(), db.CreateJobParams{
 		JobType:      requestData.JobType,

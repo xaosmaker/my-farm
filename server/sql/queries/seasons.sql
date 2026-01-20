@@ -12,6 +12,12 @@ WHERE s.deleted_at IS NULL AND supplies.deleted_at IS NULL
 AND s.field_id = $1
 ORDER BY finish_season IS NULL DESC, updated_at DESC;
 
+-- name: GetLastFinishSeason :one
+select * from seasons WHERE finish_season IS NOT NULL
+AND field_id= $1
+ORDER BY finish_season desc
+LIMIT 1;
+
 -- name: GetRemainingAreaOfFieldForSeason :one
 SELECT
     f.area_in_meters - COALESCE(SUM(s.area_in_meters), 0) AS field_remaining_area
