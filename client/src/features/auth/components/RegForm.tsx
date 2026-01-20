@@ -1,0 +1,161 @@
+"use client";
+import { Button } from "@/components/ui/button";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { RegFormData, registerValidate } from "../validators";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { CheckCircle2Icon, Eye, EyeOff } from "lucide-react";
+import { useActionState, useState, useTransition } from "react";
+import BaseForm from "@/components/BaseForm";
+import ControlledInput from "@/components/ControlledInput";
+import { createUserAction } from "../actions/authActions";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+export default function RegForm({
+  cardAction,
+}: {
+  cardAction?: React.ReactNode;
+}) {
+  const { control, reset, handleSubmit } = useForm<RegFormData>({
+    mode: "onChange",
+    resolver: zodResolver(registerValidate),
+    shouldFocusError: true,
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showCPassword, setShowCPassword] = useState<boolean>(false);
+  const [state, action] = useActionState(createUserAction, undefined);
+  const [isPending, startTransition] = useTransition();
+
+  function onSubmit(data: RegFormData) {
+    startTransition(() => {
+      action(data);
+    });
+  }
+
+  return (
+    <BaseForm
+      cardAction={cardAction}
+      cardTitle={`My Farm Register`}
+      cardDescription="Create account for My Farm"
+      buttonChildren={
+        <>
+          <Button
+            disabled={isPending}
+            onClick={() => reset()}
+            type="button"
+            variant="outline"
+          >
+            Reset
+          </Button>
+          <Button type="submit" form="login-form" disabled={isPending}>
+            Register
+          </Button>
+        </>
+      }
+    >
+      <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+        <FieldGroup>
+          <ControlledInput
+            control={control}
+            name="email"
+            type="email"
+            label="email"
+          />
+          <Controller
+            control={control}
+            name="password"
+            render={({ fieldState, field }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+
+                <InputGroup>
+                  <InputGroupInput
+                    type={showPassword ? "text" : "password"}
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    id="password"
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      aria-label="Show password"
+                      title="Show password"
+                      size="icon-xs"
+                      onClick={() => {
+                        setShowPassword((b) => !b);
+                      }}
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ fieldState, field }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="password">Confirm Password</FieldLabel>
+
+                <InputGroup>
+                  <InputGroupInput
+                    type={showCPassword ? "text" : "password"}
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    id="password"
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      aria-label="Show password"
+                      title="Show password"
+                      size="icon-xs"
+                      onClick={() => {
+                        setShowCPassword((b) => !b);
+                      }}
+                    >
+                      {showCPassword ? <EyeOff /> : <Eye />}
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        </FieldGroup>
+
+        {state?.success && (
+          <Alert variant="default" className="mt-10 text-green-500">
+            <CheckCircle2Icon />
+            <AlertTitle>Your account created successfully</AlertTitle>
+            <AlertDescription className="text-green-500">
+              Go to your email and follow the instruction
+            </AlertDescription>
+          </Alert>
+        )}
+        {state?.errors && <FieldError className="pt-2" errors={state.errors} />}
+      </form>
+    </BaseForm>
+  );
+}

@@ -34,6 +34,7 @@ func MainRouter(con *pgxpool.Pool) *chi.Mux {
 	r.Use(authQ.AuthMiddleware)
 	r.Post("/api/users/login", authQ.LoginUser)
 	r.Post("/api/users/create", authQ.CreateUser)
+	r.Post("/api/users/verify", authQ.VerifyUser)
 	r.Mount("/api/farms", farm.FarmRouter(con))
 	r.Mount("/api/fields", field.FieldRouter(con))
 	r.Mount("/api/jobs", jobs.JobsRouter(con))

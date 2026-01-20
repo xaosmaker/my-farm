@@ -22,7 +22,11 @@ import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
+export default function LoginForm({
+  cardAction,
+}: {
+  cardAction?: React.ReactNode;
+}) {
   const router = useRouter();
   const { control, reset, handleSubmit, formState, setError } =
     useForm<LoginFormData>({
@@ -34,8 +38,10 @@ export default function LoginForm() {
         password: "",
       },
     });
+  console.log(formState, formState.errors, formState.isDirty);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   async function onSubmit(data: LoginFormData) {
+    console.log("enter Here");
     const res = await signIn("credentials", { redirect: false, ...data });
     if (res.error) {
       setError("root", { type: "value", message: "Invalid Credentials" });
@@ -47,6 +53,7 @@ export default function LoginForm() {
 
   return (
     <BaseForm
+      cardAction={cardAction}
       cardTitle="My Farm Login"
       cardDescription="Login to your My Farm account"
       buttonChildren={

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -12,7 +13,7 @@ import (
 
 func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, "/login") || strings.HasSuffix(r.URL.Path, "/create") {
+		if strings.HasSuffix(r.URL.Path, "/login") || strings.HasSuffix(r.URL.Path, "/create") || strings.HasSuffix(r.URL.Path, "/verify") {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -23,7 +24,8 @@ func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 			httpx.GeneralError(401, "Login to continue")(w, r)
 			return
 		}
-		strId, err := ValidateJwt(val)
+		jwtKey := os.Getenv("JWT_KEY")
+		strId, err := ValidateJwt(val, jwtKey)
 
 		if err != nil {
 			fmt.Println("auth Error 2", err)

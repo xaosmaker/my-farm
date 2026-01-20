@@ -3,13 +3,17 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
+
+	"github.com/xaosmaker/server/internal/db"
+	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/utils"
+	"gopkg.in/gomail.v2"
 )
 
 const (
@@ -79,7 +83,7 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jUser, err := json.Marshal(s)
-
+	//TODO: need to check later
 	w.WriteHeader(200)
 	if err == nil {
 
@@ -88,11 +92,42 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
+	rd := struct {
+		Token string `json:"token" validate:"required"`
+	}{}
+
+	if httpErr := httpx.DecodeAndValidate(r, &rd); httpErr != nil {
+		httpErr(w, r)
+	}
+
+	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
+	userId, err := ValidateJwt(rd.Token, hostStmtpVerKEY)
+	if err != nil {
+		httpx.GeneralError(400, "Validation failed")(w, r)
+		return
+	}
+	userIdNumber, err := strconv.ParseInt(userId, 10, 64)
+	if err != nil {
+		httpx.GeneralError(500, nil)(w, r)
+		return
+	}
+	err = q.DB.UpdateUser(r.Context(), db.UpdateUserParams{
+		ID:       userIdNumber,
+		IsActive: utils.ToPtr(true),
+	})
+
+	if err != nil {
+		httpx.GeneralError(400, err.Error())(w, r)
+		return
+	}
+	w.WriteHeader(200)
+}
 
 func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	type UserRequest struct {
 		Email           string `json:"email" validate:"required,email"`
-		Password        string `json:"password" validate:"required,strongPassword=12"`
+		Password        string `json:"password" validate:"required,strongPassword=8"`
 		ConfirmPassword string `json:"confirmPassword" validate:"required,eqfield=Password"`
 	}
 	reqUser := UserRequest{}
@@ -102,9 +137,8 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(reqUser)
 	password, _ := HashPassword(reqUser.Password)
-	err := q.DB.CreateUser(r.Context(), db.CreateUserParams{
+	user, err := q.DB.CreateUser(r.Context(), db.CreateUserParams{
 		Email:    reqUser.Email,
 		Password: password,
 	})
@@ -116,6 +150,34 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 		httpx.GeneralError(400, err.Error())(w, r)
 		return
 	}
+	//TODO: finish emailVerification
+
+	hostAddr, _ := os.LookupEnv("NEXTAUTH_URL")
+	hostSmtpEmail, _ := os.LookupEnv("EMAIL_HOST_USER")
+	hostSmtpPassword, _ := os.LookupEnv("EMAIL_HOST_PASSWORD")
+	hostSmtp, _ := os.LookupEnv("EMAIL_HOST")
+	hostSmtpPort, _ := os.LookupEnv("EMAIL_PORT")
+	hostSmtpPortNumber, err := strconv.Atoi(hostSmtpPort)
+	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
+
+	if err != nil {
+		httpx.GeneralError(500, nil)(w, r)
+		return
+	}
+
+	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, time.Hour*2)
+	m := gomail.NewMessage()
+
+	m.SetHeader("From", hostSmtpEmail)
+	m.SetHeader("To", user.Email)
+	m.SetBody("text/html", fmt.Sprintf("Hello %v welcome to My farm to activate your account pls click on this link\n %v/verify/%v", user.Email, hostAddr, jwt))
+
+	d := gomail.NewDialer(hostSmtp, hostSmtpPortNumber, hostSmtpEmail, hostSmtpPassword)
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+
 	w.WriteHeader(201)
 
 }

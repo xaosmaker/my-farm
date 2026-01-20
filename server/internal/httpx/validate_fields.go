@@ -32,7 +32,7 @@ func formatValidator(f validator.FieldError) string {
 	case "jobtype":
 		return fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(JobTypes(), ", "))
 	case "strongpassword":
-		return fmt.Sprintf("%v should contains Capital letters, one of:'@!$',digits and has length greater than %v", f.Field(), f.Param())
+		return fmt.Sprintf("%v should contains Capital letters, digits and has length greater than %v", f.Field(), f.Param())
 	case "eqfield":
 		return fmt.Sprintf("%v mismatch %v", f.Field(), f.Param())
 	case "supplytypeval":

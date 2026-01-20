@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"slices"
 	"strconv"
-	"strings"
 	"time"
 	"unicode"
 
@@ -84,10 +83,6 @@ func strongPassword(sl validator.FieldLevel) bool {
 	hasLength := len(field)
 	if hasLength < int(length) {
 		return false
-	}
-	if !strings.ContainsAny(field, "@$!") {
-		return false
-
 	}
 
 	for _, letter := range field {

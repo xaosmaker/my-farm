@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const createUser = `-- name: CreateUser :exec
+const createUser = `-- name: CreateUser :one
 WITH new_user AS (
 INSERT INTO users (
 created_at,
@@ -21,13 +21,17 @@ password
 CURRENT_TIMESTAMP,
 CURRENT_TIMESTAMP,
     $1,
-    $2
+    $2 
 )RETURNING id, email, password, farm_id, created_at, updated_at, deleted_at, is_active
-)
+),
+new_settings as(
+
 INSERT INTO settings(
 user_id
 )
 select id from new_user
+)
+select id, email, password, farm_id, created_at, updated_at, deleted_at, is_active from new_user
 `
 
 type CreateUserParams struct {
@@ -35,9 +39,31 @@ type CreateUserParams struct {
 	Password string
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.db.Exec(ctx, createUser, arg.Email, arg.Password)
-	return err
+type CreateUserRow struct {
+	ID        int64
+	Email     string
+	Password  string
+	FarmID    *int64
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
+	DeletedAt *time.Time
+	IsActive  bool
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Password)
+	var i CreateUserRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.FarmID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.IsActive,
+	)
+	return i, err
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
@@ -159,4 +185,30 @@ func (q *Queries) GetUserByIdWithSettings(ctx context.Context, id int64) (GetUse
 		&i.DeletedAt_2,
 	)
 	return i, err
+}
+
+const updateUser = `-- name: UpdateUser :exec
+UPDATE users SET
+password = COALESCE($2,password),
+is_active = COALESCE($3,is_active),
+farm_id = COALESCE($4,farm_id),
+updated_at = now()
+WHERE id = $1
+`
+
+type UpdateUserParams struct {
+	ID       int64
+	Password *string
+	IsActive *bool
+	FarmID   *int64
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.Exec(ctx, updateUser,
+		arg.ID,
+		arg.Password,
+		arg.IsActive,
+		arg.FarmID,
+	)
+	return err
 }

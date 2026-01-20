@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -13,8 +12,6 @@ const (
 	TokenTypeAccess TokenType = "ai-farm-access"
 )
 
-var jwtKey string = os.Getenv("JWT_KEY")
-
 func MakeJwt(userID, singingKey string, expiresIn time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    string(TokenTypeAccess),
@@ -25,12 +22,12 @@ func MakeJwt(userID, singingKey string, expiresIn time.Duration) (string, error)
 	return token.SignedString([]byte(singingKey))
 }
 
-func ValidateJwt(tokenString string) (string, error) {
+func ValidateJwt(tokenString, verKey string) (string, error) {
 	claims := jwt.RegisteredClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (any, error) {
 		// since we only use the one private key to sign the tokens,
 		// we also only use its public counter part to verify
-		return []byte(jwtKey), nil
+		return []byte(verKey), nil
 	})
 
 	if err != nil {

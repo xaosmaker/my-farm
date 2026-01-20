@@ -17,11 +17,13 @@ export default function BaseForm({
   buttonChildren,
   cardTitle,
   cardDescription,
+  cardAction,
 }: {
   children: React.ReactNode;
   buttonChildren: React.ReactNode;
   cardTitle: string;
   cardDescription: string;
+  cardAction?: React.ReactNode;
 }) {
   const router = useRouter();
   return (
@@ -29,6 +31,7 @@ export default function BaseForm({
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
+        {cardAction}
       </CardHeader>
       <CardContent>{children}</CardContent>
       <CardFooter>

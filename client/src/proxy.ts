@@ -12,7 +12,7 @@ export default async function proxy(req: NextRequest) {
 export const config = {
   // matcher: ["/((?!login|_next/static|_next/image|api).*)"],
 
-  matcher: ["/((?!login|_next/static|api).*)"],
+  matcher: ["/((?!login|_next/static|api|register|verify).*)"],
 
   // matcher: [],
 };
