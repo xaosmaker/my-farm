@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Field,
   FieldError,
@@ -21,6 +22,7 @@ import { useState } from "react";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export default function LoginForm({
   cardAction,
@@ -28,6 +30,7 @@ export default function LoginForm({
   cardAction?: React.ReactNode;
 }) {
   const router = useRouter();
+  const t = useTranslations("Login");
   const { control, reset, handleSubmit, formState, setError } =
     useForm<LoginFormData>({
       mode: "onChange",
@@ -52,8 +55,8 @@ export default function LoginForm({
   return (
     <BaseForm
       cardAction={cardAction}
-      cardTitle="My Farm Login"
-      cardDescription="Login to your My Farm account"
+      cardTitle={t("title")}
+      cardDescription={t("desc")}
       buttonChildren={
         <>
           <Button
@@ -69,7 +72,7 @@ export default function LoginForm({
             form="login-form"
             disabled={formState.isSubmitting}
           >
-            Login
+            {t("button")}
           </Button>
         </>
       }
@@ -80,14 +83,14 @@ export default function LoginForm({
             control={control}
             name="email"
             type="email"
-            label="email"
+            label={t("email")}
           />
           <Controller
             control={control}
             name="password"
             render={({ fieldState, field }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <FieldLabel htmlFor="password">{t("password")}</FieldLabel>
 
                 <InputGroup>
                   <InputGroupInput
@@ -99,7 +102,7 @@ export default function LoginForm({
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton
                       aria-label="Show password"
-                      title="Show password"
+                      title={t("showPassword")}
                       size="icon-xs"
                       onClick={() => {
                         setShowPassword((b) => !b);

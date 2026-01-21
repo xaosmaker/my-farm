@@ -1,1 +1,10 @@
-{}
+{
+  "Login": {
+    "title": "My Farm Login",
+    "desc": "Login to your My Farm account",
+    "email": "Email",
+    "password": "Password",
+    "button": "Login",
+    "showPassword": "Show Password"
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 import { redirect, usePathname } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,

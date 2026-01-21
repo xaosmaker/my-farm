@@ -1,1 +1,10 @@
-{}
+{
+  "Login": {
+    "title": "Είσοδος My Farm",
+    "desc": "Είσοδος στον λογαριασμό σας My Farm",
+    "email": "Email",
+    "password": "Κωδικός",
+    "button": "Είσοδος",
+    "showPassword": "Δες τον κωδικό σου"
+  }
+}
