@@ -11,33 +11,35 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 // Menu items.
 const items = [
   {
-    title: "Αρχική",
+    title: "home",
     url: "/",
     icon: Home,
   },
   {
-    title: "Χωράφια",
+    title: "fields",
     url: "/fields",
     icon: LandPlot,
   },
   {
-    title: "Εφόδια",
+    title: "supplies",
     url: "/supplies",
     icon: Container,
   },
 
   {
-    title: "Σεζόνς",
+    title: "seasons",
     url: "/seasons",
     icon: Container,
   },
 ];
 
 export function AppSidebar() {
+  const t = useTranslations("Navigation");
   return (
     <Sidebar>
       <SidebarContent>
@@ -50,7 +52,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <Link href={item.url}>
                       <item.icon />
-                      <span>{item.title}</span>
+                      <span>{t(item.title)}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

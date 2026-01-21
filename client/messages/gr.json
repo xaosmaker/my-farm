@@ -17,5 +17,13 @@
     "button": "Εγγραφή",
     "showPassword": "Δες τον κωδικό σου",
     "loginLink": "Είσοδος"
+  },
+  "Navigation": {
+    "home": "Αρχική",
+    "settings": "Ρυθμίσεις",
+    "fields": "Χωράφια",
+    "supplies": "Εφόδια",
+    "seasons": "Σεζόνς",
+    "signOut": "Αποσύνδεση"
   }
 }

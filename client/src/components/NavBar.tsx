@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { LogOut, Settings } from "lucide-react";
 import LocaleSwitcher from "./LocaleSwitcher";
+import { useTranslations } from "next-intl";
 
 export default function NavBar({
   children,
@@ -20,6 +21,7 @@ export default function NavBar({
 }) {
   const { data: session } = useSession();
   const url = usePathname();
+  const t = useTranslations("Navigation");
 
   if (session?.user && !session?.user?.farmId && !(url === "/farm/create")) {
     redirect("/farm/create");
@@ -34,14 +36,14 @@ export default function NavBar({
           <DropdownMenuContent>
             <DropdownMenuItem asChild>
               <Link href="/settings" className="flex items-center gap-2">
-                <Settings /> <span>settings</span>
+                <Settings /> <span>{t("settings")}</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <div className="w-full" onClick={() => signOut()}>
                 <LogOut />
-                Sign Out
+                {t("signOut")}
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
