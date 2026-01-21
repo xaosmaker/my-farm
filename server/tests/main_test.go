@@ -21,6 +21,20 @@ var cookie string
 var conn *pgxpool.Pool
 var ctx context.Context
 
+func getIdFromBody(s string) (id string) {
+	id = ""
+	for line := range strings.SplitSeq(s, ",") {
+		if strings.Contains(line, "id") {
+			id = strings.Split(line, ":")[1]
+			break
+
+		}
+	}
+
+	return id
+
+}
+
 func createField(cookie string) fieldResponse {
 
 	req := httptest.NewRequest("POST", "/api/fields", strings.NewReader(`{"name":"randomName","fieldLocation":"randomName","areaInMeters":35000}`))

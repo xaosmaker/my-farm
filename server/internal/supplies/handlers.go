@@ -69,7 +69,7 @@ func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
 	}
 	rd := supplyRequest{}
 	if err := httpx.DecodeAndValidate(r, &rd); err != nil {
-		httpx.GeneralError(400, err)(w, r)
+		err(w, r)
 		return
 	}
 	supply, err := q.DB.CreateSupplies(r.Context(), db.CreateSuppliesParams{
