@@ -300,3 +300,71 @@ func TestGetAllFields(t *testing.T) {
 	}
 
 }
+
+func TestUpdateFields(t *testing.T) {
+
+	nofieldsCookie := loginUserCookie("nofieldsuser@test.com", "test")
+
+	req := httptest.NewRequest("POST", "/api/fields", strings.NewReader(`{"name":"randomName","fieldLocation":"randomName","areaInMeters":35000}`))
+	req.Header.Set("Cookie", nofieldsCookie)
+	field := httptest.NewRecorder()
+	testServer.ServeHTTP(field, req)
+
+	var fieldId string
+	for str := range strings.SplitSeq(field.Body.String(), ",") {
+		if strings.Contains(str, "id") {
+			fieldId = strings.Split(str, ":")[1]
+		}
+
+	}
+
+	cases := []struct {
+		name    string
+		cookie  string
+		fieldId string
+		body    string
+		expCode int
+		expBody []string
+	}{
+		{"wrong path id should fail", cookie, "ss", ``, 400, []string{`{"status":400,"errors":[{"message":"Cant Convert path value to int: id"}]}`}},
+		{"wrong path id should fail", cookie, "1205", ``, 400, []string{`{"status":400,"errors":[{"message":"Field not found"}]}`}},
+		{"update not existing field", nofieldsCookie, "1", ``, 400, []string{`{"status":400,"errors":[{"message":"Field not found"}]}`}},
+		{"update field should fail", nofieldsCookie, "1", ``, 400, []string{`{"status":400,"errors":[{"message":"Field not found"}]}`}},
+		{"update field name should succeed", nofieldsCookie, fieldId, `{"name":"randomName2"}`, 200, []string{`"name":"randomName2"`, `"fieldLocation":"randomName"`, `"areaInMeters":35000`}},
+		{"update field wrong name should fail", nofieldsCookie, fieldId, `{"name":"randomName2!2$"}`, 400, []string{`{"status":400,"errors":[{"message":"name: Name should contain only chars spaces and number"}]}`}},
+		{"update field fieldLocation should succeed", nofieldsCookie, fieldId, `{"fieldLocation":"randomName2"}`, 200, []string{`"name":"randomName2"`, `"fieldLocation":"randomName2"`, `"areaInMeters":35000`}},
+		{"update field areaInMeters should succeed", nofieldsCookie, fieldId, `{"areaInMeters":22}`, 200, []string{`"name":"randomName2"`, `"fieldLocation":"randomName2"`, `"areaInMeters":22`}},
+		{"update field name with existing should fail", cookie, "2", `{"name":"γουρουνια"}`, 400, []string{`{"status":400,"errors":[{"message":"Field already exists with this name"}]}`}},
+	}
+
+	t.Cleanup(func() {
+		req := httptest.NewRequest("DELETE", fmt.Sprintf("/api/fields/%s", fieldId), nil)
+		req.Header.Set("Cookie", nofieldsCookie)
+
+		res := httptest.NewRecorder()
+		testServer.ServeHTTP(res, req)
+	})
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req := httptest.NewRequest("PATCH", fmt.Sprintf("/api/fields/%v", c.fieldId), strings.NewReader(c.body))
+			req.Header.Set("Cookie", c.cookie)
+			res := httptest.NewRecorder()
+			testServer.ServeHTTP(res, req)
+
+			if res.Code != c.expCode {
+
+				t.Fatalf("ecpected code: %v, got: %v with body: %v", c.expCode, res.Code, res.Body)
+			}
+
+			strBody := res.Body.String()
+			for _, exp := range c.expBody {
+				if !strings.Contains(strBody, exp) {
+
+					t.Fatalf("%v dont contain: %v", strBody, exp)
+				}
+
+			}
+
+		})
+	}
+}

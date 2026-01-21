@@ -11,12 +11,15 @@ import (
 	"testing"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/xaosmaker/server/internal/app"
 	"github.com/xaosmaker/server/internal/db"
 )
 
 var testServer *chi.Mux
 var cookie string
+var conn *pgxpool.Pool
+var ctx context.Context
 
 func createField(cookie string) fieldResponse {
 
@@ -69,8 +72,8 @@ func toPtr[T any](val T) *T {
 }
 
 func TestMain(m *testing.M) {
-	ctx := context.Background()
-	conn := db.ConnectDb(ctx)
+	ctx = context.Background()
+	conn = db.ConnectDb(ctx)
 	testServer = app.MainRouter(conn)
 	cookie = loginUserCookie("test@test.com", "test")
 

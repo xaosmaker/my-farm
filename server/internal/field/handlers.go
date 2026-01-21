@@ -46,7 +46,7 @@ func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.GeneralError(400, "Farm Field does not exist")(w, r)
+		httpx.GeneralError(400, "Field not found")(w, r)
 		return
 	}
 
