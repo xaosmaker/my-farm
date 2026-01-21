@@ -96,7 +96,6 @@ export const seasonsTable: ColumnDef<Season>[] = [
   {
     id: "createSeason",
     header: ({ table }) => {
-      console.log(table.options.meta?.formId);
       if (table.options.meta?.formId) {
         return (
           <Link

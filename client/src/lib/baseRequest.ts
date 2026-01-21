@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { auth } from "./auth";
 
 export async function baseRequest({
@@ -11,9 +12,9 @@ export async function baseRequest({
 }) {
   const session = await auth();
   if (!session?.user) {
-    throw new Error("Log in to continue");
+    redirect("/login");
   }
-  return fetch(url, {
+  const res = await fetch(url, {
     method: method,
     headers: {
       "content-type": "application/json",
@@ -21,4 +22,5 @@ export async function baseRequest({
     },
     body: body,
   });
+  return res;
 }

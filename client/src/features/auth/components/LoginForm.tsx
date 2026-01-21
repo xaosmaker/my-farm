@@ -20,7 +20,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 export default function LoginForm({
   cardAction,
@@ -38,10 +38,8 @@ export default function LoginForm({
         password: "",
       },
     });
-  console.log(formState, formState.errors, formState.isDirty);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   async function onSubmit(data: LoginFormData) {
-    console.log("enter Here");
     const res = await signIn("credentials", { redirect: false, ...data });
     if (res.error) {
       setError("root", { type: "value", message: "Invalid Credentials" });

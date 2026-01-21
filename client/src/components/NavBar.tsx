@@ -1,6 +1,6 @@
 "use client";
 import { redirect, usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import {
 } from "./ui/dropdown-menu";
 import Link from "next/link";
 import { LogOut, Settings } from "lucide-react";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function NavBar({
   children,
@@ -27,23 +28,26 @@ export default function NavBar({
     <div className="flex h-14 items-center justify-between px-5 pl-2 shadow shadow-current/10">
       {children}
       <p className="text-2xl font-bold md:text-lg">{session?.user?.farmName}</p>
-      <DropdownMenu>
-        <DropdownMenuTrigger>{session?.user?.email}</DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem asChild>
-            <Link href="/settings" className="flex items-center gap-2">
-              <Settings /> <span>settings</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <div className="w-full" onClick={() => signOut()}>
-              <LogOut />
-              Sign Out
-            </div>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger>{session?.user?.email}</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link href="/settings" className="flex items-center gap-2">
+                <Settings /> <span>settings</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <div className="w-full" onClick={() => signOut()}>
+                <LogOut />
+                Sign Out
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <LocaleSwitcher />
+      </div>
     </div>
   );
 }

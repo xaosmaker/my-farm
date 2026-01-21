@@ -12,7 +12,8 @@
           "src/error/**/*",
           "src/hooks/**/*",
           "src/lib/**/*",
-          "src/types/**/*"
+          "src/types/**/*",
+          "src/i18n/**/*"
         ]
       },
       {

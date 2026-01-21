@@ -27,7 +27,6 @@ export default async function SeasonPage({
   if (!season) {
     return <div>No resourse found</div>;
   }
-  console.log(seasonStatistics);
   return (
     <>
       <ShowFieldPage title={`Σεζόν ${season.fieldName}`}>

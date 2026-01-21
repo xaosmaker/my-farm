@@ -1,14 +1,21 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import NavBar from "@/components/NavBar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { auth } from "@/lib/auth";
 import { SessionProvider } from "next-auth/react";
+import { redirect } from "next/navigation";
 import React from "react";
 
-export default function layout({
+export const dynamic = "force-dynamic";
+export default async function layout({
   children,
 }: {
   children: Readonly<React.ReactNode>;
 }) {
+  const sesion = await auth();
+  if (!sesion?.user) {
+    redirect("/login");
+  }
   return (
     <SidebarProvider>
       <AppSidebar />

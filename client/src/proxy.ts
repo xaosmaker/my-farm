@@ -1,18 +1,14 @@
-import { auth } from "@/lib/auth";
-import { NextRequest, NextResponse } from "next/server";
+// middleware.ts
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
+import { NextRequest } from "next/server";
 
 export default async function proxy(req: NextRequest) {
-  const session = await auth();
-
-  if (!session?.user) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  const intlMiddleware = createMiddleware(routing);
+  const res = intlMiddleware(req);
+  return res;
 }
 
 export const config = {
-  // matcher: ["/((?!login|_next/static|_next/image|api).*)"],
-
-  matcher: ["/((?!login|_next/static|api|register|verify).*)"],
-
-  // matcher: [],
+  matcher: ["/((?!_next|api).*)"],
 };
