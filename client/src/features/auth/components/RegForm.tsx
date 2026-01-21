@@ -21,6 +21,7 @@ import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import { createUserAction } from "../actions/authActions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useTranslations } from "next-intl";
 
 export default function RegForm({
   cardAction,
@@ -41,6 +42,7 @@ export default function RegForm({
   const [showCPassword, setShowCPassword] = useState<boolean>(false);
   const [state, action] = useActionState(createUserAction, undefined);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("Register");
 
   function onSubmit(data: RegFormData) {
     startTransition(() => {
@@ -51,8 +53,8 @@ export default function RegForm({
   return (
     <BaseForm
       cardAction={cardAction}
-      cardTitle={`My Farm Register`}
-      cardDescription="Create account for My Farm"
+      cardTitle={t("title")}
+      cardDescription={t("desc")}
       buttonChildren={
         <>
           <Button
@@ -64,7 +66,7 @@ export default function RegForm({
             Reset
           </Button>
           <Button type="submit" form="login-form" disabled={isPending}>
-            Register
+            {t("button")}
           </Button>
         </>
       }
@@ -75,14 +77,14 @@ export default function RegForm({
             control={control}
             name="email"
             type="email"
-            label="email"
+            label={t("email")}
           />
           <Controller
             control={control}
             name="password"
             render={({ fieldState, field }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <FieldLabel htmlFor="password">{t("password")}</FieldLabel>
 
                 <InputGroup>
                   <InputGroupInput
@@ -94,7 +96,7 @@ export default function RegForm({
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton
                       aria-label="Show password"
-                      title="Show password"
+                      title={t("showPassword")}
                       size="icon-xs"
                       onClick={() => {
                         setShowPassword((b) => !b);
@@ -115,7 +117,7 @@ export default function RegForm({
             name="confirmPassword"
             render={({ fieldState, field }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="password">Confirm Password</FieldLabel>
+                <FieldLabel htmlFor="password">{t("password2")}</FieldLabel>
 
                 <InputGroup>
                   <InputGroupInput
@@ -127,7 +129,7 @@ export default function RegForm({
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton
                       aria-label="Show password"
-                      title="Show password"
+                      title={t("showPassword")}
                       size="icon-xs"
                       onClick={() => {
                         setShowCPassword((b) => !b);

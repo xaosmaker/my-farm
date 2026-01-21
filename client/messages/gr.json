@@ -5,6 +5,17 @@
     "email": "Email",
     "password": "Κωδικός",
     "button": "Είσοδος",
-    "showPassword": "Δες τον κωδικό σου"
+    "showPassword": "Δες τον κωδικό σου",
+    "registerLink": "Εγγραφή"
+  },
+  "Register": {
+    "title": "Δημιουργία λογαριασμού My Farm",
+    "desc": "Δημιουργήστε τον λογαριασμό σάς στο My Farm",
+    "email": "Email",
+    "password": "Κωδικός",
+    "password2": "Επιβεβαίωσή κωδικού",
+    "button": "Εγγραφή",
+    "showPassword": "Δες τον κωδικό σου",
+    "loginLink": "Είσοδος"
   }
 }

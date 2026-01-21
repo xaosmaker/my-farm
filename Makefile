@@ -4,7 +4,7 @@ run-prod:
 	docker compose -f prod.yaml --env-file=.prod.env up -d --remove-orphans
 
 run-watch:
-	docker compose -f local.yaml --env-file=.prod.env up --remove-orphans --watch
+	docker compose -f local.yaml --env-file=.local.env up --remove-orphans --watch
 
 build:
 	docker compose -f local.yaml --env-file=.local.env build --no-cache
