@@ -1,5 +1,5 @@
 import { CardAction } from "@/components/ui/card";
-import RegForm from "@/features/auth/components/RegForm";
+import RegForm from "@/features/auth/forms/RegForm";
 import { auth } from "@/lib/auth";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";

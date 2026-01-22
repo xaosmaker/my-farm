@@ -1,4 +1,38 @@
 {
+  "Errors": {
+    "invalid_email": "Εισάγετε ένα έγκυρο email",
+    "required_password": "Ο κωδικός πρόσβασης είναι υποχρεωτικός",
+    "invalid_password_mismatch": "Οι κωδικοί πρόσβασης δεν ταιριάζουν",
+    "invalid_password_length": "Ο κωδικός πρόσβασης πρέπει να έχει 8 ή περισσότερους χαρακτήρες",
+    "invalid_password_cap_letter": "Ο κωδικός πρόσβασης πρέπει να περιέχει 1 κεφαλαίο γράμμα",
+    "invalid_password_number": "Ο κωδικός πρόσβασης πρέπει να περιέχει 1 αριθμό",
+    "invalid_credentials": "Το email ή ο κωδικός πρόσβασης δεν ταιριάζουν"
+  },
+  "DeleteComponent": {
+    "delete": "Διαγραφή",
+    "deleteTitle": "Είσαι σίγουρος ότι θες να διαγράψεις",
+    "deleteDesc": "Αυτή η διαδικασία είναι μόνιμή! Θες αν συνεχίσεις?",
+    "cancelButton": "Ακύρωσή",
+    "confirmButton": "Διαγραφή"
+  },
+  "EditComponent": {
+    "edit": "Επεξεργασία"
+  },
+  "Columns": {
+    "column": "Στήλες"
+  },
+  "Fields": {
+    "id": "ID",
+    "pageTitle": "Χωράφια",
+    "name": "Χωράφια",
+    "areaInMeters": "Εκταση",
+    "landUnit": "Μοναδα",
+    "fieldLocation": "Τοποθεσία",
+    "mapLocation": "Χάρτης",
+    "createField": "Actions",
+    "comingSoon": "σύντομα κοντά σας",
+    "createFieldButton": "Δημιουργία Χωραφιού"
+  },
   "Login": {
     "title": "Είσοδος My Farm",
     "desc": "Είσοδος στον λογαριασμό σας My Farm",

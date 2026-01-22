@@ -1,4 +1,38 @@
 {
+  "Errors": {
+    "invalid_email": "Enter a valid Email",
+    "required_password": "Password is required",
+    "invalid_password_mismatch": "Passwords mismatch",
+    "invalid_password_length": "Password should be 8 chars and more",
+    "invalid_password_cap_letter": "Password should contain 1 cappital Letter",
+    "invalid_password_number": "Password should contain 1 number",
+    "invalid_credentials": "Invalid Credentials"
+  },
+  "DeleteComponent": {
+    "delete": "Delete",
+    "deleteTitle": "Are you sure you want to delete",
+    "deleteDesc": "This action is Permanet! Do you want to continue",
+    "cancelButton": "Cancel",
+    "confirmButton": "Delete"
+  },
+  "EditComponent": {
+    "edit": "Edit"
+  },
+  "Columns": {
+    "column": "Column"
+  },
+  "Fields": {
+    "id": "ID",
+    "pageTitle": "Fields",
+    "name": "Fields",
+    "areaInMeters": "Area",
+    "landUnit": "Unit",
+    "fieldLocation": "Location",
+    "mapLocation": "Map",
+    "createField": "Actions",
+    "comingSoon": "Coming Soon",
+    "createFieldButton": "Create Field"
+  },
   "Login": {
     "title": "My Farm Login",
     "desc": "Login to your My Farm account",

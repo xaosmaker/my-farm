@@ -1,4 +1,4 @@
-import ResendVerForm from "@/features/auth/components/ResendVerForm";
+import ResendVerForm from "@/features/auth/forms/ResendVerForm";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 

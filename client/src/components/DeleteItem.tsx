@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import ServerErrors from "./ServerErrors";
 import { ResponseError } from "@/lib/responseError";
+import { useTranslations } from "next-intl";
 
 export default function DeleteItem({
   id,
@@ -29,6 +30,7 @@ export default function DeleteItem({
 }) {
   const [state, action] = useActionState(formAction, undefined);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("DeleteComponent");
   function onSubmit() {
     startTransition(() => {
       action(id);
@@ -38,26 +40,29 @@ export default function DeleteItem({
     <AlertDialog>
       <AlertDialogTrigger className="flex gap-2 rounded-xl p-2 text-red-500 hover:bg-current/10">
         <Trash2 />
-        Διαγραφή
+
+        {t("delete")}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-red-600">
-            Είσαι σίγουρος ότι θες να διαγράψεις &apos;{name}&apos;?
+            {t("deleteTitle")} &apos;{name}&apos;?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-red-500">
-            Αυτή η διαδικασία είναι μόνιμή! Θες αν συνεχίσεις?
+            {t("deleteDesc")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         {state && <ServerErrors errors={state} />}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Ακύρωσή</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>
+            {t("cancelButton")}
+          </AlertDialogCancel>
           <Button
             disabled={isPending}
             onClick={onSubmit}
             className="bg-red-500 text-neutral-50"
           >
-            Διαγραφή
+            {t("confirmButton")}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

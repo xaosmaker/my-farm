@@ -1,5 +1,5 @@
 import { CardAction } from "@/components/ui/card";
-import LoginForm from "@/features/auth/components/LoginForm";
+import LoginForm from "@/features/auth/forms/LoginForm";
 import { auth } from "@/lib/auth";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";

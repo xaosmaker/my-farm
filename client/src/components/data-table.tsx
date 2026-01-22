@@ -26,16 +26,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { useTranslations } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   showColumns?: VisibilityState;
   formId?: string;
+  translation?: string;
 }
 
 export function DataTable<TData, TValue>({
   showColumns = {},
+  translation,
   columns,
   data,
   formId = "",
@@ -43,6 +46,8 @@ export function DataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>(showColumns);
+  const t = useTranslations(translation);
+  const tr = useTranslations("Columns");
   const table = useReactTable({
     data,
     columns,
@@ -74,7 +79,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns
+              {tr("column")}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -91,7 +96,7 @@ export function DataTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {translation ? t(column.id) : column.id}
                   </DropdownMenuCheckboxItem>
                 );
               })}

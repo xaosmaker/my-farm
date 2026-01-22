@@ -45,7 +45,7 @@ export default function LoginForm({
   async function onSubmit(data: LoginFormData) {
     const res = await signIn("credentials", { redirect: false, ...data });
     if (res.error) {
-      setError("root", { type: "value", message: "Invalid Credentials" });
+      setError("root", { type: "value", message: "invalid_credentials" });
     } else {
       router.push("/");
       return;
