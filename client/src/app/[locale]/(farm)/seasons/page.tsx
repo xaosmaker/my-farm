@@ -1,16 +1,15 @@
 import { DataTable } from "@/components/data-table";
 import ShowH1 from "@/components/ShowH1";
 import { getAllActiveSeasons } from "@/features/seasons/fetchers";
-import { seasonsTable } from "@/features/seasons/seasonTable";
+import SeasonTable from "@/features/seasons/SeasonTable";
 
 export default async function SeasonsPage() {
   const seasons = await getAllActiveSeasons();
   return (
     <>
       <ShowH1>Σεζόνς</ShowH1>
-      <DataTable
-        data={seasons}
-        columns={seasonsTable}
+      <SeasonTable
+        seasonsData={seasons}
         showColumns={{
           landUnit: false,
           finishSeason: false,

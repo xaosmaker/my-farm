@@ -1,4 +1,3 @@
-import { DataTable } from "@/components/data-table";
 import DeleteItem from "@/components/DeleteItem";
 import EditItem from "@/components/EditItem";
 import ShowFieldGroup from "@/components/ShowFieldGroup";
@@ -7,8 +6,9 @@ import ShowFieldsData from "@/components/ShowFieldsData";
 import { deleteFieldAction } from "@/features/fields/actions/actions";
 import { getFieldById } from "@/features/fields/fieldsFetchers";
 import { getAllSeasons } from "@/features/seasons/fetchers";
-import { seasonsTable } from "@/features/seasons/seasonTable";
+import SeasonTable from "@/features/seasons/SeasonTable";
 import { MapPin } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 export default async function FieldPage({
@@ -17,6 +17,7 @@ export default async function FieldPage({
   params: Promise<{ fieldId: string }>;
 }) {
   const { fieldId } = await params;
+  const t = await getTranslations("Fields.Details");
   const field = await getFieldById(fieldId);
   if (!field) {
     return <div>No Field Found</div>;
@@ -25,21 +26,21 @@ export default async function FieldPage({
 
   return (
     <>
-      <ShowFieldPage title={`Χωράφι ${field.name}`}>
-        <ShowFieldGroup groupName="Λεπτομέρειες">
+      <ShowFieldPage title={`${t("pageTitle")} ${field.name}`}>
+        <ShowFieldGroup groupName={t("details")}>
           <ShowFieldsData
-            fieldName="Τ.Μ τετραγωνικά μέτρα"
+            fieldName={field.landUnit}
             value={field.areaInMeters.toString()}
           />
 
           <ShowFieldsData
-            fieldName="Ιδιόκτητο"
-            value={field.isOwned ? "ναι" : "όχι"}
+            fieldName={t("owned")}
+            value={field.isOwned ? t("yes") : t("no")}
           />
         </ShowFieldGroup>
-        <ShowFieldGroup groupName="Τοποθεσία">
+        <ShowFieldGroup groupName={t("location")}>
           <ShowFieldsData
-            fieldName="Τοποθεσία"
+            fieldName={t("location")}
             value={field.fieldLocation.toString()}
           />
 
@@ -60,16 +61,7 @@ export default async function FieldPage({
           <EditItem url={`/fields/${field.id}/edit`} />
         </ShowFieldGroup>
       </ShowFieldPage>
-      <DataTable
-        formId={field.id.toString()}
-        columns={seasonsTable}
-        data={seasons}
-        showColumns={{
-          landUnit: false,
-          areaInMeters: false,
-          fieldName: false,
-        }}
-      />
+      <SeasonTable fieldId={field.id.toString()} seasonsData={seasons} />
     </>
   );
 }

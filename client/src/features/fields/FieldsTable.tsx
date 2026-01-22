@@ -12,13 +12,12 @@ import ActionMenu from "@/components/ActionMenu";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteFieldAction } from "./actions/actions";
 import EditItem from "@/components/EditItem";
-import { engToGreek } from "@/lib/translateMap";
 import { Field } from "@/types/sharedTypes";
 import { DataTable } from "@/components/data-table";
 import { useTranslations } from "next-intl";
 
 export function FieldsTable({ fieldsData }: { fieldsData: Field[] }) {
-  const t = useTranslations("Fields");
+  const t = useTranslations("Fields.Table");
   const fieldsColumns: ColumnDef<Field>[] = [
     {
       accessorKey: "id",
@@ -50,9 +49,6 @@ export function FieldsTable({ fieldsData }: { fieldsData: Field[] }) {
     {
       accessorKey: "landUnit",
       header: t("landUnit"),
-      cell: ({ row }) => {
-        return engToGreek.get(row.original.landUnit);
-      },
     },
     { accessorKey: "fieldLocation", header: t("fieldLocation") },
     {
@@ -97,7 +93,7 @@ export function FieldsTable({ fieldsData }: { fieldsData: Field[] }) {
     <DataTable
       columns={fieldsColumns}
       data={fieldsData}
-      translation="Fields"
+      translation="Fields.Table"
       showColumns={{
         landUnit: false,
         fieldLocation: false,

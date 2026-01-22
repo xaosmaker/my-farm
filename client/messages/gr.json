@@ -18,20 +18,75 @@
   "EditComponent": {
     "edit": "Επεξεργασία"
   },
+  "Settings": {
+    "pageTitle": "Ρυθμίσεις",
+    "formTitle": "Αλλαγή ρυθμίσεων",
+    "formDesc": "Αλλάξτε τής ρυθμίσεις σας",
+    "formButton": "Αποθήκευση",
+    "landUnit": "Μονάδα μέτρησής εδάφους"
+  },
   "Columns": {
     "column": "Στήλες"
   },
+  "LandUnit": {
+    "stremata": "Στρέμματα",
+    "hectares": "Εκτάρια",
+    "m2": "Τ.Μ"
+  },
+  "Supplies": {
+    "pageTitle": "Εφόδια",
+    "Response": {
+      "chemicals": "Φάρμακά",
+      "fertilizers": "Λιπάσματα",
+      "seeds": "Σπόροι",
+      "diesel": "Πετρέλαιο",
+      "piece": "Τεμάχιο",
+      "KG": "Κιλά",
+      "L": "Λίτρα"
+    },
+    "Table": {
+      "id": "ID",
+      "name": "Όνομα Εφοδίου",
+      "nickname": "Ψευδώνυμο",
+      "supplyType": "Κατηγορία",
+      "measurementUnit": "Μονάδα Μέτρησης",
+      "suppliesAction": "Action"
+    }
+  },
+  "Seasons": {
+    "Table": {
+      "id": "ID",
+      "name": "Όνομα",
+      "fieldName": "Όνομα χωραφιου",
+      "areaInMeters": "Εκταση",
+      "landUnit": "Μοναδα",
+      "cropName": "Καλλιέργεια",
+      "startSeason": "Έναρξη σεζόν",
+      "finishSeason": "Λήξη σεζόν",
+      "createSeason": "Action"
+    }
+  },
   "Fields": {
-    "id": "ID",
+    "Details": {
+      "pageTitle": "Χωράφι",
+      "owned": "Ιδιόκτητο",
+      "yes": "ναι",
+      "no": "όχι",
+      "details": "Λεπτομέρειες",
+      "location": "Τοποθεσία"
+    },
     "pageTitle": "Χωράφια",
-    "name": "Χωράφια",
-    "areaInMeters": "Εκταση",
-    "landUnit": "Μοναδα",
-    "fieldLocation": "Τοποθεσία",
-    "mapLocation": "Χάρτης",
-    "createField": "Actions",
-    "comingSoon": "σύντομα κοντά σας",
-    "createFieldButton": "Δημιουργία Χωραφιού"
+    "Table": {
+      "id": "ID",
+      "name": "Χωράφια",
+      "areaInMeters": "Εκταση",
+      "landUnit": "Μοναδα",
+      "fieldLocation": "Τοποθεσία",
+      "mapLocation": "Χάρτης",
+      "createField": "Actions",
+      "comingSoon": "σύντομα κοντά σας",
+      "createFieldButton": "Δημιουργία Χωραφιού"
+    }
   },
   "Login": {
     "title": "Είσοδος My Farm",

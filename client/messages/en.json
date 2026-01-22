@@ -18,20 +18,75 @@
   "EditComponent": {
     "edit": "Edit"
   },
+  "Settings": {
+    "pageTitle": "Settings",
+    "formTitle": "Change Settings",
+    "formDesc": "Change your settings",
+    "formButton": "Save",
+    "landUnit": "Field Measurement Unit"
+  },
   "Columns": {
     "column": "Column"
   },
+  "LandUnit": {
+    "stremata": "Stremata",
+    "hectares": "Hectares",
+    "m2": "Square Meters"
+  },
+  "Supplies": {
+    "pageTitle": "Supplies",
+    "Response": {
+      "chemicals": "Chemicals",
+      "fertilizers": "Fertilizers",
+      "seeds": "Seeds",
+      "diesel": "Diesel",
+      "piece": "Piece",
+      "KG": "KG",
+      "L": "Litres"
+    },
+    "Table": {
+      "id": "ID",
+      "name": "Supply Name",
+      "nickname": "Nickname",
+      "supplyType": "Category",
+      "measurementUnit": "Measurement Unit",
+      "suppliesAction": "Action"
+    }
+  },
+  "Seasons": {
+    "Table": {
+      "id": "ID",
+      "name": "Name",
+      "fieldName": "Field Name",
+      "areaInMeters": "Area",
+      "landUnit": "Unit",
+      "cropName": "Farming",
+      "startSeason": "Start of season",
+      "finishSeason": "Finish of season",
+      "createSeason": "Action"
+    }
+  },
   "Fields": {
-    "id": "ID",
+    "Details": {
+      "pageTitle": "Field",
+      "owned": "Owned",
+      "yes": "yes",
+      "no": "no",
+      "details": "Details",
+      "location": "Location"
+    },
     "pageTitle": "Fields",
-    "name": "Fields",
-    "areaInMeters": "Area",
-    "landUnit": "Unit",
-    "fieldLocation": "Location",
-    "mapLocation": "Map",
-    "createField": "Actions",
-    "comingSoon": "Coming Soon",
-    "createFieldButton": "Create Field"
+    "Table": {
+      "id": "ID",
+      "name": "Fields",
+      "areaInMeters": "Area",
+      "landUnit": "Unit",
+      "fieldLocation": "Location",
+      "mapLocation": "Map",
+      "createField": "Actions",
+      "comingSoon": "Coming Soon",
+      "createFieldButton": "Create Field"
+    }
   },
   "Login": {
     "title": "My Farm Login",

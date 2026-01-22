@@ -7,8 +7,11 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { useActionState, useTransition } from "react";
 import { updateSettingsAction } from "./actions";
 import { UserSettings } from "@/types/sharedTypes";
+import { useTranslations } from "next-intl";
 
 export default function SettingsForm({ settings }: { settings: UserSettings }) {
+  const t = useTranslations("Settings");
+  const tr = useTranslations("LandUnit");
   const { control, formState, reset, handleSubmit } = useForm<UserSettings>({
     mode: "onChange",
     defaultValues: {
@@ -25,8 +28,8 @@ export default function SettingsForm({ settings }: { settings: UserSettings }) {
 
   return (
     <BaseForm
-      cardTitle="Αλλαγή ρυθμίσεων"
-      cardDescription="Αλλάξτε τής ρυθμίσεις σας"
+      cardTitle={t("formTitle")}
+      cardDescription={t("formDesc")}
       buttonChildren={
         formState.isDirty && (
           <>
@@ -38,7 +41,7 @@ export default function SettingsForm({ settings }: { settings: UserSettings }) {
               form="change-settings-form"
               type="submit"
             >
-              Αποθήκευση
+              {t("formButton")}
             </Button>
           </>
         )
@@ -46,17 +49,15 @@ export default function SettingsForm({ settings }: { settings: UserSettings }) {
     >
       <form id="change-settings-form" onSubmit={handleSubmit(onFormSubmit)}>
         <Field>
-          <FieldLabel className="px-2 text-xs">
-            Μονάδα μέτρησής εδάφους
-          </FieldLabel>
+          <FieldLabel className="px-2 text-xs">{t("landUnit")}</FieldLabel>
           <ControlledSelect
             control={control}
             name="landUnit"
-            placeholder="Μονάδα μέτρησής εδάφους"
+            placeholder={t("landUnit")}
             values={[
-              { value: "stremata", label: "Στρέμματα" },
-              { value: "hectares", label: "Εκτάρια" },
-              { value: "m2", label: "Τετραγωνικά μέτρα" },
+              { value: "stremata", label: tr("stremata") },
+              { value: "hectares", label: tr("hectares") },
+              { value: "m2", label: tr("m2") },
             ]}
           />
         </Field>
