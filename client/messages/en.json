@@ -1,12 +1,17 @@
 {
   "Errors": {
     "invalid_email": "Enter a valid Email",
-    "required_password": "Password is required",
     "invalid_password_mismatch": "Passwords mismatch",
     "invalid_password_length": "Password should be 8 chars and more",
     "invalid_password_cap_letter": "Password should contain 1 cappital Letter",
     "invalid_password_number": "Password should contain 1 number",
-    "invalid_credentials": "Invalid Credentials"
+    "invalid_credentials": "Invalid Credentials",
+    "invalid_measurement_unit": "Select an Measurement Unit",
+    "invalid_supply_type": "Select a Supply type",
+    "required_password": "Password is required",
+    "required_field": "This Field is required",
+    "invalid_number": "Enter a valid number",
+    "invalid_min_number": "Number should be greater than 0"
   },
   "DeleteComponent": {
     "delete": "Delete",
@@ -34,7 +39,31 @@
     "m2": "Square Meters"
   },
   "Supplies": {
+    "Page": {
+      "details": "Details",
+      "measurementUnit": "Measurement Unit"
+    },
     "pageTitle": "Supplies",
+    "Form": {
+      "Create": {
+        "title": "Create Supply",
+        "desc": "Create Supply for your farm",
+        "submitButton": "Create",
+        "name": "Name",
+        "nickname": "Nickname",
+        "measurementUnit": "Measurement Unit",
+        "supplyType": "Category"
+      },
+      "Update": {
+        "title": "Updade Supply",
+        "desc": "Update Supply for your farm",
+        "submitButton": "Update",
+        "name": "Name",
+        "nickname": "Nickname",
+        "measurementUnit": "Measurement Unit",
+        "supplyType": "Category"
+      }
+    },
     "Response": {
       "chemicals": "Chemicals",
       "fertilizers": "Fertilizers",
@@ -50,7 +79,8 @@
       "nickname": "Nickname",
       "supplyType": "Category",
       "measurementUnit": "Measurement Unit",
-      "suppliesAction": "Action"
+      "suppliesAction": "Action",
+      "createSupplyButton": "Create Supply"
     }
   },
   "Seasons": {
@@ -67,6 +97,26 @@
     }
   },
   "Fields": {
+    "Form": {
+      "Update": {
+        "title": "Edit field",
+        "desc": "Edit your Field",
+        "submitButton": "Update",
+        "name": "Name",
+        "fieldLocation": "Location",
+        "areaInMeters": "Area",
+        "owned": "Owned"
+      },
+      "Create": {
+        "title": "Create Field",
+        "desc": "Create your field",
+        "submitButton": "Create",
+        "name": "Name",
+        "fieldLocation": "Location",
+        "areaInMeters": "Area",
+        "owned": "Owned"
+      }
+    },
     "Details": {
       "pageTitle": "Field",
       "owned": "Owned",

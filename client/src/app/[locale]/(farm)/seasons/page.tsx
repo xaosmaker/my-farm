@@ -1,4 +1,3 @@
-import { DataTable } from "@/components/data-table";
 import ShowH1 from "@/components/ShowH1";
 import { getAllActiveSeasons } from "@/features/seasons/fetchers";
 import SeasonTable from "@/features/seasons/SeasonTable";

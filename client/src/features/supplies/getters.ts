@@ -3,7 +3,7 @@ import { SERVER_URL } from "@/lib/serverUrl";
 import { Supply } from "@/types/sharedTypes";
 import { getTranslations } from "next-intl/server";
 
-export async function getAllSupplies() {
+export async function getAllSupplies(translate: boolean = false) {
   const t = await getTranslations("Supplies.Response");
   const res = await baseRequest({
     url: `${SERVER_URL}/api/supplies`,
@@ -12,17 +12,19 @@ export async function getAllSupplies() {
   });
   if (res.ok) {
     const data: Supply[] = await res.json();
-    data.map((item) => {
-      item.supplyType = t(item.supplyType);
-      item.measurementUnit = t(item.measurementUnit);
-      return item;
-    });
+    if (translate) {
+      data.map((item) => {
+        item.supplyType = t(item.supplyType);
+        item.measurementUnit = t(item.measurementUnit);
+        return item;
+      });
+    }
     return data;
   }
   return [];
 }
 
-export async function getSupplyById(id: string) {
+export async function getSupplyById(id: string, translate: boolean = false) {
   const t = await getTranslations("Supplies.Response");
   const res = await baseRequest({
     url: `${SERVER_URL}/api/supplies/${id}`,
@@ -31,11 +33,13 @@ export async function getSupplyById(id: string) {
   });
   if (res.ok) {
     const data: Supply[] = await res.json();
-    data.map((item) => {
-      item.supplyType = t(item.supplyType);
-      item.measurementUnit = t(item.measurementUnit);
-      return item;
-    });
+    if (translate) {
+      data.map((item) => {
+        item.supplyType = t(item.supplyType);
+        item.measurementUnit = t(item.measurementUnit);
+        return item;
+      });
+    }
     return data;
   }
   return [];

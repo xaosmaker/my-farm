@@ -1,12 +1,17 @@
 {
   "Errors": {
     "invalid_email": "Εισάγετε ένα έγκυρο email",
-    "required_password": "Ο κωδικός πρόσβασης είναι υποχρεωτικός",
     "invalid_password_mismatch": "Οι κωδικοί πρόσβασης δεν ταιριάζουν",
     "invalid_password_length": "Ο κωδικός πρόσβασης πρέπει να έχει 8 ή περισσότερους χαρακτήρες",
     "invalid_password_cap_letter": "Ο κωδικός πρόσβασης πρέπει να περιέχει 1 κεφαλαίο γράμμα",
     "invalid_password_number": "Ο κωδικός πρόσβασης πρέπει να περιέχει 1 αριθμό",
-    "invalid_credentials": "Το email ή ο κωδικός πρόσβασης δεν ταιριάζουν"
+    "invalid_credentials": "Το email ή ο κωδικός πρόσβασης δεν ταιριάζουν",
+    "invalid_measurement_unit": "Επιλέξτε μονάδα μέτρησης",
+    "invalid_supply_type": "Επιλέξτε Κατηγορία",
+    "required_password": "Ο κωδικός πρόσβασης είναι υποχρεωτικός",
+    "required_field": "Αυτό το πεδίο είναι υποχρεωτικό",
+    "invalid_number": "Εισάγεται έναν έγκυρο αριθμό",
+    "invalid_min_number": "Ο αριθμός πρέπει να είναι μεγαλύτερος του  0"
   },
   "DeleteComponent": {
     "delete": "Διαγραφή",
@@ -34,9 +39,33 @@
     "m2": "Τ.Μ"
   },
   "Supplies": {
+    "Page": {
+      "details": "Λεπτομέρειες",
+      "measurementUnit": "Μονάδα Μέτρησης"
+    },
     "pageTitle": "Εφόδια",
+    "Form": {
+      "Create": {
+        "title": "Δημιουργία εφοδίων",
+        "desc": "Δημιουργία εφοδίων για τη φάρμα σας",
+        "submitButton": "Δημιουργία",
+        "name": "Όνομα",
+        "nickname": "Ψευδώνυμο",
+        "measurementUnit": "Μονάδα Μέτρησης",
+        "supplyType": "Κατηγορία"
+      },
+      "Update": {
+        "title": "Επεξεργασία εφοδίων",
+        "desc": "Επεξεργασία εφοδίων για τη φάρμα σας",
+        "submitButton": "Ενημέρωση",
+        "name": "Όνομα",
+        "nickname": "Ψευδώνυμο",
+        "measurementUnit": "Μονάδα Μέτρησης",
+        "supplyType": "Κατηγορία"
+      }
+    },
     "Response": {
-      "chemicals": "Φάρμακά",
+      "chemicals": "Φάρμακα",
       "fertilizers": "Λιπάσματα",
       "seeds": "Σπόροι",
       "diesel": "Πετρέλαιο",
@@ -50,7 +79,8 @@
       "nickname": "Ψευδώνυμο",
       "supplyType": "Κατηγορία",
       "measurementUnit": "Μονάδα Μέτρησης",
-      "suppliesAction": "Action"
+      "suppliesAction": "Action",
+      "createSupplyButton": "Δημιουργία εφοδίων"
     }
   },
   "Seasons": {
@@ -67,6 +97,26 @@
     }
   },
   "Fields": {
+    "Form": {
+      "Update": {
+        "title": "Επεξεργασία χωραφιού",
+        "desc": "Επεξεργαστείτε το χωράφι σας",
+        "submitButton": "Ενημέρωση",
+        "name": "Όνομα",
+        "fieldLocation": "Τοποθεσία",
+        "areaInMeters": "Εκταση",
+        "owned": "Ιδιόκτητο"
+      },
+      "Create": {
+        "title": "Δημιουργία χωραφιού",
+        "desc": "Δημιουργείστε το χωράφι σας",
+        "submitButton": "Δημιουργία",
+        "name": "Όνομα",
+        "fieldLocation": "Τοποθεσία",
+        "areaInMeters": "Εκταση",
+        "owned": "Ιδιόκτητο"
+      }
+    },
     "Details": {
       "pageTitle": "Χωράφι",
       "owned": "Ιδιόκτητο",

@@ -2,14 +2,14 @@ import { z } from "zod/v4";
 
 export const fieldValidator = z.object({
   landUnit: z.string(),
-  name: z.string().nonempty("Required"),
+  name: z.string().nonempty("required_field"),
   areaInMeters: z
     .string()
     .refine((value) => value.match(/^\d+(\.\d+)?$/), {
-      error: "Required and use . for decimal",
+      error: "invalid_number",
     })
     .refine((value) => parseFloat(value) > 0, {
-      error: "Should be greater than 0",
+      error: "invalid_min_number",
     }),
   fieldLocation: z.string(),
   isOwned: z.boolean(),

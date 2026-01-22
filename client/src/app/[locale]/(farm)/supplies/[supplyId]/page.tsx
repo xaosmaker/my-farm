@@ -5,7 +5,7 @@ import ShowFieldPage from "@/components/ShowFieldPage";
 import ShowFieldsData from "@/components/ShowFieldsData";
 import { deleteSupplyAction } from "@/features/supplies/actions/createSuppliesActions";
 import { getSupplyById } from "@/features/supplies/getters";
-import { engToGreek } from "@/lib/translateMap";
+import { getTranslations } from "next-intl/server";
 
 export default async function SupplyPage({
   params,
@@ -13,30 +13,19 @@ export default async function SupplyPage({
   params: Promise<{ supplyId: string }>;
 }) {
   const { supplyId } = await params;
-  const supplies = await getSupplyById(supplyId);
+  const supplies = await getSupplyById(supplyId, true);
   if (supplies.length !== 1) {
     return <div>No Supply found</div>;
   }
   const supply = supplies[0];
+  const t = await getTranslations("Supplies.Page");
 
   return (
-    <ShowFieldPage title={supply.name}>
-      <ShowFieldGroup groupName="Name">
-        <ShowFieldsData fieldName="Όνομα" value={supply.name} />
-        {supply.nickname && (
-          <ShowFieldsData fieldName="Ψευδώνυμο" value={supply.nickname} />
-        )}
-      </ShowFieldGroup>
-      <ShowFieldGroup groupName="details">
+    <ShowFieldPage title={`${supply.name} ${supply.supplyType}`}>
+      <ShowFieldGroup groupName={t("details")}>
         <ShowFieldsData
-          fieldName="Μονάδα μέτρησης"
-          value={
-            engToGreek.get(supply.measurementUnit) || supply.measurementUnit
-          }
-        />
-        <ShowFieldsData
-          fieldName="Type"
-          value={engToGreek.get(supply.supplyType) || supply.supplyType}
+          fieldName={t("measurementUnit")}
+          value={supply.measurementUnit}
         />
       </ShowFieldGroup>
       <ShowFieldGroup groupName="Actions" className="col-span-full">

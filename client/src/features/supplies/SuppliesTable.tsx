@@ -75,7 +75,7 @@ export default function SuppliesTable({
             <TooltipTrigger>
               <Plus />
             </TooltipTrigger>
-            <TooltipContent>Δημιουργία εφοδίων</TooltipContent>
+            <TooltipContent>{t("createSupplyButton")}</TooltipContent>
           </Tooltip>
         </Link>
       ),

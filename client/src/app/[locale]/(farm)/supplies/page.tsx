@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 
 export default async function SuppliesPage() {
   const t = await getTranslations("Supplies");
-  const supplies = await getAllSupplies();
+  const supplies = await getAllSupplies(true);
 
   return (
     <>

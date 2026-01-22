@@ -3,15 +3,15 @@ import { z } from "zod/v4";
 
 export const suppliesValidator = z.object({
   nickname: z.string(),
-  name: z.string().nonempty(),
+  name: z.string().nonempty("required_field"),
   supplyType: z.string().refine((val) => SUPPLIES_TYPES.includes(val), {
-    error: `Supply type should contain one of "${SUPPLIES_TYPES.join(", ")}"`,
+    error: "invalid_supply_type",
   }),
   measurementUnit: z
     .string()
 
     .refine((val) => MEASUREMENT_UNITS.includes(val), {
-      error: `measurement unit should contain one of "${MEASUREMENT_UNITS.join(", ")}"`,
+      error: "invalid_measurement_unit",
     }),
 });
 

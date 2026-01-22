@@ -22,8 +22,8 @@ import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import { Field as FieldData } from "@/types/sharedTypes";
 import { UserSettings } from "@/types/sharedTypes";
-import { engToGreek } from "@/lib/translateMap";
 import ServerErrors from "@/components/ServerErrors";
+import { useTranslations } from "next-intl";
 
 export default function CreateFieldForm({
   landUnit,
@@ -64,13 +64,14 @@ export default function CreateFieldForm({
       action(newData);
     });
   }
+  const t = useTranslations(
+    oldData ? "Fields.Form.Update" : "Fields.Form.Create",
+  );
 
   return (
     <BaseForm
-      cardTitle={oldData ? "Επεξεργασία χωραφιού" : "Δημιουργία χωραφιού"}
-      cardDescription={
-        oldData ? "Επεξεργαστείτε το χωράφι σας" : "Δημιουργείστε το χωράφι σας"
-      }
+      cardTitle={t("title")}
+      cardDescription={t("desc")}
       buttonChildren={
         <>
           <Button
@@ -82,24 +83,24 @@ export default function CreateFieldForm({
             Reset
           </Button>
           <Button type="submit" form="create-field-form" disabled={isPending}>
-            {oldData ? "Αποθήκευση" : "Δημιουργία"}
+            {t("submitButton")}
           </Button>
         </>
       }
     >
       <form id="create-field-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
-          <ControlledInput control={control} name="name" label="Όνομα" />
+          <ControlledInput control={control} name="name" label={t("name")} />
 
           <ControlledInput
             control={control}
             name="fieldLocation"
-            label="Τοποθεσία"
+            label={t("fieldLocation")}
           />
           <ControlledInput
             control={control}
             name="areaInMeters"
-            label={engToGreek.get(landUnit.landUnit) || ""}
+            label={`${t("areaInMeters")} ${landUnit.landUnit}`}
           />
 
           <Controller
@@ -118,7 +119,7 @@ export default function CreateFieldForm({
                   id="is owned"
                 />
                 <FieldLabel htmlFor="isOwned" className="flex-1">
-                  Ιδιόκτητο
+                  {t("owned")}
                 </FieldLabel>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

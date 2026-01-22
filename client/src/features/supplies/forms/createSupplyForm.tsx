@@ -13,9 +13,10 @@ import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import ControlledSelect from "@/components/ControlledSelect";
 import { MEASUREMENT_UNITS, SUPPLIES_TYPES, Supply } from "@/types/sharedTypes";
-import { engToGreek } from "@/lib/translateMap";
+import { useTranslations } from "next-intl";
 
 export default function CreateSupplyForm({ supply }: { supply?: Supply }) {
+  console.log(supply);
   const { control, reset, handleSubmit, formState } = useForm<SuppliesRequest>({
     mode: "onChange",
     resolver: zodResolver(suppliesValidator),
@@ -33,6 +34,11 @@ export default function CreateSupplyForm({ supply }: { supply?: Supply }) {
   );
   const [isPending, startTransition] = useTransition();
   const dirty = formState.dirtyFields;
+
+  const t = useTranslations(
+    supply ? "Supplies.Form.Update" : "Supplies.Form.Create",
+  );
+  const tr = useTranslations("Supplies.Response");
 
   function onSubmit(data: SuppliesRequest) {
     let sendData: { [key: string]: unknown } = {};
@@ -52,8 +58,8 @@ export default function CreateSupplyForm({ supply }: { supply?: Supply }) {
   }
   return (
     <BaseForm
-      cardTitle={`${supply ? "Επεξεργασία" : "Δημιουργία"} εφοδίων`}
-      cardDescription={`${supply ? "Επεξεργασία" : "Δημιουργία"} εφοδίων για τη φάρμα σας`}
+      cardTitle={t("title")}
+      cardDescription={t("desc")}
       buttonChildren={
         <>
           <Button
@@ -65,38 +71,38 @@ export default function CreateSupplyForm({ supply }: { supply?: Supply }) {
             Reset
           </Button>
           <Button type="submit" form="create-field-form" disabled={isPending}>
-            {supply ? "Ενημέρωση" : "Δημιουργία"}
+            {t("submitButton")}
           </Button>
         </>
       }
     >
       <form id="create-field-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
-          <ControlledInput control={control} name="name" label="Όνομα" />
+          <ControlledInput control={control} name="name" label={t("name")} />
 
           <ControlledInput
             control={control}
             name="nickname"
-            label="Ψευδώνυμο"
+            label={t("nickname")}
           />
 
           <ControlledSelect
             control={control}
             name="measurementUnit"
-            placeholder="Μονάδα μέτρησης"
+            placeholder={t("measurementUnit")}
             values={MEASUREMENT_UNITS.map((item) => ({
               value: item,
-              label: engToGreek.get(item) || item,
+              label: tr(item),
             }))}
           />
 
           <ControlledSelect
             control={control}
             name="supplyType"
-            placeholder="Κατηγορία"
+            placeholder={t("supplyType")}
             values={SUPPLIES_TYPES.map((item) => ({
               value: item,
-              label: engToGreek.get(item) || item,
+              label: tr(item) || item,
             }))}
           />
         </FieldGroup>
