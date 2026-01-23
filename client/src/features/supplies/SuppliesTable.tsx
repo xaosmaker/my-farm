@@ -7,7 +7,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { engToGreek } from "@/lib/translateMap";
 import { Supply } from "@/types/sharedTypes";
 import { ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";

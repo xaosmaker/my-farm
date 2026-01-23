@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircleIcon, ArrowLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function GeneralPageError({
   title,
@@ -13,12 +14,13 @@ export default function GeneralPageError({
   error: Error & { diggest?: string };
 }) {
   const router = useRouter();
+  const t = useTranslations("PageError");
   return (
     <div className="text-center">
       <Alert variant="destructive" className="mx-auto max-w-md">
         <AlertTitle className="flex items-center justify-center gap-4 text-lg">
           <AlertCircleIcon />
-          Something went wrong in {title}
+          {t("title")} &apos;{title}&apos;
         </AlertTitle>
         <AlertDescription className="flex flex-col items-center justify-center">
           <p>{error.message}</p>
@@ -27,10 +29,10 @@ export default function GeneralPageError({
               <ArrowLeft />
             </Button>
             <Button variant="secondary" onClick={() => router.refresh()}>
-              Refresh Page
+              {t("refreshButton")}
             </Button>
           </div>
-          <p className="pt-4">If the error persist contact the admin</p>
+          <p className="pt-4">{t("footer")}</p>
         </AlertDescription>
       </Alert>
     </div>

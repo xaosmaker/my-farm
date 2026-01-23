@@ -18,6 +18,7 @@ import {
   updateSeasonAction,
 } from "../actions/seasonActions";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 function CreateSeasonForm({
   field,
@@ -68,18 +69,21 @@ function CreateSeasonForm({
       action(sendData);
     });
   }
+  const t = useTranslations(
+    season ? "Seasons.Form.Update" : "Seasons.Form.Create",
+  );
 
   return (
     <BaseForm
-      cardTitle={`${season ? "Ενημέρωση " : "Δημιουργία "} σεζόν`}
-      cardDescription={`${season ? "Ενημέρωση " : "Δημιουργία "} σεζόν για το χωράφι \n ${field.name} ${field.areaInMeters} ${engToGreek.get(field.landUnit) || field.landUnit}`}
+      cardTitle={t("title")}
+      cardDescription={`${t("desc")} \n '${field.name} ${field.areaInMeters} ${engToGreek.get(field.landUnit) || field.landUnit}'`}
       buttonChildren={
         <>
           <Button disabled={isPending} onClick={() => reset()}>
             Reset
           </Button>
           <Button disabled={isPending} type="submit" form="create-season-form">
-            {season ? "Ενημέρωση " : "Δημιουργία "} σεζόν
+            {t("submitButton")}
           </Button>
         </>
       }
@@ -89,7 +93,7 @@ function CreateSeasonForm({
         className="flex flex-col gap-2"
         id="create-season-form"
       >
-        <ControlledInput control={control} name="name" label="Όνομα σεζόν" />
+        <ControlledInput control={control} name="name" label={t("name")} />
         <ControlledInput
           control={control}
           name="areaInMeters"
@@ -98,7 +102,7 @@ function CreateSeasonForm({
         <ControlledSelect
           control={control}
           name="crop"
-          placeholder="Επιλογή σοδιάς"
+          placeholder={t("cropType")}
           values={supplies.map((item) => ({
             value: item.id.toString(),
             label: item.name,
@@ -110,7 +114,7 @@ function CreateSeasonForm({
           name="startSeason"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel>Αρχή σεζόν</FieldLabel>
+              <FieldLabel>{t("startSeason")}</FieldLabel>
               <DateTimePicker value={field.value} onChange={field.onChange} />
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -122,7 +126,7 @@ function CreateSeasonForm({
           name="finishSeason"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel>Τέλος σεζόν</FieldLabel>
+              <FieldLabel>{t("finishSeason")}</FieldLabel>
               <DateTimePicker
                 value={field.value || undefined}
                 onChange={field.onChange}

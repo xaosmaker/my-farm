@@ -12,7 +12,7 @@ import {
   getSeasonById,
   getSeasonStatistics,
 } from "@/features/seasons/fetchers";
-import { engToGreek } from "@/lib/translateMap";
+import { getTranslations } from "next-intl/server";
 
 export default async function SeasonPage({
   params,
@@ -21,28 +21,29 @@ export default async function SeasonPage({
 }) {
   const { seasonId, fieldId } = await params;
   const seasonStatistics = await getSeasonStatistics(seasonId);
+  const t = await getTranslations("Seasons.Page");
 
   const jobs = await GetAllJobs(seasonId);
-  const season = await getSeasonById(fieldId, seasonId);
+  const season = await getSeasonById(fieldId, seasonId, true);
   if (!season) {
-    return <div>No resourse found</div>;
+    return <div>{t("notFound")}</div>;
   }
   return (
     <>
-      <ShowFieldPage title={`Σεζόν ${season.fieldName}`}>
-        <ShowFieldGroup groupName="Λεπτομέρειες">
-          <ShowFieldsData fieldName="ποικιλία" value={season.cropName} />
+      <ShowFieldPage title={`${t("pageTitle")} ${season.fieldName}`}>
+        <ShowFieldGroup groupName={t("details")}>
+          <ShowFieldsData fieldName={t("cropType")} value={season.cropName} />
           <ShowFieldsData
-            fieldName="Καλλιεργούνται"
-            value={`${season.areaInMeters.toString()} από τα ${season.fieldAreaInMeters.toString()} ${engToGreek.get(season.landUnit)}`}
+            fieldName={t("areaUsed")}
+            value={`${season.areaInMeters.toString()} / ${season.fieldAreaInMeters.toString()} ${season.landUnit}`}
           />
           <ShowFieldsDate
-            fieldName="Αρχή καλλιέργειάς"
+            fieldName={t("startSeason")}
             value={season.startSeason}
           />
 
           <ShowFieldsDate
-            fieldName="Τέλος καλλιέργειάς"
+            fieldName={t("finishSeason")}
             value={season.finishSeason}
           />
         </ShowFieldGroup>

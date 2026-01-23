@@ -47,7 +47,11 @@ export async function getAllActiveSeasons() {
   return data;
 }
 
-export async function getSeasonById(fieldId: string, seasonId: string) {
+export async function getSeasonById(
+  fieldId: string,
+  seasonId: string,
+  translate: boolean = false,
+) {
   const t = await getTranslations("LandUnit");
   const res = await baseRequest({
     url: `${SERVER_URL}/api/seasons/${fieldId}/${seasonId}`,
@@ -57,7 +61,9 @@ export async function getSeasonById(fieldId: string, seasonId: string) {
   if (res.ok) {
     const data: Season = await res.json();
 
-    data.landUnit = t(data.landUnit);
+    if (translate) {
+      data.landUnit = t(data.landUnit);
+    }
     return data;
   }
 }

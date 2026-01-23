@@ -13,6 +13,11 @@
     "invalid_number": "Enter a valid number",
     "invalid_min_number": "Number should be greater than 0"
   },
+  "PageError": {
+    "title": "Something went wrong in",
+    "footer": "If the error persist contact the admininstrator",
+    "refreshButton": "Refresh Page"
+  },
   "DeleteComponent": {
     "delete": "Delete",
     "deleteTitle": "Are you sure you want to delete",
@@ -84,6 +89,36 @@
     }
   },
   "Seasons": {
+    "Form": {
+      "Update": {
+        "title": "Edit Season",
+        "desc": "Edit season for Field",
+        "submitButton": "Edit",
+        "name": "Season Name",
+        "cropType": "Crop Type",
+        "startSeason": "Start of season",
+        "finishSeason": "Finish of season"
+      },
+      "Create": {
+        "title": "Create Season",
+        "desc": "Create Season for Field",
+        "submitButton": "Create",
+        "name": "Season Name",
+        "cropType": "Crop Type",
+        "startSeason": "Start of season",
+        "finishSeason": "Finish of season"
+      }
+    },
+    "Page": {
+      "pageTitle": "Season",
+      "notFound": "No resource found",
+      "details": "Details",
+      "cropType": "Crop Type",
+      "areaUsed": "Area used",
+      "startSeason": "Start of season",
+      "finishSeason": "Finish of season"
+    },
+    "pageTitle": "Seasons",
     "Table": {
       "id": "ID",
       "name": "Name",

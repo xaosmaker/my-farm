@@ -13,6 +13,11 @@
     "invalid_number": "Εισάγεται έναν έγκυρο αριθμό",
     "invalid_min_number": "Ο αριθμός πρέπει να είναι μεγαλύτερος του  0"
   },
+  "PageError": {
+    "title": "Κάτι πήγε στραβά στη σελίδα ",
+    "footer": "αν συνεχίζεις και βλέπεις αυτό το μήνυμα επικοινώνησε με τον διαχειριστεί",
+    "refreshButton": "Ανανέωση σελίδας"
+  },
   "DeleteComponent": {
     "delete": "Διαγραφή",
     "deleteTitle": "Είσαι σίγουρος ότι θες να διαγράψεις",
@@ -84,6 +89,36 @@
     }
   },
   "Seasons": {
+    "Page": {
+      "pageTitle": "Σεζόν",
+      "notFound": "Δε βρέθηκε κάτι",
+      "details": "Λεπτομέρειες",
+      "cropType": "ποικιλία",
+      "areaUsed": "Καλλιεργούνται",
+      "startSeason": "Αρχή καλλιέργειάς",
+      "finishSeason": "Τέλος καλλιέργειάς"
+    },
+    "Form": {
+      "Update": {
+        "title": "Ενημέρωση σεζόν",
+        "desc": "Ενημέρωση σεζόν για το χωράφι",
+        "submitButton": "Ενημέρωση",
+        "name": "Όνομα σεζόν",
+        "cropType": "ποικιλία",
+        "startSeason": "Αρχή καλλιέργειάς",
+        "finishSeason": "Τέλος καλλιέργειάς"
+      },
+      "Create": {
+        "title": "Δημιουργία σεζόν",
+        "desc": "Δημιουργία σεζόν για το χωράφι",
+        "submitButton": "Δημιουργία",
+        "name": "Όνομα σεζόν",
+        "cropType": "ποικιλία",
+        "startSeason": "Αρχή καλλιέργειάς",
+        "finishSeason": "Τέλος καλλιέργειάς"
+      }
+    },
+    "pageTitle": "Σεζόνς",
     "Table": {
       "id": "ID",
       "name": "Όνομα",
@@ -91,8 +126,8 @@
       "areaInMeters": "Εκταση",
       "landUnit": "Μοναδα",
       "cropName": "Καλλιέργεια",
-      "startSeason": "Έναρξη σεζόν",
-      "finishSeason": "Λήξη σεζόν",
+      "startSeason": "Αρχή καλλιέργειάς",
+      "finishSeason": "Τέλος καλλιέργειάς",
       "createSeason": "Action"
     }
   },
