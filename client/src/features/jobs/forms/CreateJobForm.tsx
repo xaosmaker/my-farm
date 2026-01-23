@@ -26,6 +26,7 @@ import ControlledSelect from "@/components/ControlledSelect";
 import ControlledInput from "@/components/ControlledInput";
 import ServerErrors from "@/components/ServerErrors";
 import { roundTo6 } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type JobSuppliesFormDataArea = JobSuppliesFormData & { area: string };
 let jobSuppliesRef: JobSuppliesFormDataArea[] = [];
@@ -134,6 +135,7 @@ export default function CreateJobForm({
     }
   }, [jobSupplies, areaInMeters, setValue]);
 
+  const jobTrans = useTranslations("Jobs.Job");
   return (
     <BaseForm
       cardTitle="Δημιουργία εργασίας"
@@ -166,7 +168,7 @@ export default function CreateJobForm({
             name="jobType"
             values={JOB_TYPES.map((type) => ({
               value: type,
-              label: engToGreek.get(type) || type,
+              label: jobTrans(type),
             }))}
           />
 

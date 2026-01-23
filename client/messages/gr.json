@@ -13,6 +13,27 @@
     "invalid_number": "Εισάγεται έναν έγκυρο αριθμό",
     "invalid_min_number": "Ο αριθμός πρέπει να είναι μεγαλύτερος του  0"
   },
+  "Jobs": {
+    "Job": {
+      "spraying": "Ψεκασμός",
+      "drone spraying": "Ψεκασμός drone",
+      "fertilizing": "Λίπανση",
+      "sowing": "Σπορά",
+      "harvesting": "Συγκομιδή",
+      "planting": "Φύτευση",
+      "irrigation": "πότισμα",
+      "pruning": "κλάδεμα",
+      "hoeing": "τσάπισμα",
+      "preparation": "προετοιμασία",
+      "plowing": "όργωμα",
+      "leveling": "ισοπέδωμα",
+      "tilling": "φρέζα",
+      "cultivator": "σκαλιστήρι",
+      "rotary cultivator": "φρεζοσκαλιστήρι",
+      "subsoiler": "ρίπερ",
+      "harrowing": "δισκοσβάρνα"
+    }
+  },
   "PageError": {
     "title": "Κάτι πήγε στραβά στη σελίδα ",
     "footer": "αν συνεχίζεις και βλέπεις αυτό το μήνυμα επικοινώνησε με τον διαχειριστεί",

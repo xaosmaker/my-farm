@@ -13,6 +13,27 @@
     "invalid_number": "Enter a valid number",
     "invalid_min_number": "Number should be greater than 0"
   },
+  "Jobs": {
+    "Job": {
+      "spraying": "Spraying",
+      "drone spraying": "Drone spraying",
+      "fertilizing": "Fertilizing",
+      "sowing": "Sowning",
+      "harvesting": "harvesting",
+      "planting": "planting",
+      "irrigation": "irrigation",
+      "pruning": "pruning",
+      "hoeing": "hoeing",
+      "preparation": "preparation",
+      "plowing": "plowing",
+      "leveling": "leveling",
+      "tilling": "tilling",
+      "cultivator": "cultivator",
+      "rotary cultivator": "rotary cultivator",
+      "subsoiler": "subsoiler",
+      "harrowing": "harrowing"
+    }
+  },
   "PageError": {
     "title": "Something went wrong in",
     "footer": "If the error persist contact the admininstrator",
