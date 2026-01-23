@@ -1,5 +1,6 @@
 services:
   farm-nginx:
+    restart: unless-stopped
     container_name: "farm-nginx"
     build:
       context: .
@@ -16,6 +17,7 @@ services:
       - farm-client
 
   farm-server:
+    restart: unless-stopped
     container_name: farm-server
     build:
       context: .
@@ -33,6 +35,7 @@ services:
         condition: service_healthy
 
   farm-client:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: ./docker/prod/client/Dockerfile
@@ -47,6 +50,7 @@ services:
     command: pnpm start
 
   farm-postgres-db:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: ./docker/prod/postgres/Dockerfile
