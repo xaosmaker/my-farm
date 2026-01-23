@@ -1,5 +1,4 @@
 "use client";
-import { redirect, usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { signOut, useSession } from "next-auth/react";
 import {
@@ -13,6 +12,8 @@ import Link from "next/link";
 import { LogOut, Settings } from "lucide-react";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
+import { redirect } from "next/navigation";
 
 export default function NavBar({
   children,
