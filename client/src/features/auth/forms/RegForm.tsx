@@ -150,9 +150,9 @@ export default function RegForm({
         {state?.success && (
           <Alert variant="default" className="mt-10 text-green-500">
             <CheckCircle2Icon />
-            <AlertTitle>Your account created successfully</AlertTitle>
+            <AlertTitle>{t("successTitle")}</AlertTitle>
             <AlertDescription className="text-green-500">
-              Go to your email and follow the instruction
+              {t("successDesc")}
             </AlertDescription>
           </Alert>
         )}

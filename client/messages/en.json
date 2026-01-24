@@ -7,11 +7,22 @@
     "invalid_password_number": "Password should contain 1 number",
     "invalid_credentials": "Invalid Credentials",
     "invalid_measurement_unit": "Select an Measurement Unit",
+    "invalid_str_num_space": "This field can contain only numbers spaces and letters",
     "invalid_supply_type": "Select a Supply type",
-    "required_password": "Password is required",
-    "required_field": "This Field is required",
     "invalid_number": "Enter a valid number",
-    "invalid_min_number": "Number should be greater than 0"
+    "invalid_min_number": "Number should be greater than 0",
+    "required_password": "Password is required",
+    "required_field": "This Field is required"
+  },
+  "Farms": {
+    "Form": {
+      "Create": {
+        "title": "Create Farm",
+        "desc": "Create your farm for you fields",
+        "name": "Farm Name",
+        "submitButton": "Create"
+      }
+    }
   },
   "Jobs": {
     "Job": {
@@ -211,7 +222,16 @@
     "password2": "Confirm Password",
     "button": "Register",
     "showPassword": "Show Password",
-    "loginLink": "Login"
+    "loginLink": "Login",
+    "successTitle": "Your account created successfully",
+    "successDesc": "Go to your email and follow the instruction"
+  },
+  "Verification": {
+    "title": "Resend Verification Email",
+    "desc": "Resend Verification Email for the user",
+    "successTitle": "Email Send",
+    "successDesc": "Go to your email and click the link",
+    "submitButton": "Send"
   },
   "Navigation": {
     "home": "Home",

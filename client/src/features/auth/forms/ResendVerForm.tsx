@@ -10,6 +10,7 @@ import { resendVerifyEmailAction } from "../actions/authActions";
 import ServerErrors from "@/components/ServerErrors";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ResendVerForm() {
   const { control, handleSubmit } = useForm<EmailFormData>({
@@ -29,14 +30,15 @@ export default function ResendVerForm() {
     });
   }
 
+  const t = useTranslations("Verification");
   return (
     <BaseForm
-      cardTitle="Resend verification email"
-      cardDescription="Resend Verification email for the user"
+      cardTitle={t("title")}
+      cardDescription={t("desc")}
       buttonChildren={
         <>
           <Button form="resendVerEmail" disabled={isPending}>
-            send
+            {t("submitButton")}
           </Button>
         </>
       }
@@ -48,9 +50,9 @@ export default function ResendVerForm() {
         {state?.success && (
           <Alert variant="default" className="mt-10 text-green-500">
             <CheckCircle2Icon />
-            <AlertTitle>Token Created</AlertTitle>
+            <AlertTitle>{t("successTitle")}</AlertTitle>
             <AlertDescription className="text-green-500">
-              Go to your email and follow the instruction
+              {t("successDesc")}
             </AlertDescription>
           </Alert>
         )}

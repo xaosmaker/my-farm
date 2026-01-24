@@ -2,23 +2,21 @@ import { z } from "zod/v4";
 
 export const seasonValidators = z.object({
   name: z.string().nullable(),
-  startSeason: z.date("Αυτό το πεδίο είναι υποχρεωτικό"),
+  startSeason: z.date("required_field"),
   finishSeason: z.date().optional(),
   // boundary: z.any(),
   areaInMeters: z
     .string()
     .refine((value) => value.match(/^\d+(\.\d+)?$/), {
-      error: "Required and use . for decimal",
+      error: "invalid_number",
     })
     .refine((value) => parseFloat(value) > 0, {
-      error: "Should be greater than 0",
+      error: "invalid_min_number",
     }),
   fieldId: z.number(),
-  crop: z
-    .string("Αυτό το πεδίο είναι υποχρεωτικό")
-    .refine((item) => parseInt(item) > 0, {
-      error: "Αυτό το πεδίο είναι υποχρεωτικό",
-    }),
+  crop: z.string("required_field").refine((item) => parseInt(item) > 0, {
+    error: "required_field",
+  }),
 });
 
 export type SeasonRequest = z.infer<typeof seasonValidators>;

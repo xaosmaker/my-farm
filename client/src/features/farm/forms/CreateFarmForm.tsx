@@ -9,6 +9,7 @@ import { useActionState, useTransition } from "react";
 import { CreateFarmAction } from "../actions/CreateFarmAction";
 import ControlledInput from "@/components/ControlledInput";
 import ServerErrors from "@/components/ServerErrors";
+import { useTranslations } from "next-intl";
 
 export default function CreateFarmForm() {
   const { control, handleSubmit } = useForm<FarmFormData>({
@@ -27,24 +28,25 @@ export default function CreateFarmForm() {
     });
   }
 
+  const t = useTranslations("Farms.Form.Create");
   return (
     <BaseForm
-      cardDescription="Εισάγεται το όνομά της φάρμας σας"
-      cardTitle="Δημιουργία φάρμας"
+      cardDescription={t("desc")}
+      cardTitle={t("title")}
       buttonChildren={
         <>
           <Button type="reset" variant="ghost" disabled={isPending}>
             Reset
           </Button>
           <Button form="create-farm-form" disabled={isPending}>
-            Δημιουργία
+            {t("submitButton")}
           </Button>
         </>
       }
     >
       <form onSubmit={handleSubmit(farmSubmit)} id="create-farm-form">
         <FieldGroup>
-          <ControlledInput control={control} name="name" label="Ονομα Φάρμας" />
+          <ControlledInput control={control} name="name" label={t("name")} />
         </FieldGroup>
         {state && <ServerErrors errors={state} />}
       </form>
