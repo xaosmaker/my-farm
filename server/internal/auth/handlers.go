@@ -12,7 +12,7 @@ import (
 
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
-	"github.com/xaosmaker/server/internal/utils"
+	"github.com/xaosmaker/server/internal/util"
 )
 
 const (
@@ -116,11 +116,11 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 		httpx.GeneralError(500, nil)(w, r)
 		return
 	}
-	m := utils.MailMessage(user.Email, "Confirmation Email",
+	m := util.MailMessage(user.Email, "Confirmation Email",
 		fmt.Sprintf("Hello %v welcome to My farm to activate your account pls click on this link\n %v/verify/%v", user.Email, hostAddr, jwt),
 	)
 
-	d := utils.MailDialer()
+	d := util.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
 		httpx.GeneralError(500, nil)(w, r)
@@ -153,7 +153,7 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 	}
 	err = q.DB.UpdateUser(r.Context(), db.UpdateUserParams{
 		ID:       userIdNumber,
-		IsActive: utils.ToPtr(true),
+		IsActive: util.ToPtr(true),
 	})
 
 	if err != nil {
@@ -199,11 +199,11 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 		httpx.GeneralError(500, nil)(w, r)
 		return
 	}
-	m := utils.MailMessage(user.Email, "Confirmation Email",
+	m := util.MailMessage(user.Email, "Confirmation Email",
 		fmt.Sprintf("Hello %v welcome to My farm to activate your account pls click on this link\n %v/verify/%v", user.Email, hostAddr, jwt),
 	)
 
-	d := utils.MailDialer()
+	d := util.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
 		httpx.GeneralError(500, nil)(w, r)

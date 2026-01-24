@@ -1,0 +1,30 @@
+package supply
+
+import (
+	"time"
+
+	"github.com/xaosmaker/server/internal/db"
+)
+
+type supplyResponse struct {
+	ID              int64      `json:"id"`
+	SupplyType      any        `json:"supplyType"`
+	Nickname        *string    `json:"nickname"`
+	Name            string     `json:"name"`
+	MeasurementUnit any        `json:"measurementUnit"`
+	CreatedAt       *time.Time `json:"createdAt"`
+	UpdatedAt       *time.Time `json:"updatedAt"`
+}
+
+func toSupplyResponse(s db.Supply) supplyResponse {
+	return supplyResponse{
+		ID:              s.ID,
+		SupplyType:      s.SupplyType,
+		Nickname:        s.Nickname,
+		Name:            s.Name,
+		MeasurementUnit: s.MeasurementUnit,
+		CreatedAt:       s.CreatedAt,
+		UpdatedAt:       s.UpdatedAt,
+	}
+
+}
