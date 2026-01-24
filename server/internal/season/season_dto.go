@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 type seasonStatisticsResponse struct {
@@ -53,13 +53,13 @@ func toSeasonResponse(s db.GetSeasonsByFieldIdRow, landUnit string) seasonRespon
 		FinishSeason:      s.FinishSeason,
 		Crop:              s.Crop,
 		Boundary:          s.Boundary,
-		AreaInMeters:      s.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		AreaInMeters:      s.AreaInMeters / float64(httpd.UnitConverter(landUnit)),
 		CreatedAt:         s.CreatedAt,
 		UpdatedAt:         s.UpdatedAt,
 		LandUnit:          landUnit,
 		CropName:          s.CropName,
 		FieldName:         s.FieldName,
-		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpd.UnitConverter(landUnit)),
 	}
 }
 
@@ -72,13 +72,13 @@ func toSeasonDetailResponse(s db.GetSeasonByIdRow, landUnit string) seasonRespon
 		FinishSeason:      s.FinishSeason,
 		Crop:              s.Crop,
 		Boundary:          s.Boundary,
-		AreaInMeters:      s.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		AreaInMeters:      s.AreaInMeters / float64(httpd.UnitConverter(landUnit)),
 		CreatedAt:         s.CreatedAt,
 		UpdatedAt:         s.UpdatedAt,
 		LandUnit:          landUnit,
 		CropName:          s.CropName,
 		FieldName:         s.FieldName,
-		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpd.UnitConverter(landUnit)),
 	}
 }
 
@@ -91,12 +91,12 @@ func toAllSeasonResponse(s db.GetALLActiveSeasonsRow, landUnit string) seasonRes
 		FinishSeason:      s.FinishSeason,
 		Crop:              s.Crop,
 		Boundary:          s.Boundary,
-		AreaInMeters:      s.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		AreaInMeters:      s.AreaInMeters / float64(httpd.UnitConverter(landUnit)),
 		CreatedAt:         s.CreatedAt,
 		UpdatedAt:         s.UpdatedAt,
 		LandUnit:          landUnit,
 		CropName:          s.CropName,
 		FieldName:         s.FieldName,
-		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		FieldAreaInMeters: s.FieldAreaInMeters / float64(httpd.UnitConverter(landUnit)),
 	}
 }

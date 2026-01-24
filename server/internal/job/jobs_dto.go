@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 type jobResponse struct {
@@ -30,7 +30,7 @@ func toJobResponse(f db.GetAllJobsRow, landUnit string) jobResponse {
 		Description:  f.Description,
 		SeasonID:     f.SeasonID,
 		JobDate:      f.JobDate,
-		AreaInMeters: f.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		AreaInMeters: f.AreaInMeters / float64(httpd.UnitConverter(landUnit)),
 		Boundary:     f.Boundary,
 		CreatedAt:    f.CreatedAt,
 		UpdatedAt:    f.UpdatedAt,

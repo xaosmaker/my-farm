@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 func (q farmQeuries) createFarm(w http.ResponseWriter, r *http.Request) {
@@ -15,31 +15,31 @@ func (q farmQeuries) createFarm(w http.ResponseWriter, r *http.Request) {
 	}
 	farmFields := farmBody{}
 
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	if httpErr := httpx.DecodeAndValidate(r, &farmFields); httpErr != nil {
+	if httpErr := httpd.DecodeAndValidate(r, &farmFields); httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
 	_, err := q.DB.GetFarm(r.Context(), user.ID)
 	if err == nil {
-		httpx.GeneralError(400, "Farm already Exist cannot create another")(w, r)
+		httpd.GeneralError(400, "Farm already Exist cannot create another")(w, r)
 		return
 	}
 	f, err := q.DB.CreateFarm(r.Context(), db.CreateFarmParams{Name: farmFields.Name, ID: user.ID})
 	if err != nil {
-		httpx.GeneralError(500, []string{"internal server error"})(w, r)
+		httpd.GeneralError(500, []string{"internal server error"})(w, r)
 		return
 	}
 
 	data, err := json.Marshal([]farmResponse{toFarmResponse(db.Farm(f))})
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 
 	}
@@ -50,7 +50,7 @@ func (q farmQeuries) createFarm(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q farmQeuries) getFarm(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -59,12 +59,12 @@ func (q farmQeuries) getFarm(w http.ResponseWriter, r *http.Request) {
 	farm, err := q.DB.GetFarm(r.Context(), user.ID)
 	if err != nil {
 		//this code never run it is validated in the middleware
-		httpx.GeneralError(404, "Farm Not Found")(w, r)
+		httpd.GeneralError(404, "Farm Not Found")(w, r)
 		return
 	}
 	data, err := json.Marshal(toFarmResponse(farm))
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 

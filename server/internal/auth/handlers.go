@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 	"github.com/xaosmaker/server/internal/util"
 )
 
@@ -28,19 +28,19 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	fields := userValidation{}
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&fields)
-	if err := httpx.ValidateFields(fields); err != nil {
-		httpx.GeneralError(400, err)(w, r)
+	if err := httpd.ValidateFields(fields); err != nil {
+		httpd.GeneralError(400, err)(w, r)
 		return
 	}
 
 	user, err := q.DB.GetUserByEmail(r.Context(), fields.Email)
 
 	if err != nil {
-		httpx.GeneralError(401, "Invalid Credentials")(w, r)
+		httpd.GeneralError(401, "Invalid Credentials")(w, r)
 		return
 	}
 	if !ComparePassword(user.Password, fields.Password) {
-		httpx.GeneralError(401, "Invalid Credentials")(w, r)
+		httpd.GeneralError(401, "Invalid Credentials")(w, r)
 		return
 	}
 	user.Password = "****"
@@ -51,7 +51,7 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 	jwt, err := MakeJwt(fmt.Sprintf("%d", user.ID), key, expires)
 	if err != nil {
 		fmt.Println("Failed to generate jwt token: ", err)
-		httpx.GeneralError(401, []string{"Failed To Generate JWT Token"})(w, r)
+		httpd.GeneralError(401, []string{"Failed To Generate JWT Token"})(w, r)
 		return
 
 	}
@@ -98,7 +98,7 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 		Email string `json:"email" validate:"required"`
 	}{}
 
-	if httpErr := httpx.DecodeAndValidate(r, &rd); httpErr != nil {
+	if httpErr := httpd.DecodeAndValidate(r, &rd); httpErr != nil {
 		httpErr(w, r)
 		return
 	}
@@ -113,7 +113,7 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, verifyExpires)
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 	m := util.MailMessage(user.Email, "Confirmation Email",
@@ -123,7 +123,7 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 	d := util.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -135,7 +135,7 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 		Token string `json:"token" validate:"required"`
 	}{}
 
-	if httpErr := httpx.DecodeAndValidate(r, &rd); httpErr != nil {
+	if httpErr := httpd.DecodeAndValidate(r, &rd); httpErr != nil {
 		httpErr(w, r)
 		return
 	}
@@ -143,12 +143,12 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
 	userId, err := ValidateJwt(rd.Token, hostStmtpVerKEY)
 	if err != nil {
-		httpx.GeneralError(400, "Validation failed")(w, r)
+		httpd.GeneralError(400, "Validation failed")(w, r)
 		return
 	}
 	userIdNumber, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 	err = q.DB.UpdateUser(r.Context(), db.UpdateUserParams{
@@ -157,7 +157,7 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -170,7 +170,7 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 		ConfirmPassword string `json:"confirmPassword" validate:"required,eqfield=Password"`
 	}
 	reqUser := UserRequest{}
-	fieldError := httpx.DecodeAndValidate(r, &reqUser)
+	fieldError := httpd.DecodeAndValidate(r, &reqUser)
 	if fieldError != nil {
 		fieldError(w, r)
 		return
@@ -183,10 +183,10 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpx.GeneralError(400, "user already exists")(w, r)
+			httpd.GeneralError(400, "user already exists")(w, r)
 			return
 		}
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	//TODO: finish emailVerification
@@ -196,7 +196,7 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, verifyExpires)
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 	m := util.MailMessage(user.Email, "Confirmation Email",
@@ -206,7 +206,7 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	d := util.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 

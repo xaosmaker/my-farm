@@ -1,4 +1,4 @@
-package httpx
+package httpd
 
 func JobTypesWithSupplies() []string {
 	return []string{

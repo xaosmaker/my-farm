@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 type fieldResponse struct {
@@ -32,7 +32,7 @@ func toFieldResponse(f db.Field, landUnit string) fieldResponse {
 		Epsg4326Boundary: f.Epsg4326Boundary,
 		MapLocation:      f.MapLocation,
 		FieldLocation:    f.FieldLocation,
-		AreaInMeters:     f.AreaInMeters / float64(httpx.UnitConverter(landUnit)),
+		AreaInMeters:     f.AreaInMeters / float64(httpd.UnitConverter(landUnit)),
 		IsOwned:          f.IsOwned,
 		CreatedAt:        f.CreatedAt,
 		UpdatedAt:        f.UpdatedAt,

@@ -11,7 +11,7 @@ import (
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/farm"
 	"github.com/xaosmaker/server/internal/field"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 	"github.com/xaosmaker/server/internal/job"
 	middlewares "github.com/xaosmaker/server/internal/middleware"
 	"github.com/xaosmaker/server/internal/season"
@@ -42,7 +42,7 @@ func MainRouter(con *pgxpool.Pool) *chi.Mux {
 	r.Mount("/api/supplies", supply.SuppliesRouter(con))
 	r.Mount("/api/settings", usersetting.UserSettingsRouter(con))
 	r.Mount("/api/seasons", season.SeasonsRouter(con))
-	r.NotFound(http.HandlerFunc(httpx.GeneralError(404, "Route not Found")))
-	r.MethodNotAllowed(http.HandlerFunc(httpx.GeneralError(405, "Method not found ")))
+	r.NotFound(http.HandlerFunc(httpd.GeneralError(404, "Route not Found")))
+	r.MethodNotAllowed(http.HandlerFunc(httpd.GeneralError(405, "Method not found ")))
 	return r
 }

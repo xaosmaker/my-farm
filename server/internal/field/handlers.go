@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 type createFieldRequestParams struct {
@@ -30,12 +30,12 @@ type updateFieldRequestParams struct {
 }
 
 func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	id, httpErr := httpx.GetPathValueToInt64(r, "id")
+	id, httpErr := httpd.GetPathValueToInt64(r, "id")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -46,18 +46,18 @@ func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.GeneralError(400, "Field not found")(w, r)
+		httpd.GeneralError(400, "Field not found")(w, r)
 		return
 	}
 
 	s := updateFieldRequestParams{}
 
-	if err := httpx.DecodeAndValidate(r, &s); err != nil {
+	if err := httpd.DecodeAndValidate(r, &s); err != nil {
 		err(w, r)
 		return
 	}
 	if s.AreaInMeters != nil {
-		*s.AreaInMeters *= float64(httpx.UnitConverter(user.LandUnit))
+		*s.AreaInMeters *= float64(httpd.UnitConverter(user.LandUnit))
 	}
 
 	fiel := db.UpdateFieldParams{
@@ -75,11 +75,11 @@ func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
 
-			httpx.GeneralError(400, "Field already exists with this name")(w, r)
+			httpd.GeneralError(400, "Field already exists with this name")(w, r)
 			return
 		}
 
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	jData, _ := json.Marshal([]fieldResponse{toFieldResponse(data, user.LandUnit)})
@@ -89,7 +89,7 @@ func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -97,7 +97,7 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 
 	fields := createFieldRequestParams{}
 
-	if err := httpx.DecodeAndValidate(r, &fields); err != nil {
+	if err := httpd.DecodeAndValidate(r, &fields); err != nil {
 		err(w, r)
 		return
 	}
@@ -106,7 +106,7 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 		Name:             fields.Name,
 		Epsg2100Boundary: fields.Epsg2100Boundary,
 		Epsg4326Boundary: fields.Epsg4326Boundary,
-		AreaInMeters:     fields.AreaInMeters * float64(httpx.UnitConverter(user.LandUnit)),
+		AreaInMeters:     fields.AreaInMeters * float64(httpd.UnitConverter(user.LandUnit)),
 		MapLocation:      fields.MapLocation,
 		FieldLocation:    fields.FieldLocation,
 		FarmID:           *user.FarmID,
@@ -116,11 +116,11 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 	field, err := q.DB.CreateField(r.Context(), params)
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpx.GeneralError(400, "Field already exists with this name")(w, r)
+			httpd.GeneralError(400, "Field already exists with this name")(w, r)
 			return
 		}
 
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	data, _ := json.Marshal(toFieldResponse(field, user.LandUnit))
@@ -130,12 +130,12 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	id, httpErr := httpx.GetPathValueToInt64(r, "id")
+	id, httpErr := httpd.GetPathValueToInt64(r, "id")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -146,12 +146,12 @@ func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.GeneralError(404, "Field not found")(w, r)
+		httpd.GeneralError(404, "Field not found")(w, r)
 		return
 	}
 	err = q.DB.DeleteField(r.Context(), id)
 	if err != nil {
-		httpx.GeneralError(500, err.Error())(w, r)
+		httpd.GeneralError(500, err.Error())(w, r)
 		return
 	}
 	w.WriteHeader(204)
@@ -159,13 +159,13 @@ func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
-	id, httpErr := httpx.GetPathValueToInt64(r, "id")
+	id, httpErr := httpd.GetPathValueToInt64(r, "id")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -177,13 +177,13 @@ func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpx.GeneralError(404, "Field not found")(w, r)
+		httpd.GeneralError(404, "Field not found")(w, r)
 		return
 	}
 
 	jData, err := json.Marshal(toFieldResponse(data, user.LandUnit))
 	if err != nil {
-		httpx.GeneralError(500, "Internal Server Error")(w, r)
+		httpd.GeneralError(500, "Internal Server Error")(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -193,7 +193,7 @@ func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
 
 func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
 
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -201,7 +201,7 @@ func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
 	data, err := q.DB.GetAllFields(r.Context(), user.ID)
 	if err != nil {
 
-		httpx.GeneralError(404, "No Field found")(w, r)
+		httpd.GeneralError(404, "No Field found")(w, r)
 		return
 
 	}
@@ -214,7 +214,7 @@ func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
 	jData, err := json.Marshal(listData)
 
 	if err != nil {
-		httpx.GeneralError(500, "Internal Server Error")(w, r)
+		httpd.GeneralError(500, "Internal Server Error")(w, r)
 		return
 	}
 
