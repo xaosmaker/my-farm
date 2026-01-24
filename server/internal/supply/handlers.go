@@ -6,16 +6,16 @@ import (
 	"strings"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
-	supplyId, httpErr := httpx.GetPathValueToInt64(r, "supplyId")
+	supplyId, httpErr := httpd.GetPathValueToInt64(r, "supplyId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -28,7 +28,7 @@ func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
 		MeasurementUnit *string `json:"measurementUnit" validate:"omitnil,measurementUnitsVal"`
 	}
 	rb := supplyRequest{}
-	if httpErr := httpx.DecodeAndValidate(r, &rb); httpErr != nil {
+	if httpErr := httpd.DecodeAndValidate(r, &rb); httpErr != nil {
 		httpErr(w, r)
 		return
 	}
@@ -36,7 +36,7 @@ func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
 		FarmID: *user.FarmID,
 		ID:     supplyId,
 	}); err != nil {
-		httpx.GeneralError(404, "Resourse not found")(w, r)
+		httpd.GeneralError(404, "Resourse not found")(w, r)
 		return
 	}
 	err := q.DB.UpdateSupply(r.Context(), db.UpdateSupplyParams{
@@ -47,7 +47,7 @@ func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
 		MeasurementUnit: rb.MeasurementUnit,
 	})
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	w.WriteHeader(204)
@@ -55,7 +55,7 @@ func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -68,7 +68,7 @@ func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
 		MeasurementUnit string  `json:"measurementUnit" validate:"required,measurementUnitsVal"`
 	}
 	rd := supplyRequest{}
-	if err := httpx.DecodeAndValidate(r, &rd); err != nil {
+	if err := httpd.DecodeAndValidate(r, &rd); err != nil {
 		err(w, r)
 		return
 	}
@@ -81,15 +81,15 @@ func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpx.GeneralError(400, "Name Already Exists")(w, r)
+			httpd.GeneralError(400, "Name Already Exists")(w, r)
 			return
 		}
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	data, err := json.Marshal([]supplyResponse{toSupplyResponse(supply)})
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 	w.WriteHeader(201)
@@ -98,13 +98,13 @@ func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
 
 func (q suppliesQueries) getSupplyDetails(w http.ResponseWriter, r *http.Request) {
 
-	supplyId, httpErr := httpx.GetPathValueToInt64(r, "supplyId")
+	supplyId, httpErr := httpd.GetPathValueToInt64(r, "supplyId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -117,7 +117,7 @@ func (q suppliesQueries) getSupplyDetails(w http.ResponseWriter, r *http.Request
 
 	suppliesResponse, err := json.Marshal([]supplyResponse{toSupplyResponse(supplies)})
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 
@@ -128,7 +128,7 @@ func (q suppliesQueries) getSupplyDetails(w http.ResponseWriter, r *http.Request
 
 func (q suppliesQueries) getAllSupplies(w http.ResponseWriter, r *http.Request) {
 
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -136,7 +136,7 @@ func (q suppliesQueries) getAllSupplies(w http.ResponseWriter, r *http.Request) 
 
 	supplies, err := q.DB.GetAllSupplies(r.Context(), *user.FarmID)
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 
 	}
@@ -148,7 +148,7 @@ func (q suppliesQueries) getAllSupplies(w http.ResponseWriter, r *http.Request) 
 
 	suppliesResponseEncoded, err := json.Marshal(suppliesResponse)
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 
@@ -157,13 +157,13 @@ func (q suppliesQueries) getAllSupplies(w http.ResponseWriter, r *http.Request) 
 
 }
 func (q suppliesQueries) deleteSupply(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	supplyId, httpErr := httpx.GetPathValueToInt64(r, "supplyId")
+	supplyId, httpErr := httpd.GetPathValueToInt64(r, "supplyId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -174,7 +174,7 @@ func (q suppliesQueries) deleteSupply(w http.ResponseWriter, r *http.Request) {
 		ID:     supplyId,
 	})
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 

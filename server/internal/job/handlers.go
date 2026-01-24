@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 //WARN: overwite the seasonId
@@ -30,12 +30,12 @@ type requestParams struct {
 }
 
 func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	jobId, httpErr := httpx.GetPathValueToInt64(r, "jobId")
+	jobId, httpErr := httpd.GetPathValueToInt64(r, "jobId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -45,16 +45,16 @@ func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) {
 		JobID:  jobId,
 	})
 	if err != nil {
-		httpx.GeneralError(404, "Job not found")(w, r)
+		httpd.GeneralError(404, "Job not found")(w, r)
 		return
 	}
 	if finishSeason != nil {
-		httpx.GeneralError(400, "Can't delete season is Closed")(w, r)
+		httpd.GeneralError(400, "Can't delete season is Closed")(w, r)
 		return
 	}
 	err = q.DB.DeleteJob(r.Context(), jobId)
 	if err != nil {
-		httpx.GeneralError(404, err.Error())(w, r)
+		httpd.GeneralError(404, err.Error())(w, r)
 		return
 
 	}
@@ -65,26 +65,26 @@ func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) {
 func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 	hasSupplies := false
 
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 	requestData := requestParams{}
-	if err := httpx.DecodeAndValidate(r, &requestData); err != nil {
+	if err := httpd.DecodeAndValidate(r, &requestData); err != nil {
 		err(w, r)
 		return
 	}
-	if slices.Contains(httpx.JobTypesWithSupplies(), requestData.JobType) {
+	if slices.Contains(httpd.JobTypesWithSupplies(), requestData.JobType) {
 		if len(requestData.JobSupplies) == 0 {
-			httpx.GeneralError(400, "JobSupplies should be [{quantity: greater than 0 , supplyId: the id of a supply object}]")(w, r)
+			httpd.GeneralError(400, "JobSupplies should be [{quantity: greater than 0 , supplyId: the id of a supply object}]")(w, r)
 			return
 
 		}
 		for _, job := range requestData.JobSupplies {
 
-			if err := httpx.ValidateFields(&job); err != nil {
-				httpx.GeneralError(400, err)(w, r)
+			if err := httpd.ValidateFields(&job); err != nil {
+				httpd.GeneralError(400, err)(w, r)
 				return
 
 			}
@@ -96,21 +96,21 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 
 	season, err := q.DB.GetSeasonById(r.Context(), requestData.SeasonID)
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	if season.FinishSeason != nil {
-		httpx.GeneralError(400, "Cannot Add Job when a season is finished")(w, r)
+		httpd.GeneralError(400, "Cannot Add Job when a season is finished")(w, r)
 		return
 	}
 	if requestData.JobDate.Before(season.StartSeason) {
-		httpx.GeneralError(400, "Cannot add job before the season start")(w, r)
+		httpd.GeneralError(400, "Cannot add job before the season start")(w, r)
 		return
 	}
 
@@ -119,10 +119,10 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 		Description:  requestData.Description,
 		JobDate:      requestData.JobDate,
 		SeasonID:     requestData.SeasonID,
-		AreaInMeters: requestData.AreaInMeters * float64(httpx.UnitConverter(user.LandUnit)),
+		AreaInMeters: requestData.AreaInMeters * float64(httpd.UnitConverter(user.LandUnit)),
 	})
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	if hasSupplies {
@@ -133,7 +133,7 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 				JobID:    &job.ID,
 			})
 			if err != nil {
-				httpx.GeneralError(400, err.Error())(w, r)
+				httpd.GeneralError(400, err.Error())(w, r)
 				return
 			}
 		}
@@ -141,7 +141,7 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 
 	jData, err := json.Marshal(job)
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 
@@ -150,30 +150,30 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
-	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
+	seasonId, httpErr := httpd.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || farmId != *user.FarmID {
-		httpx.GeneralError(404, "Resourse not found")(w, r)
+		httpd.GeneralError(404, "Resourse not found")(w, r)
 		return
 	}
 
 	if _, err := q.DB.GetSeasonById(r.Context(), seasonId); err != nil {
-		httpx.GeneralError(404, "Resource not found")
+		httpd.GeneralError(404, "Resource not found")
 
 		return
 	}
 
 	jobs, err := q.DB.GetAllJobs(r.Context(), seasonId)
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 
@@ -184,7 +184,7 @@ func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
 
 	data, err := json.Marshal(jJobs)
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -194,19 +194,19 @@ func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
 func (q jobsQueries) getJobDetails(w http.ResponseWriter, r *http.Request) {
 	//WARN: this method is unused for now
 
-	user, httpErr := httpx.GetUserFromContext(r)
+	user, httpErr := httpd.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	fieldId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
+	fieldId, httpErr := httpd.GetPathValueToInt64(r, "fieldId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	jobId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
+	jobId, httpErr := httpd.GetPathValueToInt64(r, "fieldId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -217,7 +217,7 @@ func (q jobsQueries) getJobDetails(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.GeneralError(400, "This Field Doesnt Exist")
+		httpd.GeneralError(400, "This Field Doesnt Exist")
 	}
 	job, err := q.DB.GetJobDetails(r.Context(), db.GetJobDetailsParams{
 		//WARN: overwrite the season id
@@ -226,14 +226,14 @@ func (q jobsQueries) getJobDetails(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	jJob := toJobDetailsResponse(job)
 
 	data, err := json.Marshal(jJob)
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 		return
 	}
 	w.WriteHeader(200)

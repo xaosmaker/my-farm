@@ -5,20 +5,20 @@ import (
 	"net/http"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/httpd"
 )
 
 func (q userSettingsQueries) getSettings(w http.ResponseWriter, r *http.Request) {
-	user, _ := httpx.GetUserFromContext(r)
+	user, _ := httpd.GetUserFromContext(r)
 
 	settings, err := q.DB.GetUserSettings(r.Context(), user.ID)
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 		return
 	}
 	encodedSettings, err := json.Marshal(toSettingsResponse(settings))
 	if err != nil {
-		httpx.GeneralError(500, nil)(w, r)
+		httpd.GeneralError(500, nil)(w, r)
 	}
 	w.WriteHeader(200)
 	w.Write(encodedSettings)
@@ -26,14 +26,14 @@ func (q userSettingsQueries) getSettings(w http.ResponseWriter, r *http.Request)
 }
 
 func (q userSettingsQueries) updateSettings(w http.ResponseWriter, r *http.Request) {
-	user, _ := httpx.GetUserFromContext(r)
+	user, _ := httpd.GetUserFromContext(r)
 	type settingRequest struct {
 		LandUnit string `json:"landUnit" validate:"required,oneof=stremata hectares m2"`
 	}
 	sReq := settingRequest{}
 
-	if err := httpx.DecodeAndValidate(r, &sReq); err != nil {
-		httpx.GeneralError(400, err)(w, r)
+	if err := httpd.DecodeAndValidate(r, &sReq); err != nil {
+		httpd.GeneralError(400, err)(w, r)
 		return
 	}
 
@@ -42,7 +42,7 @@ func (q userSettingsQueries) updateSettings(w http.ResponseWriter, r *http.Reque
 		UserID:   user.ID,
 	})
 	if err != nil {
-		httpx.GeneralError(400, err.Error())(w, r)
+		httpd.GeneralError(400, err.Error())(w, r)
 	}
 	w.WriteHeader(204)
 
