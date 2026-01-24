@@ -160,7 +160,8 @@
       "cropName": "Καλλιέργεια",
       "startSeason": "Αρχή καλλιέργειάς",
       "finishSeason": "Τέλος καλλιέργειάς",
-      "createSeason": "Action"
+      "createSeason": "Action",
+      "createSeasonButton": "Δημιουργία σεζόν"
     }
   },
   "Fields": {

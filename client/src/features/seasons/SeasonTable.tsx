@@ -115,7 +115,7 @@ export default function SeasonTable({
                 <TooltipTrigger>
                   <Plus />
                 </TooltipTrigger>
-                <TooltipContent>Δημιουργία σεζόν</TooltipContent>
+                <TooltipContent>{t("createSeasonButton")}</TooltipContent>
               </Tooltip>
             </Link>
           );

@@ -160,7 +160,8 @@
       "cropName": "Farming",
       "startSeason": "Start of season",
       "finishSeason": "Finish of season",
-      "createSeason": "Action"
+      "createSeason": "Action",
+      "createSeasonButton": "Create Season"
     }
   },
   "Fields": {
