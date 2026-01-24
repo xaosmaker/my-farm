@@ -12,11 +12,11 @@ import (
 	"github.com/xaosmaker/server/internal/farm"
 	"github.com/xaosmaker/server/internal/field"
 	"github.com/xaosmaker/server/internal/httpx"
-	"github.com/xaosmaker/server/internal/jobs"
-	"github.com/xaosmaker/server/internal/middlewares"
-	"github.com/xaosmaker/server/internal/seasons"
-	"github.com/xaosmaker/server/internal/supplies"
-	usersettings "github.com/xaosmaker/server/internal/user_settings"
+	"github.com/xaosmaker/server/internal/job"
+	middlewares "github.com/xaosmaker/server/internal/middleware"
+	"github.com/xaosmaker/server/internal/season"
+	"github.com/xaosmaker/server/internal/supply"
+	usersetting "github.com/xaosmaker/server/internal/user_setting"
 )
 
 func MainRouter(con *pgxpool.Pool) *chi.Mux {
@@ -38,10 +38,10 @@ func MainRouter(con *pgxpool.Pool) *chi.Mux {
 	r.Post("/api/users/resendverify", authQ.ResendVefifyEmail)
 	r.Mount("/api/farms", farm.FarmRouter(con))
 	r.Mount("/api/fields", field.FieldRouter(con))
-	r.Mount("/api/jobs", jobs.JobsRouter(con))
-	r.Mount("/api/supplies", supplies.SuppliesRouter(con))
-	r.Mount("/api/settings", usersettings.UserSettingsRouter(con))
-	r.Mount("/api/seasons", seasons.SeasonsRouter(con))
+	r.Mount("/api/jobs", job.JobsRouter(con))
+	r.Mount("/api/supplies", supply.SuppliesRouter(con))
+	r.Mount("/api/settings", usersetting.UserSettingsRouter(con))
+	r.Mount("/api/seasons", season.SeasonsRouter(con))
 	r.NotFound(http.HandlerFunc(httpx.GeneralError(404, "Route not Found")))
 	r.MethodNotAllowed(http.HandlerFunc(httpx.GeneralError(405, "Method not found ")))
 	return r

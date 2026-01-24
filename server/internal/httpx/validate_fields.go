@@ -3,10 +3,11 @@ package httpx
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Message struct {
