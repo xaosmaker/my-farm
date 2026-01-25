@@ -3,15 +3,15 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpd"
+	"github.com/xaosmaker/server/internal/httpx"
 	"github.com/xaosmaker/server/internal/util"
 )
 
@@ -21,40 +21,35 @@ const (
 )
 
 func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
-	type userValidation struct {
+	reqUser := struct {
 		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required,min=1"`
-	}
-	fields := userValidation{}
-	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&fields)
-	if err := httpd.ValidateFields(fields); err != nil {
-		httpd.GeneralError(400, err)(w, r)
+	}{}
+	if fieldError := httpx.DecodeAndValidate(r, &reqUser); fieldError != nil {
+		httpx.ServerError(400, fieldError)(w, r)
 		return
+
 	}
 
-	user, err := q.DB.GetUserByEmail(r.Context(), fields.Email)
-
+	user, err := q.DB.GetUserByEmail(r.Context(), reqUser.Email)
 	if err != nil {
-		httpd.GeneralError(401, "Invalid Credentials")(w, r)
+		httpx.ServerError(401, nil)(w, r)
 		return
 	}
-	if !ComparePassword(user.Password, fields.Password) {
-		httpd.GeneralError(401, "Invalid Credentials")(w, r)
+	if !ComparePassword(user.Password, reqUser.Password) {
+		httpx.ServerError(401, nil)(w, r)
 		return
 	}
+
 	user.Password = "****"
 	key := os.Getenv("JWT_KEY")
-	if key == "" {
-		log.Fatal("JWT_KEY env is not assigned")
-	}
 	jwt, err := MakeJwt(fmt.Sprintf("%d", user.ID), key, expires)
 	if err != nil {
 		fmt.Println("Failed to generate jwt token: ", err)
-		httpd.GeneralError(401, []string{"Failed To Generate JWT Token"})(w, r)
+		httpx.ServerError(401, nil)(w, r)
 		return
-
 	}
+
 	cookie := http.Cookie{
 		Name:     "access",
 		Value:    jwt,
@@ -76,35 +71,37 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 		ID:    user.ID,
 		Email: user.Email,
 	}
+
 	farm, err := q.DB.GetFarm(r.Context(), user.ID)
 	if err == nil {
 		s.FarmID = &farm.ID
 		s.FarmName = &farm.Name
 	}
 
-	jUser, err := json.Marshal(s)
-	//TODO: need to check later
-	w.WriteHeader(200)
-	if err == nil {
-
-		w.Write(jUser)
-
+	userEnc, err := json.Marshal(s)
+	if err != nil {
+		httpx.ServerError(500, nil)(w, r)
+		return
 	}
+	w.WriteHeader(200)
+	w.Write(userEnc)
 
 }
+
 func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 
-	rd := struct {
+	reqVer := struct {
 		Email string `json:"email" validate:"required"`
 	}{}
 
-	if httpErr := httpd.DecodeAndValidate(r, &rd); httpErr != nil {
-		httpErr(w, r)
+	if fieldErr := httpx.DecodeAndValidate(r, &reqVer); fieldErr != nil {
+		httpx.ServerError(400, fieldErr)(w, r)
 		return
 	}
-	user, err := q.DB.GetUserByEmailNotActive(r.Context(), rd.Email)
+
+	user, err := q.DB.GetUserByEmailNotActive(r.Context(), reqVer.Email)
 	if err != nil {
-		w.WriteHeader(200)
+		httpx.ServerError(400, httpx.NewErrMessage("Email already verified", apperror.INVALID_EMAIL_VERIFIED, nil))(w, r)
 		return
 	}
 
@@ -113,7 +110,7 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, verifyExpires)
 	if err != nil {
-		httpd.GeneralError(500, nil)(w, r)
+		httpx.ServerError(500, nil)(w, r)
 		return
 	}
 	m := util.MailMessage(user.Email, "Confirmation Email",
@@ -122,8 +119,7 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	d := util.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
-		fmt.Println(err)
-		httpd.GeneralError(500, nil)(w, r)
+		httpx.ServerError(400, httpx.NewErrMessage("Failed to send email", apperror.ERROR_EMAIL_SEND, nil))(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -131,24 +127,24 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 }
 func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 	//TODO: later check if the user exists and if the users exists more option
-	rd := struct {
+	reqToken := struct {
 		Token string `json:"token" validate:"required"`
 	}{}
 
-	if httpErr := httpd.DecodeAndValidate(r, &rd); httpErr != nil {
-		httpErr(w, r)
+	if fieldError := httpx.DecodeAndValidate(r, &reqToken); fieldError != nil {
+		httpx.ServerError(400, fieldError)(w, r)
 		return
 	}
 
-	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
-	userId, err := ValidateJwt(rd.Token, hostStmtpVerKEY)
+	key := os.Getenv("EMAIL_VERIFY_KEY")
+	userId, err := ValidateJwt(reqToken.Token, key)
 	if err != nil {
-		httpd.GeneralError(400, "Validation failed")(w, r)
+		httpx.ServerError(400, httpx.NewErrMessage("failed to verify the token", apperror.INVALID_VERIFICATION_TOKEN, nil))(w, r)
 		return
 	}
 	userIdNumber, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		httpd.GeneralError(500, nil)(w, r)
+		httpx.ServerError(500, nil)(w, r)
 		return
 	}
 	err = q.DB.UpdateUser(r.Context(), db.UpdateUserParams{
@@ -157,22 +153,20 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpd.GeneralError(400, err.Error())(w, r)
+		httpx.ServerError(400, httpx.NewErrMessage(err.Error(), apperror.UNKNOWN_ERROR, nil))(w, r)
 		return
 	}
 	w.WriteHeader(200)
 }
 
 func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
-	type UserRequest struct {
+	reqUser := struct {
 		Email           string `json:"email" validate:"required,email"`
 		Password        string `json:"password" validate:"required,strongPassword=8"`
 		ConfirmPassword string `json:"confirmPassword" validate:"required,eqfield=Password"`
-	}
-	reqUser := UserRequest{}
-	fieldError := httpd.DecodeAndValidate(r, &reqUser)
-	if fieldError != nil {
-		fieldError(w, r)
+	}{}
+	if fieldError := httpx.DecodeAndValidate(r, &reqUser); fieldError != nil {
+		httpx.ServerError(400, fieldError)(w, r)
 		return
 	}
 
@@ -183,20 +177,20 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpd.GeneralError(400, "user already exists")(w, r)
+			httpx.ServerError(400, httpx.NewErrMessage("invalid email alread exists",
+				apperror.INVALID_EMAIL_EXIST, nil))(w, r)
 			return
 		}
-		httpd.GeneralError(400, err.Error())(w, r)
+		httpx.ServerError(400, httpx.NewErrMessage(err.Error(), apperror.UNKNOWN_ERROR, nil))(w, r)
 		return
 	}
-	//TODO: finish emailVerification
 
 	hostAddr := os.Getenv("NEXTAUTH_URL")
 	hostStmtpVerKEY := os.Getenv("EMAIL_VERIFY_KEY")
 
 	jwt, err := MakeJwt(fmt.Sprintf("%v", user.ID), hostStmtpVerKEY, verifyExpires)
 	if err != nil {
-		httpd.GeneralError(500, nil)(w, r)
+		httpx.ServerError(500, nil)(w, r)
 		return
 	}
 	m := util.MailMessage(user.Email, "Confirmation Email",
@@ -206,7 +200,7 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	d := util.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
-		httpd.GeneralError(500, nil)(w, r)
+		httpx.ServerError(500, nil)(w, r)
 		return
 	}
 

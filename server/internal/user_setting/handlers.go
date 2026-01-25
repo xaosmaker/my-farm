@@ -28,7 +28,7 @@ func (q userSettingsQueries) getSettings(w http.ResponseWriter, r *http.Request)
 func (q userSettingsQueries) updateSettings(w http.ResponseWriter, r *http.Request) {
 	user, _ := httpd.GetUserFromContext(r)
 	type settingRequest struct {
-		LandUnit string `json:"landUnit" validate:"required,oneof=stremata hectares m2"`
+		LandUnit string `json:"landUnit" validate:"required,measurementUnitsVal"`
 	}
 	sReq := settingRequest{}
 
