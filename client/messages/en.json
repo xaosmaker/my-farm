@@ -208,12 +208,12 @@
   },
   "Login": {
     "title": "My Farm Login",
-    "desc": "Login to your My Farm account",
+    "desc": "Login to My Farm account",
     "email": "Email",
     "password": "Password",
     "button": "Login",
     "showPassword": "Show Password",
-    "registerLink": "register"
+    "registerLink": "Register"
   },
   "Register": {
     "title": "My Farm Register",

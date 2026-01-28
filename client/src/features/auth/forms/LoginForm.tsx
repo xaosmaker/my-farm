@@ -23,12 +23,10 @@ import BaseForm from "@/components/BaseForm";
 import ControlledInput from "@/components/ControlledInput";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { CardAction } from "@/components/ui/card";
+import Link from "next/link";
 
-export default function LoginForm({
-  cardAction,
-}: {
-  cardAction?: React.ReactNode;
-}) {
+export default function LoginForm() {
   const router = useRouter();
   const t = useTranslations("Login");
   const { control, reset, handleSubmit, formState, setError } =
@@ -54,7 +52,11 @@ export default function LoginForm({
 
   return (
     <BaseForm
-      cardAction={cardAction}
+      cardAction={
+        <CardAction className="p-2">
+          <Link href="/register">{t("registerLink")}</Link>
+        </CardAction>
+      }
       cardTitle={t("title")}
       cardDescription={t("desc")}
       buttonChildren={
