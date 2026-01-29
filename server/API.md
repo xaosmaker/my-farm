@@ -102,4 +102,78 @@ wrong email or password
 </details>
 
 ---
+
+### <span style="color:green">POST</span> /api/users/create
+<details>
+
+#### body:
+```json
+{
+    "email":"test@test.com",
+    "password":"test1",
+    "confirmPassword":"test1"
+}
+
+```
+#### responses:
+
+<span style="color:green">201</span>
+```json
+
+```
+
+<span style="color:red">400</span>
+fields not completed well or not pass validations
+```json
+{
+    "errors":
+    [
+        {
+            "message":"email: Email is Required!",
+            "appCode":"required_field",
+            "meta":null
+        },{
+            "message":"password: Password is Required!",
+            "appCode":"required_field",
+            "meta":null
+        },{
+            "message":"confirmPassword: ConfirmPassword is Required!",
+            "appCode":"required_field",
+            "meta":null
+        }
+    ]
+}
+```
+invalid email, password, confirm password
+```json
+{
+    "errors":
+    [
+        {
+            "message":"email: Please provide a valid email",
+            "appCode":"invalid_email",
+            "meta":null
+        },{
+            "message":"password: Password should contains Capital letters, digits and has length greater than 8",
+            "appCode":"invalid_strong_password",
+            "meta":{"min":"8"}
+        },{
+            "message":"confirmPassword: ConfirmPassword mismatch Password",
+            "appCode":"invalid_equal_fields",
+            "meta":
+            {
+                "fieldA":"ConfirmPassword",
+                "fieldB":"Password"
+            }
+        },{
+            "message":"invalid email alread exists",
+            "appCode":"invalid_email_exist",
+            "meta":null
+        }
+    ]
+}
+```
+</details>
+
+---
 <!-- <span style="color:red"></span> -->

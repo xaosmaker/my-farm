@@ -26,7 +26,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/test/postgres/Dockerfile
-    image: farm-test-db
     container_name: farm-test-db
     ports:
       - "1212:5432"
@@ -40,6 +39,31 @@ services:
       retries: 5
     env_file:
       - ./.test.env
+    networks:
+      - farm_test_db_nw
+
+  farm-mailpit:
+    container_name: farm-mailpit
+    image: axllent/mailpit
+    expose:
+      - "8025"
+      - "1025"
+    ports:
+      - "8025:8025"
+    environment:
+      # MP_MAX_MESSAGES: 5000
+      # MP_DATABASE: /data/mailpit.db
+      # MP_SMTP_REQUIRE_STARTTLS: true
+      MP_SMTP_AUTH_ACCEPT_ANY: true
+      MP_SMTP_AUTH_ALLOW_INSECURE: true
+      # MP_SMTP_TLS_CERT: "sans:farm-mailpit"
+      # MP_SMTP_TLS_KEY: "sans:farm-mailpit"
+
+      MP_SMTP_TLS_CERT: /cert/cert.pem
+      MP_SMTP_TLS_KEY: /cert/key.pem
+    volumes:
+      - ./docker/test/cert_for_tls:/cert
+
     networks:
       - farm_test_db_nw
 networks:
