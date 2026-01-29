@@ -18,7 +18,7 @@ func formatValidator(f validator.FieldError) errorMessage {
 		return errorMessage{
 			fmt.Sprintf("%v is Required!", f.Field()),
 			apperror.REQUIRED_FIELD,
-			nil,
+			Meta{"name": f.Field()},
 		}
 	case "min":
 		return errorMessage{
@@ -132,6 +132,9 @@ func ValidateFields(s any) *ErrMessage {
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
 			errMess := formatValidator(e)
+			if errMess.AppCode == apperror.REQUIRED_FIELD {
+				errMess.Meta["name"] = getFieldJsonTag(s, e.Field())
+			}
 			errMess.Message = fmt.Sprintf("%v: %v", getFieldJsonTag(s, e.Field()), errMess.Message)
 			fieldErrors.Errors = append(fieldErrors.Errors, errMess)
 		}

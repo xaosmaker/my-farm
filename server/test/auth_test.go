@@ -15,8 +15,8 @@ func TestLogin(t *testing.T) {
 		expCode int
 		expBody []string
 	}{
-		{"login without body should fail", ``, 400, []string{`{"errors":[{"message":"email: Email is Required!","appCode":"required_field","meta":null},{"message":"password: Password is Required!","appCode":"required_field","meta":null}]}`}},
-		{"login without password should fail", `{"email":"test@test.com"}`, 400, []string{`{"errors":[{"message":"password: Password is Required!","appCode":"required_field","meta":null}]}`}},
+		{"login without body should fail", ``, 400, []string{`{"errors":[{"message":"email: Email is Required!","appCode":"required_field","meta":{"name":"email"}},{"message":"password: Password is Required!","appCode":"required_field","meta":{"name":"password"}}]}`}},
+		{"login without password should fail", `{"email":"test@test.com"}`, 400, []string{`{"errors":[{"message":"password: Password is Required!","appCode":"required_field","meta":{"name":"password"}}]}`}},
 		{"login with wrong email should fail", `{"email":"test123@test.com","password":"wrongPass"}`, 401, []string{`{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`}},
 		{"login with incomplete email email should fail", `{"email":"test123@.com","password":"wrongPass"}`, 400, []string{`{"errors":[{"message":"email: Please provide a valid email","appCode":"invalid_email","meta":null}]}`}},
 		{"login with wrong password should fail", `{"email":"test@test.com","password":"wrongPass"}`, 401, []string{`{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`}},
@@ -51,9 +51,9 @@ func TestRegister(t *testing.T) {
 		expCode int
 		expBody []string
 	}{
-		{"Register without body should fail", ``, 400, []string{`{"errors":[{"message":"email: Email is Required!","appCode":"required_field","meta":null},{"message":"password: Password is Required!","appCode":"required_field","meta":null},{"message":"confirmPassword: ConfirmPassword is Required!","appCode":"required_field","meta":null}]}`}},
-		{"Register with only email body should fail", `{"email":"test@test.com"}`, 400, []string{`{"errors":[{"message":"password: Password is Required!","appCode":"required_field","meta":null},{"message":"confirmPassword: ConfirmPassword is Required!","appCode":"required_field","meta":null}]}`}},
-		{"Register with email,password body should fail", `{"email":"test@test.com","password":"Test1Ites"}`, 400, []string{`{"errors":[{"message":"confirmPassword: ConfirmPassword is Required!","appCode":"required_field","meta":null}]}`}},
+		{"Register without body should fail", ``, 400, []string{`{"errors":[{"message":"email: Email is Required!","appCode":"required_field","meta":{"name":"email"}},{"message":"password: Password is Required!","appCode":"required_field","meta":{"name":"password"}},{"message":"confirmPassword: ConfirmPassword is Required!","appCode":"required_field","meta":{"name":"confirmPassword"}}]}`}},
+		{"Register with only email body should fail", `{"email":"test@test.com"}`, 400, []string{`{"errors":[{"message":"password: Password is Required!","appCode":"required_field","meta":{"name":"password"}},{"message":"confirmPassword: ConfirmPassword is Required!","appCode":"required_field","meta":{"name":"confirmPassword"}}]}`}},
+		{"Register with email,password body should fail", `{"email":"test@test.com","password":"Test1Ites"}`, 400, []string{`{"errors":[{"message":"confirmPassword: ConfirmPassword is Required!","appCode":"required_field","meta":{"name":"confirmPassword"}}]}`}},
 		{"Register with invalid password should fail", `{"email":"test@test.com","password":"test","confirmPassword":"test2"}`, 400, []string{`{"errors":[{"message":"password: Password should contains Capital letters, digits and has length greater than 8","appCode":"invalid_strong_password","meta":{"min":"8"}}`}},
 		{"Register with invalid email should fail", `{"email":"test@.com","password":"Test1srs","confirmPassword":"Test1srs"}`, 400, []string{`{"errors":[{"message":"email: Please provide a valid email","appCode":"invalid_email","meta":null}]}`}},
 		{"Register with confirm password mismatch should fail", `{"email":"test@test.com","password":"Test1srs","confirmPassword":"test2"}`, 400, []string{`{"errors":[{"message":"confirmPassword: ConfirmPassword mismatch Password","appCode":"invalid_equal_fields","meta":{"fieldA":"ConfirmPassword","fieldB":"Password"}}]}`}},
