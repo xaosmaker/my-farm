@@ -61,12 +61,16 @@ fields not completed well or not pass validations
         {
             "message":"email: Email is Required!",
             "appCode":"required_field",
-            "meta":null
+            "meta":{
+                "name":"email"
+            }
         },
         {
             "message":"password: Password is Required!",
             "appCode":"required_field",
-            "meta":null
+            "meta":{
+                "name":"password"
+            }
         }
     ]
 }
@@ -131,15 +135,21 @@ fields not completed well or not pass validations
         {
             "message":"email: Email is Required!",
             "appCode":"required_field",
-            "meta":null
+            "meta":{
+                "name":"email"
+            }
         },{
             "message":"password: Password is Required!",
             "appCode":"required_field",
-            "meta":null
+            "meta":{
+                "name":"password"
+            }
         },{
             "message":"confirmPassword: ConfirmPassword is Required!",
             "appCode":"required_field",
-            "meta":null
+            "meta":{
+                "name":"confirmPassword"
+            }
         }
     ]
 }
