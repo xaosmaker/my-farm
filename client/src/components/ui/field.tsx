@@ -190,7 +190,9 @@ function FieldError({
   errors,
   ...props
 }: React.ComponentProps<"div"> & {
-  errors?: Array<{ message?: string } | undefined>;
+  errors?: Array<
+    { message?: string; meta?: { [key: string]: string } } | undefined
+  >;
 }) {
   const t = useTranslations("Errors");
   const content = useMemo(() => {
@@ -207,14 +209,18 @@ function FieldError({
     ];
 
     if (uniqueErrors?.length == 1) {
-      if (uniqueErrors[0]?.message) return t(uniqueErrors[0].message);
+      if (uniqueErrors[0]?.message) {
+        return t(uniqueErrors[0].message, uniqueErrors[0].meta);
+      }
     }
 
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
         {uniqueErrors.map(
           (error, index) =>
-            error?.message && <li key={index}>{t(error.message)}</li>,
+            error?.message && (
+              <li key={index}>{t(error.message, error.meta)}</li>
+            ),
         )}
       </ul>
     );
