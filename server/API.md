@@ -165,11 +165,11 @@ invalid email, password, confirm password
             "meta":null
         },{
             "message":"password: Password should contains Capital letters, digits and has length greater than 8",
-            "appCode":"invalid_strong_password",
+            "appCode":"invalid_password_length",
             "meta":{"min":"8"}
         },{
             "message":"confirmPassword: ConfirmPassword mismatch Password",
-            "appCode":"invalid_equal_fields",
+            "appCode":"invalid_password_mismatch",
             "meta":
             {
                 "fieldA":"ConfirmPassword",

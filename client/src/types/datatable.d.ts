@@ -5,3 +5,11 @@ declare module "@tanstack/react-table" {
     formId: string;
   }
 }
+
+import { FieldError as FE } from "react-hook-form";
+
+declare module "react-hook-form" {
+  export interface FieldError extends FE {
+    meta?: { [key: string]: string };
+  }
+}

@@ -22,12 +22,10 @@ import ControlledInput from "@/components/ControlledInput";
 import { createUserAction } from "../actions/authActions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
+import { CardAction } from "@/components/ui/card";
+import Link from "next/link";
 
-export default function RegForm({
-  cardAction,
-}: {
-  cardAction?: React.ReactNode;
-}) {
+export default function RegForm() {
   const { control, reset, handleSubmit } = useForm<RegFormData>({
     mode: "onChange",
     resolver: zodResolver(registerValidate),
@@ -52,7 +50,11 @@ export default function RegForm({
 
   return (
     <BaseForm
-      cardAction={cardAction}
+      cardAction={
+        <CardAction className="p-2">
+          <Link href="/login">{t("loginLink")}</Link>
+        </CardAction>
+      }
       cardTitle={t("title")}
       cardDescription={t("desc")}
       buttonChildren={
@@ -117,14 +119,16 @@ export default function RegForm({
             name="confirmPassword"
             render={({ fieldState, field }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="password">{t("password2")}</FieldLabel>
+                <FieldLabel htmlFor="confirmPassword">
+                  {t("password2")}
+                </FieldLabel>
 
                 <InputGroup>
                   <InputGroupInput
                     type={showCPassword ? "text" : "password"}
                     {...field}
                     aria-invalid={fieldState.invalid}
-                    id="password"
+                    id="confirmPassword"
                   />
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton

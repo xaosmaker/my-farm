@@ -18,9 +18,10 @@ const (
 	INVALID_VERIFICATION_TOKEN ErrorCode = "invalid_verification_token"
 	INVALID_NUM_SPACE_CHAR     ErrorCode = "invalid_num_space_char"
 	INVALID_JOB_TYPE           ErrorCode = "invalid_job_type"
-	INVALID_STRONG_PASSWORD    ErrorCode = "invalid_strong_password"
+	INVALID_PASSWORD_LENGTH    ErrorCode = "invalid_password_length"
 	INVALID_SUPPLY_TYPE        ErrorCode = "invalid_supply_type"
 	INVALID_MEASUREMENT_UNIT   ErrorCode = "invalid_measurement_unit"
 	INVALID_TIMESTAMP          ErrorCode = "invalid_timestamp"
 	INVALID_EQUAL_FIELDS       ErrorCode = "invalid_equal_fields"
+	INVALID_PASSWORD_MISMATCH  ErrorCode = "invalid_password_mismatch"
 )
