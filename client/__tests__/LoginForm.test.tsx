@@ -6,7 +6,7 @@ import en from "../messages/en.json";
 import { signIn } from "./__mocks__/next-auth/react";
 import { useRouter } from "./__mocks__/next/navigation";
 
-describe("Login Page", () => {
+describe("Login Form Tests", () => {
   it("Text render correct", () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>

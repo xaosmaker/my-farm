@@ -52,10 +52,20 @@ func formatValidator(f validator.FieldError) errorMessage {
 	case "strongpassword":
 		return errorMessage{
 			fmt.Sprintf("%v should contains Capital letters, digits and has length greater than %v", f.Field(), f.Param()),
-			apperror.INVALID_STRONG_PASSWORD,
+			apperror.INVALID_PASSWORD_LENGTH,
 			Meta{"min": f.Param()},
 		}
 	case "eqfield":
+		if f.Field() == "ConfirmPassword" {
+
+			return errorMessage{
+
+				fmt.Sprintf("%v mismatch %v", f.Field(), f.Param()),
+				apperror.INVALID_PASSWORD_MISMATCH,
+				Meta{"fieldA": f.Field(), "fieldB": f.Param()},
+			}
+
+		}
 		return errorMessage{
 
 			fmt.Sprintf("%v mismatch %v", f.Field(), f.Param()),

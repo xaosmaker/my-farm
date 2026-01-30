@@ -2,6 +2,7 @@
   "Errors": {
     "invalid_email": "Εισάγετε ένα έγκυρο email",
     "invalid_password_mismatch": "Οι κωδικοί πρόσβασης δεν ταιριάζουν",
+    "invalid_email_exist": "Η διεύθυνση email υπάρχει ήδη. Χρησιμοποιήστε κάποια άλλη.",
     "invalid_password_length": "Ο κωδικός πρόσβασης πρέπει να έχει 8 ή περισσότερους χαρακτήρες",
     "invalid_password_cap_letter": "Ο κωδικός πρόσβασης πρέπει να περιέχει 1 κεφαλαίο γράμμα",
     "invalid_password_number": "Ο κωδικός πρόσβασης πρέπει να περιέχει 1 αριθμό",

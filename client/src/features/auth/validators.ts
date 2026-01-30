@@ -16,7 +16,8 @@ export const registerValidate = z
       .string()
       .refine((data) => /[A-Z]/.test(data), "invalid_password_cap_letter")
       .refine((data) => /[1-9]/.test(data), "invalid_password_number")
-      .min(8, "invalid_password_length"),
+      .min(8, { error: "invalid_password_length" }),
+
     confirmPassword: z.string(),
   })
   .superRefine((data, ctx) => {

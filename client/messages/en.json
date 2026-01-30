@@ -1,6 +1,7 @@
 {
   "Errors": {
     "invalid_email": "Enter a valid Email",
+    "invalid_email_exist": "This email is already in use pls try another",
     "invalid_password_mismatch": "Passwords mismatch",
     "invalid_password_length": "Password should be 8 chars and more",
     "invalid_password_cap_letter": "Password should contain 1 cappital Letter",

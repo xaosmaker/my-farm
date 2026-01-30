@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
+import { error } from "console";
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -205,7 +206,13 @@ function FieldError({
     }
 
     const uniqueErrors = [
-      ...new Map(errors.map((error) => [error?.message, error])).values(),
+      ...new Map(
+        errors.map((error) => [
+          `${error?.message}${error?.meta && JSON.stringify(error?.meta)}`,
+          error,
+        ]),
+      ).values(),
+      // ...errors,
     ];
 
     if (uniqueErrors?.length == 1) {
