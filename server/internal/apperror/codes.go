@@ -2,26 +2,42 @@ package apperror
 
 type ErrorCode = string
 
+/*
+ here the comment represent the meta the error take
+*/
+
 const (
-	SERVER_ERROR               ErrorCode = "server_error"
-	UNAUTHORIZED_ERROR         ErrorCode = "unauthorized_error"
-	UNKNOWN_ERROR              ErrorCode = "unknown_error"
-	ERROR_EMAIL_SEND           ErrorCode = "error_email_send"
-	ROUTE_NOT_FOUND            ErrorCode = "route_not_found"
-	METHOD_NOT_FOUND           ErrorCode = "method_not_found"
-	REQUIRED_FIELD             ErrorCode = "required_field"
-	INVALID_MIN_NUMBER         ErrorCode = "invalid_min_number"
-	INVALID_MAX_LENGTH         ErrorCode = "invalid_max_length"
-	INVALID_EMAIL              ErrorCode = "invalid_email"
-	INVALID_EMAIL_EXIST        ErrorCode = "invalid_email_exist"
-	INVALID_EMAIL_VERIFIED     ErrorCode = "invalid_email_verified"
-	INVALID_VERIFICATION_TOKEN ErrorCode = "invalid_verification_token"
-	INVALID_NUM_SPACE_CHAR     ErrorCode = "invalid_num_space_char"
-	INVALID_JOB_TYPE           ErrorCode = "invalid_job_type"
-	INVALID_PASSWORD_LENGTH    ErrorCode = "invalid_password_length"
-	INVALID_SUPPLY_TYPE        ErrorCode = "invalid_supply_type"
-	INVALID_MEASUREMENT_UNIT   ErrorCode = "invalid_measurement_unit"
-	INVALID_TIMESTAMP          ErrorCode = "invalid_timestamp"
-	INVALID_EQUAL_FIELDS       ErrorCode = "invalid_equal_fields"
-	INVALID_PASSWORD_MISMATCH  ErrorCode = "invalid_password_mismatch"
+	// general
+	NOT_FOUND_ERROR        ErrorCode = "not_found_error"        //  name: field name | resource name
+	SERVER_ERROR           ErrorCode = "server_error"           //
+	INVALID_URL_PARAM      ErrorCode = "invalid_url_param"      //
+	UNAUTHORIZED_ERROR     ErrorCode = "unauthorized_error"     //
+	UNKNOWN_ERROR          ErrorCode = "unknown_error"          //     * this will used on special ocasion
+	ROUTE_NOT_FOUND        ErrorCode = "route_not_found"        //
+	METHOD_NOT_FOUND       ErrorCode = "method_not_found"       //
+	REQUIRED_FIELD         ErrorCode = "required_field"         // name: field name | resource name
+	EXIST_ERROR            ErrorCode = "exist_error"            // name: field name | resource name
+	DB_ERROR               ErrorCode = "db_error"               //
+	EMAIL_SEND_ERROR       ErrorCode = "email_send_error"       //
+	INVALID_MAX            ErrorCode = "invalid_max"            // max: the length we expect
+	INVALID_MIN            ErrorCode = "invalid_min"            // min: the length or the number we expect
+	INVALID_NUM_SPACE_CHAR ErrorCode = "invalid_num_space_char" //
+	INVALID_TIMESTAMP      ErrorCode = "invalid_timestamp"      //format: format of the timestamp
+
+	// auth errors
+	EMAIL_EXIST_ERROR          ErrorCode = "email_exist_error"          //
+	INVALID_EMAIL              ErrorCode = "invalid_email"              //
+	EMAIL_VERIFIED             ErrorCode = "email_verified"             //
+	INVALID_VERIFICATION_TOKEN ErrorCode = "invalid_verification_token" //
+	INVALID_PASSWORD           ErrorCode = "invalid_password"           // min: min length of char *but we have to provide the other val
+	PASSWORD_MISMATCH_ERROR    ErrorCode = "password_mismatch_error"    //
+	// job errors
+	INVALID_JOB_TYPE ErrorCode = "invalid_job_type" // oneof: a string with the values we expect
+
+	// supply errors
+	INVALID_SUPPLY_TYPE ErrorCode = "invalid_supply_type" // oneof: a string with the values we expect
+	// measuremet unit errors
+	INVALID_MEASUREMENT_UNIT ErrorCode = "invalid_measurement_unit" // oneof: a string with the values we expect
+	//
+	INVALID_EQUAL_FIELDS ErrorCode = "invalid_equal_fields" //fieldA: name , fieldB: name,
 )
