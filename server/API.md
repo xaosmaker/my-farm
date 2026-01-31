@@ -27,6 +27,7 @@ each api is doc well so you know what meta you receive
 }
 ```
 ***
+---
 
 ### <span style="color:green">POST</span> /api/users/login
 <details>
@@ -165,19 +166,15 @@ invalid email, password, confirm password
             "meta":null
         },{
             "message":"password: Password should contains Capital letters, digits and has length greater than 8",
-            "appCode":"invalid_password_length",
+            "appCode":"invalid_password",
             "meta":{"min":"8"}
         },{
             "message":"confirmPassword: ConfirmPassword mismatch Password",
-            "appCode":"invalid_password_mismatch",
-            "meta":
-            {
-                "fieldA":"ConfirmPassword",
-                "fieldB":"Password"
-            }
+            "appCode":"password_mismatch_error",
+            "meta":null
         },{
             "message":"invalid email alread exists",
-            "appCode":"invalid_email_exist",
+            "appCode":"email_exist_error",
             "meta":null
         }
     ]
@@ -185,5 +182,118 @@ invalid email, password, confirm password
 ```
 </details>
 
+---
+---
+
+### <span style="color:green">POST</span> /api/farms
+<details>
+
+#### body:
+```json
+{
+    "name":"farm name"
+}
+```
+#### response:
+
+<span style="color:green">201</span>
+```json
+{
+    "id":3,
+    "name":"test",
+    "createdAt":"2026-01-31T17:18:27.835461Z",
+    "updatedAt":"2026-01-31T17:18:27.835461Z"
+}
+```
+
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"name: Name is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"name"
+            }
+        },
+        {
+            "message":"name: Name should contain only chars spaces and number",
+            "appCode":"invalid_num_space_char",
+            "meta":null
+        }
+    ]
+}
+```
+
+<span style="color:red">409</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Farm already exist",
+            "appCode":"exist_error",
+            "meta":{"name":"Farm"
+            }
+        }
+    ]
+}
+```
+</details>
+
+---
+
+### <span style="color:blue">GET</span> /api/farms
+<details>
+
+#### body: `empty`
+#### response:
+
+<span style="color:green">200</span>
+```json
+{
+    "id":1,
+    "name":"Farm name",
+    "createdAt":"2025-09-11T10:00:00Z",
+    "updatedAt":"2025-09-11T10:00:00Z"
+}
+```
+
+<span style="color:red">401</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Unauthorized",
+            "appCode":"unauthorized_error",
+            "meta":null
+        }
+    ]
+}
+```
+
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Farm not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Farm"
+            }
+        }
+    ]
+}
+```
+</details>
+
+---
 ---
 <!-- <span style="color:red"></span> -->
