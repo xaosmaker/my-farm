@@ -22,14 +22,14 @@ func formatValidator(f validator.FieldError) errorMessage {
 		}
 	case "min":
 		return errorMessage{
-			fmt.Sprintf("%v length should be greater than %v", f.Field(), f.Param()),
-			apperror.INVALID_MIN_NUMBER,
+			fmt.Sprintf("%v < %v", f.Field(), f.Param()),
+			apperror.INVALID_MIN,
 			Meta{"min": f.Param()},
 		}
 	case "max":
 		return errorMessage{
-			fmt.Sprintf("%v length cant exceed %v", f.Field(), f.Param()),
-			apperror.INVALID_MAX_LENGTH,
+			fmt.Sprintf("%v > %v", f.Field(), f.Param()),
+			apperror.INVALID_MAX,
 			Meta{"max": f.Param()},
 		}
 	case "email":
@@ -52,7 +52,7 @@ func formatValidator(f validator.FieldError) errorMessage {
 	case "strongpassword":
 		return errorMessage{
 			fmt.Sprintf("%v should contains Capital letters, digits and has length greater than %v", f.Field(), f.Param()),
-			apperror.INVALID_PASSWORD_LENGTH,
+			apperror.INVALID_PASSWORD,
 			Meta{"min": f.Param()},
 		}
 	case "eqfield":
@@ -61,8 +61,8 @@ func formatValidator(f validator.FieldError) errorMessage {
 			return errorMessage{
 
 				fmt.Sprintf("%v mismatch %v", f.Field(), f.Param()),
-				apperror.INVALID_PASSWORD_MISMATCH,
-				Meta{"fieldA": f.Field(), "fieldB": f.Param()},
+				apperror.PASSWORD_MISMATCH_ERROR,
+				nil,
 			}
 
 		}
@@ -88,7 +88,7 @@ func formatValidator(f validator.FieldError) errorMessage {
 	case "istimestamptz":
 		return errorMessage{fmt.Sprintf("%v should be of format '2026-01-13T02:12:00.000Z'", f.Field()),
 			apperror.INVALID_TIMESTAMP,
-			nil,
+			Meta{"format": "'2026-01-13T02:12:00.000Z'"},
 		}
 	default:
 		return errorMessage{
@@ -155,11 +155,11 @@ func ValidateFields(s any) *ErrMessage {
 
 }
 
-func DecodeAndValidate(r *http.Request, s any) *ErrMessage {
+func DecodeAndValidate(r *http.Request, s any) ServerErrorResponse {
 	DecodeBody(r, s)
 	err := ValidateFields(s)
 	if err != nil {
-		return err
+		return ServerError(400, err)
 	}
 
 	return nil

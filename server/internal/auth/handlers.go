@@ -26,7 +26,7 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password" validate:"required,min=1"`
 	}{}
 	if fieldError := httpx.DecodeAndValidate(r, &reqUser); fieldError != nil {
-		httpx.ServerError(400, fieldError)(w, r)
+		fieldError(w, r)
 		return
 
 	}
@@ -95,13 +95,13 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 	}{}
 
 	if fieldErr := httpx.DecodeAndValidate(r, &reqVer); fieldErr != nil {
-		httpx.ServerError(400, fieldErr)(w, r)
+		fieldErr(w, r)
 		return
 	}
 
 	user, err := q.DB.GetUserByEmailNotActive(r.Context(), reqVer.Email)
 	if err != nil {
-		httpx.ServerError(400, httpx.NewErrMessage("Email already verified", apperror.INVALID_EMAIL_VERIFIED, nil))(w, r)
+		httpx.ServerError(400, httpx.NewErrMessage("Email already verified", apperror.EMAIL_VERIFIED, nil))(w, r)
 		return
 	}
 
@@ -119,7 +119,7 @@ func (q AuthQueries) ResendVefifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	d := util.MailDialer()
 	if err := d.DialAndSend(m); err != nil {
-		httpx.ServerError(400, httpx.NewErrMessage("Failed to send email", apperror.ERROR_EMAIL_SEND, nil))(w, r)
+		httpx.ServerError(400, httpx.NewErrMessage("Failed to send email", apperror.EMAIL_SEND_ERROR, nil))(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -132,7 +132,7 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 	}{}
 
 	if fieldError := httpx.DecodeAndValidate(r, &reqToken); fieldError != nil {
-		httpx.ServerError(400, fieldError)(w, r)
+		fieldError(w, r)
 		return
 	}
 
@@ -153,7 +153,7 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpx.ServerError(400, httpx.NewErrMessage(err.Error(), apperror.UNKNOWN_ERROR, nil))(w, r)
+		httpx.NewDBError(err.Error())(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -166,7 +166,7 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 		ConfirmPassword string `json:"confirmPassword" validate:"required,eqfield=Password"`
 	}{}
 	if fieldError := httpx.DecodeAndValidate(r, &reqUser); fieldError != nil {
-		httpx.ServerError(400, fieldError)(w, r)
+		fieldError(w, r)
 		return
 	}
 
@@ -178,10 +178,10 @@ func (q AuthQueries) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
 			httpx.ServerError(400, httpx.NewErrMessage("invalid email alread exists",
-				apperror.INVALID_EMAIL_EXIST, nil))(w, r)
+				apperror.EMAIL_EXIST_ERROR, nil))(w, r)
 			return
 		}
-		httpx.ServerError(400, httpx.NewErrMessage(err.Error(), apperror.UNKNOWN_ERROR, nil))(w, r)
+		httpx.NewDBError(err.Error())(w, r)
 		return
 	}
 
