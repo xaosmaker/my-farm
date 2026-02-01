@@ -584,4 +584,291 @@ all the body `key:pair` are optional
 ```
 
 </details>
+
+---
+---
+
+### <span style="color:green">POST</span> /api/supplies
+<details>
+
+#### body:
+```json
+{
+    "supplyType":"chemicals",
+    "nickname":"This is optional",
+    "name":"somename",
+    "measurementUnit":"L"
+}
+```
+
+#### response:
+<span style="color:green">200</span>
+```json
+{
+    "id":11,
+    "supplyType":"chemicals",
+    "nickname":null,
+    "name":"somename",
+    "measurementUnit":"L",
+    "createdAt":"2026-02-01T22:34:13.323315Z",
+    "updatedAt":"2026-02-01T22:34:13.323315Z"
+}
+```
+
+<span style="color:red">400</span>
+```json
+
+{
+    "errors":
+    [
+        {
+            "message":"supplyType: SupplyType is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"supplyType"
+            }
+        },
+        {
+            "message":"name: Name is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"name"
+            }
+        },
+        {
+            "message":"measurementUnit: MeasurementUnit is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"measurementUnit"
+            }
+        },
+        {
+            "message":"supplyType: SupplyType should contain one of 'chemicals, fertilizers, seeds, diesel'",
+            "appCode":"invalid_supply_type",
+            "meta":
+            {
+                "oneof":"chemicals, fertilizers, seeds, diesel"
+            }
+        },
+        {
+            "message":"measurementUnit: MeasurementUnit should contain one of 'KG, L, piece'",
+            "appCode":"invalid_measurement_unit",
+            "meta":
+            {
+                "oneof":"KG, L, piece"
+            }
+        }
+    ]
+}
+
+
+```
+
+<span style="color:red">409</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Supply already exist",
+            "appCode":"exist_error",
+            "meta":
+            {
+                "name":"Supply"
+            }
+        }
+    ]
+}
+```
+
+
+
+</details>
+
+---
+
+### <span style="color:purple">PATCH</span> /api/supplies/{supplyId}
+<details>
+
+#### body:
+every field here is optional
+```json
+{
+    "supplyType":"chemicals",
+    "nickname":"This is optional",
+    "name":"somename",
+    "measurementUnit":"L"
+}
+```
+
+#### response:
+<span style="color:green">204</span> `null`
+
+<span style="color:red">400</span>
+```json
+
+{
+    "errors":
+    [
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        },
+        {
+            "message":"supplyType: SupplyType should contain one of 'chemicals, fertilizers, seeds, diesel'",
+            "appCode":"invalid_supply_type",
+            "meta":
+            {
+                "oneof":"chemicals, fertilizers, seeds, diesel"
+            }
+        },
+        {
+            "message":"measurementUnit: MeasurementUnit should contain one of 'KG, L, piece'",
+            "appCode":"invalid_measurement_unit",
+            "meta":
+            {
+                "oneof":"KG, L, piece"
+            }
+        }
+    ]
+}
+
+
+```
+
+<span style="color:red">409</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Supply already exist",
+            "appCode":"exist_error",
+            "meta":
+            {
+                "name":"Supply"
+            }
+        }
+    ]
+}
+```
+
+
+
+</details>
+
+---
+
+### <span style="color:blue">GET</span> /api/supplies
+<details>
+
+#### body: `null`
+
+#### response:
+<span style="color:green">200</span>
+```json
+[
+    {
+        "id":8,
+        "supplyType":"fertilizers",
+        "nickname":null,
+        "name":"26-0-0",
+        "measurementUnit":"KG",
+        "createdAt":"2026-02-01T23:08:34.483639Z",
+        "updatedAt":"2026-02-01T23:08:34.483639Z"
+    }
+]
+```
+</details>
+
+---
+
+### <span style="color:blue">GET</span> /api/supplies{supplyId}
+<details>
+
+#### body: `null`
+
+#### response:
+<span style="color:green">200</span>
+```json
+    {
+        "id":8,
+        "supplyType":"fertilizers",
+        "nickname":null,
+        "name":"26-0-0",
+        "measurementUnit":"KG",
+        "createdAt":"2026-02-01T23:08:34.483639Z",
+        "updatedAt":"2026-02-01T23:08:34.483639Z"
+    }
+```
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        }
+    ]
+}
+```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Supply dont exist",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Supply"
+            }
+        }
+    ]
+}
+```
+
+
+</details>
+
+---
+
+### <span style="color:red">DELET</span> /api/supplies/{supplyId}
+<details>
+
+#### body: `null`
+#### response:
+
+<span style="color:green">204</span> `null`
+
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Supply dont exists",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Supply"
+            }
+        }
+    ]
+}
+
+```
+</details>
+
+---
+
+
+
 <!-- <span style="color:red"></span> -->

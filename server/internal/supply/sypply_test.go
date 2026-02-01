@@ -1,4 +1,4 @@
-package field
+package supply
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/xaosmaker/server/internal/db"
 )
 
-func TestFieldRouter(t *testing.T) {
+func TestSupplyRouter(t *testing.T) {
 	cases := []struct {
 		name    string
 		url     string
@@ -26,7 +26,8 @@ func TestFieldRouter(t *testing.T) {
 	for _, c := range cases {
 		ctx := context.Background()
 		conn := db.ConnectDb(ctx)
-		server := FieldRouter(conn)
+
+		server := SuppliesRouter(conn)
 		t.Cleanup(func() { conn.Close() })
 
 		t.Run(c.name, func(t *testing.T) {
