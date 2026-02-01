@@ -296,4 +296,292 @@ invalid email, password, confirm password
 
 ---
 ---
+
+### <span style="color:green">POST</span> /api/fields
+<details>
+
+#### body:
+```json
+{
+    "name":"somename",
+    "fieldLocation":"some",
+    "areaInMeters":200,
+    "isOwned": true
+}
+```
+#### response:
+
+<span style="color:green">201</span>
+```json
+{
+    "id":27,
+    "name":"somename",
+    "epsg2100Boundary":null,
+    "epsg4326Boundary":null,
+    "mapLocation":null,
+    "fieldLocation":"some",
+    "areaInMeters":200,
+    "isOwned":false,
+    "createdAt":"2026-02-01T02:34:27.563058Z",
+    "updatedAt":"2026-02-01T02:34:27.563058Z",
+    "landUnit":"m2"
+}
+```
+
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"name: Name is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"name"
+            }
+        },
+        {
+            "message":"fieldLocation: FieldLocation should contain only chars spaces and number",
+            "appCode":"invalid_num_space_char",
+            "meta":null
+        },
+        {
+            "message":"areaInMeters: AreaInMeters is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"areaInMeters"
+            }
+        },
+        {
+            "message":"name: Name should contain only chars spaces and number",
+            "appCode":"invalid_num_space_char",
+            "meta":null
+        }
+    ]
+}
+```
+
+<span style="color:red">409</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Field already exist",
+            "appCode":"exist_error",
+            "meta":
+            {
+                "name":"Field"
+            }
+        }
+    ]
+}
+```
+</details>
+
+---
+
+
+### <span style="color:purple">PATCH</span> /api/fields/{fieldId}
+all the body `key:pair` are optional
+<details>
+
+#### body:
+```json
+{
+    "name":"somename",
+    "fieldLocation":"some",
+    "areaInMeters":200,
+    "isOwned": true
+}
+```
+#### response:
+
+<span style="color:green">200</span>
+```json
+{
+    "id":27,
+    "name":"somename",
+    "epsg2100Boundary":null,
+    "epsg4326Boundary":null,
+    "mapLocation":null,
+    "fieldLocation":"some",
+    "areaInMeters":200,
+    "isOwned":false,
+    "createdAt":"2026-02-01T02:34:27.563058Z",
+    "updatedAt":"2026-02-01T02:34:27.563058Z",
+    "landUnit":"m2"
+}
+```
+
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"name: Name is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"name"
+            }
+        },
+        {
+            "message":"fieldLocation: FieldLocation should contain only chars spaces and number",
+            "appCode":"invalid_num_space_char",
+            "meta":null
+        },
+        {
+            "message":"areaInMeters: AreaInMeters is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"areaInMeters"
+            }
+        },
+        {
+            "message":"name: Name should contain only chars spaces and number",
+            "appCode":"invalid_num_space_char",
+            "meta":null
+        },
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        }
+    ]
+}
+```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Field not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Field"
+            }
+        }
+    ]
+}
+```
+
+<span style="color:red">409</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Field already exist",
+            "appCode":"exist_error",
+            "meta":
+            {
+                "name":"Field"
+            }
+        }
+    ]
+}
+```
+</details>
+
+---
+### <span style="color:blue">GET</span> /api/fields/{fieldID}
+<details>
+
+#### body: `null`
+#### response:
+<span style="color:green">200</span>
+```json
+{
+    "id":1,
+    "name":"γουρουνια",
+    "epsg2100Boundary":null,
+    "epsg4326Boundary":null,
+    "mapLocation":null,
+    "fieldLocation":"γουρουνια",
+    "areaInMeters":35000,
+    "isOwned":false,
+    "createdAt":"2026-10-11T00:00:00Z",
+    "updatedAt":"2026-10-11T00:00:00Z",
+    "landUnit":"m2"
+}
+```
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        }
+    ]
+}
+```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Field not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Field"
+            }
+        }
+    ]
+}
+```
+</details>
+
+---
+
+### <span style="color:red">DELETE</span> /api/fields/{fieldId}
+<details>
+
+#### body: `null`
+#### response:
+
+<span style="color:green">204</span> `null`
+
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        }
+    ]
+}
+```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Field not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Field"
+            }
+        }
+    ]
+}
+```
+
+</details>
 <!-- <span style="color:red"></span> -->
