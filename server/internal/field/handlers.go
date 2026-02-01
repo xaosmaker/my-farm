@@ -6,136 +6,141 @@ import (
 	"strings"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpd"
+	"github.com/xaosmaker/server/internal/httpx"
+	"github.com/xaosmaker/server/internal/util"
 )
 
-type createFieldRequestParams struct {
-	Name             string           `json:"name" validate:"required,alphanumspace"`
-	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"excluded_if=fieldEpsg210Boundary []"`
-	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"excluded_if=fieldEpsg4326Boundary []"`
-	MapLocation      *json.RawMessage `json:"mapLocation" validate:"excluded_if=mapLocation []"`
-	FieldLocation    *string          `json:"fieldLocation" validate:"alphanumspace"`
-	AreaInMeters     float64          `json:"areaInMeters" validate:"required,number"`
-	IsOwned          bool             `json:"isOwned" validate:"boolean"`
-}
-
-type updateFieldRequestParams struct {
-	Name             *string          `json:"name" validate:"omitnil,alphanumspace"`
-	Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"omitnil"`
-	Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"omitnil"`
-	AreaInMeters     *float64         `json:"areaInMeters" validate:"omitnil,number"`
-	MapLocation      *json.RawMessage `json:"mapLocation" validate:"omitnil"`
-	FieldLocation    *string          `json:"fieldLocation" validate:"omitnil,alphanumspace"`
-	IsOwned          *bool            `json:"isOwned" validate:"omitnil,boolean"`
-}
-
 func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	id, httpErr := httpd.GetPathValueToInt64(r, "id")
+	id, httpErr := httpx.GetPathValueToInt64(r, "id")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-
+	//  validate the field exist for the current user
 	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
 		FieldID: id,
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpd.GeneralError(400, "Field not found")(w, r)
+		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
 		return
 	}
 
-	s := updateFieldRequestParams{}
+	fieldReqBody := struct {
+		Name             *string          `json:"name" validate:"omitnil,alphanumspace"`
+		Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"omitnil"`
+		Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"omitnil"`
+		AreaInMeters     *float64         `json:"areaInMeters" validate:"omitnil,number"`
+		MapLocation      *json.RawMessage `json:"mapLocation" validate:"omitnil"`
+		FieldLocation    *string          `json:"fieldLocation" validate:"omitnil,alphanumspace"`
+		IsOwned          *bool            `json:"isOwned" validate:"omitnil,boolean"`
+	}{}
 
-	if err := httpd.DecodeAndValidate(r, &s); err != nil {
-		err(w, r)
+	if fieldValidateError := httpx.DecodeAndValidate(r, &fieldReqBody); fieldValidateError != nil {
+		fieldValidateError(w, r)
 		return
 	}
-	if s.AreaInMeters != nil {
-		*s.AreaInMeters *= float64(httpd.UnitConverter(user.LandUnit))
+	if fieldReqBody.AreaInMeters != nil {
+		*fieldReqBody.AreaInMeters *= float64(util.UnitConverter(user.LandUnit))
 	}
 
-	fiel := db.UpdateFieldParams{
+	fieldBody := db.UpdateFieldParams{
 		ID:               id,
-		Name:             s.Name,
-		Epsg2100Boundary: s.Epsg2100Boundary,
-		Epsg4326Boundary: s.Epsg4326Boundary,
-		AreaInMeters:     s.AreaInMeters,
-		FieldLocation:    s.FieldLocation,
-		MapLocation:      s.MapLocation,
-		IsOwned:          s.IsOwned,
+		Name:             fieldReqBody.Name,
+		Epsg2100Boundary: fieldReqBody.Epsg2100Boundary,
+		Epsg4326Boundary: fieldReqBody.Epsg4326Boundary,
+		AreaInMeters:     fieldReqBody.AreaInMeters,
+		FieldLocation:    fieldReqBody.FieldLocation,
+		MapLocation:      fieldReqBody.MapLocation,
+		IsOwned:          fieldReqBody.IsOwned,
 	}
 
-	data, err := q.DB.UpdateField(r.Context(), fiel)
+	field, err := q.DB.UpdateField(r.Context(), fieldBody)
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-
-			httpd.GeneralError(400, "Field already exists with this name")(w, r)
+			httpx.NewExistError(409, "Field already exist", "Field")(w, r)
 			return
 		}
-
-		httpd.GeneralError(400, err.Error())(w, r)
+		httpx.NewDBError(err.Error())(w, r)
 		return
 	}
-	jData, _ := json.Marshal([]fieldResponse{toFieldResponse(data, user.LandUnit)})
-	w.WriteHeader(200)
-	w.Write(jData)
 
+	fieldEnc, err := json.Marshal(toFieldResponse(field, user.LandUnit))
+	if err != nil {
+		httpx.ServerError(500, nil)(w, r)
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Write(fieldEnc)
 }
 
 func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	fields := createFieldRequestParams{}
+	fieldReqBody := struct {
+		Name             string           `json:"name" validate:"required,alphanumspace"`
+		Epsg2100Boundary *json.RawMessage `json:"epsg2100Boundary" validate:"excluded_if=fieldEpsg210Boundary []"`
+		Epsg4326Boundary *json.RawMessage `json:"epsg4326Boundary" validate:"excluded_if=fieldEpsg4326Boundary []"`
+		MapLocation      *json.RawMessage `json:"mapLocation" validate:"excluded_if=mapLocation []"`
+		FieldLocation    *string          `json:"fieldLocation" validate:"alphanumspace"`
+		AreaInMeters     float64          `json:"areaInMeters" validate:"required,number"`
+		IsOwned          bool             `json:"isOwned" validate:"boolean"`
+	}{}
 
-	if err := httpd.DecodeAndValidate(r, &fields); err != nil {
-		err(w, r)
+	if fieldValError := httpx.DecodeAndValidate(r, &fieldReqBody); fieldValError != nil {
+		fieldValError(w, r)
 		return
 	}
 
-	params := db.CreateFieldParams{
-		Name:             fields.Name,
-		Epsg2100Boundary: fields.Epsg2100Boundary,
-		Epsg4326Boundary: fields.Epsg4326Boundary,
-		AreaInMeters:     fields.AreaInMeters * float64(httpd.UnitConverter(user.LandUnit)),
-		MapLocation:      fields.MapLocation,
-		FieldLocation:    fields.FieldLocation,
+	fieldData := db.CreateFieldParams{
+		Name:             fieldReqBody.Name,
+		Epsg2100Boundary: fieldReqBody.Epsg2100Boundary,
+		Epsg4326Boundary: fieldReqBody.Epsg4326Boundary,
+		AreaInMeters:     fieldReqBody.AreaInMeters * float64(util.UnitConverter(user.LandUnit)),
+		MapLocation:      fieldReqBody.MapLocation,
+		FieldLocation:    fieldReqBody.FieldLocation,
 		FarmID:           *user.FarmID,
-		IsOwned:          fields.IsOwned,
+		IsOwned:          fieldReqBody.IsOwned,
 	}
 
-	field, err := q.DB.CreateField(r.Context(), params)
+	field, err := q.DB.CreateField(r.Context(), fieldData)
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpd.GeneralError(400, "Field already exists with this name")(w, r)
+			httpx.NewExistError(409, "Field already exist", "Field")(w, r)
 			return
 		}
 
-		httpd.GeneralError(400, err.Error())(w, r)
+		httpx.NewDBError(err.Error())(w, r)
 		return
 	}
-	data, _ := json.Marshal(toFieldResponse(field, user.LandUnit))
+	fieldEnc, err := json.Marshal(toFieldResponse(field, user.LandUnit))
+
+	if err != nil {
+		httpx.ServerError(500, nil)(w, r)
+		return
+	}
 	w.WriteHeader(201)
-	w.Write(data)
+	w.Write(fieldEnc)
 
 }
 
 func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	id, httpErr := httpd.GetPathValueToInt64(r, "id")
+	id, httpErr := httpx.GetPathValueToInt64(r, "id")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -146,12 +151,12 @@ func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpd.GeneralError(404, "Field not found")(w, r)
+		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
 		return
 	}
 	err = q.DB.DeleteField(r.Context(), id)
 	if err != nil {
-		httpd.GeneralError(500, err.Error())(w, r)
+		httpx.NewDBError(err.Error())(w, r)
 		return
 	}
 	w.WriteHeader(204)
@@ -159,13 +164,13 @@ func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
-	id, httpErr := httpd.GetPathValueToInt64(r, "id")
+	id, httpErr := httpx.GetPathValueToInt64(r, "id")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -177,13 +182,13 @@ func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpd.GeneralError(404, "Field not found")(w, r)
+		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
 		return
 	}
 
 	jData, err := json.Marshal(toFieldResponse(data, user.LandUnit))
 	if err != nil {
-		httpd.GeneralError(500, "Internal Server Error")(w, r)
+		httpx.ServerError(500, nil)(w, r)
 		return
 	}
 	w.WriteHeader(200)
@@ -193,15 +198,14 @@ func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
 
 func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
 
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 	data, err := q.DB.GetAllFields(r.Context(), user.ID)
 	if err != nil {
-
-		httpd.GeneralError(404, "No Field found")(w, r)
+		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
 		return
 
 	}
@@ -214,7 +218,7 @@ func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
 	jData, err := json.Marshal(listData)
 
 	if err != nil {
-		httpd.GeneralError(500, "Internal Server Error")(w, r)
+		httpx.ServerError(500, nil)(w, r)
 		return
 	}
 
