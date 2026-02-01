@@ -17,7 +17,7 @@ func TestFarmRouter(t *testing.T) {
 		expCode int
 		expBody string
 	}{
-		{"test farm post without user", "/", "POST", 400, `{"status":400,"errors":[{"message":"User not found"}]}`},
+		{"test farm post without user", "/", "POST", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
 	}
 
 	for _, c := range cases {

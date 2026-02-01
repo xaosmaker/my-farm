@@ -38,7 +38,7 @@ func TestFieldC(t *testing.T) {
 		// get field
 		{"Get field should succeed", cookie, "GET", "/api/fields/1", ``, 200, []string{`{"id":1,"name":"γουρουνια","epsg2100Boundary":null,"epsg4326Boundary":null,"mapLocation":null,"fieldLocation":"γουρουνια","areaInMeters":35000,"isOwned":false,"createdAt":"2026-10-11T00:00:00Z","updatedAt":"2026-10-11T00:00:00Z","landUnit":"m2"}`}},
 		{"Get field dont exist should fail", cookie, "GET", "/api/fields/32", ``, 404, []string{`{"errors":[{"message":"Field not found","appCode":"not_found_error","meta":{"name":"Field"}}]}`}},
-		{"Get field with string param should fail", cookie, "PATCH", "/api/fields/hello", ``, 400, []string{`{"errors":[{"message":"Invalid url param expect number","appCode":"invalid_url_param","meta":null}]}`}},
+		{"Get field with string param should fail", cookie, "GET", "/api/fields/hello", ``, 400, []string{`{"errors":[{"message":"Invalid url param expect number","appCode":"invalid_url_param","meta":null}]}`}},
 		// delete
 
 		{"Delete field should succeed", cookie, "DELETE", "/api/fields/25", ``, 204, []string{``}},

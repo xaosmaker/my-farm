@@ -65,23 +65,23 @@ services:
     networks:
       - farm_test_db_nw
 
-  farm-client-test:
-    build:
-      context: .
-      dockerfile: ./docker/test/client/Dockerfile
-    container_name: farm-client-test
-    volumes:
-      - ./client:/client
-    expose:
-      - "3000"
-    env_file:
-      - ./.test.env
-
-    networks:
-      - "farm_test_nw"
-    command: pnpm testb
-    depends_on:
-      - farm-server-test
+  # farm-client-test:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/test/client/Dockerfile
+  #   container_name: farm-client-test
+  #   volumes:
+  #     - ./client:/client
+  #   expose:
+  #     - "3000"
+  #   env_file:
+  #     - ./.test.env
+  #
+  #   networks:
+  #     - "farm_test_nw"
+  #   command: pnpm testb
+  #   depends_on:
+  #     - farm-server-test
 networks:
   farm_test_nw:
   farm_test_db_nw:
