@@ -8,3 +8,11 @@ func MeasurementUnits() []string {
 		"piece", //"Τεμάχιο"
 	}
 }
+
+func LandMeasurementUnit() []string {
+	return []string{
+		"stremata",
+		"hectares",
+		"m2",
+	}
+}

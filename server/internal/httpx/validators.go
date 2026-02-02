@@ -38,6 +38,18 @@ func measurementUnitsValidator(sl validator.FieldLevel) bool {
 
 }
 
+func landUnitValidator(sl validator.FieldLevel) bool {
+
+	current := sl.Field()
+	if current.Kind() == reflect.Pointer {
+		current = current.Elem()
+	}
+	s := current.String()
+
+	return slices.Contains(apptypes.LandMeasurementUnit(), s)
+
+}
+
 func supplyTypeValidator(sl validator.FieldLevel) bool {
 
 	current := sl.Field()

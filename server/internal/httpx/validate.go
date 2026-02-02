@@ -85,6 +85,12 @@ func formatValidator(f validator.FieldError) errorMessage {
 			apperror.INVALID_MEASUREMENT_UNIT,
 			Meta{"oneof": strings.Join(apptypes.MeasurementUnits(), ", ")},
 		}
+	case "landunitval":
+		return errorMessage{
+			fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(apptypes.LandMeasurementUnit(), ", ")),
+			apperror.INVALID_LAND_UNIT,
+			Meta{"oneof": strings.Join(apptypes.LandMeasurementUnit(), ", ")},
+		}
 	case "istimestamptz":
 		return errorMessage{fmt.Sprintf("%v should be of format '2026-01-13T02:12:00.000Z'", f.Field()),
 			apperror.INVALID_TIMESTAMP,
@@ -134,6 +140,7 @@ func ValidateFields(s any) *ErrMessage {
 	validate.RegisterValidation("supplyTypeVal", supplyTypeValidator)
 	validate.RegisterValidation("measurementUnitsVal", measurementUnitsValidator)
 	validate.RegisterValidation("isTimestamptz", isoTimestamptzValidator)
+	validate.RegisterValidation("landUnitVal", landUnitValidator)
 
 	err := validate.Struct(s)
 

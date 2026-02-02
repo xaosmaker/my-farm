@@ -38,6 +38,8 @@ const (
 	INVALID_SUPPLY_TYPE ErrorCode = "invalid_supply_type" // oneof: a string with the values we expect
 	// measuremet unit errors
 	INVALID_MEASUREMENT_UNIT ErrorCode = "invalid_measurement_unit" // oneof: a string with the values we expect
+	// land unit
+	INVALID_LAND_UNIT ErrorCode = "invalid_land_unit"
 	//
 	INVALID_EQUAL_FIELDS ErrorCode = "invalid_equal_fields" //fieldA: name , fieldB: name,
 )

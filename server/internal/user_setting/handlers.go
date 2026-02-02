@@ -5,20 +5,24 @@ import (
 	"net/http"
 
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpd"
+	"github.com/xaosmaker/server/internal/httpx"
 )
 
 func (q userSettingsQueries) getSettings(w http.ResponseWriter, r *http.Request) {
-	user, _ := httpd.GetUserFromContext(r)
-
-	settings, err := q.DB.GetUserSettings(r.Context(), user.ID)
-	if err != nil {
-		httpd.GeneralError(400, err.Error())(w, r)
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
 		return
 	}
-	encodedSettings, err := json.Marshal(toSettingsResponse(settings))
+
+	setting, err := q.DB.GetUserSettings(r.Context(), user.ID)
 	if err != nil {
-		httpd.GeneralError(500, nil)(w, r)
+		httpx.NewNotFoundError(404, "Settings not found", "Settings")(w, r)
+		return
+	}
+	encodedSettings, err := json.Marshal(toSettingsResponse(setting))
+	if err != nil {
+		httpx.ServerError(500, nil)(w, r)
 	}
 	w.WriteHeader(200)
 	w.Write(encodedSettings)
@@ -26,23 +30,27 @@ func (q userSettingsQueries) getSettings(w http.ResponseWriter, r *http.Request)
 }
 
 func (q userSettingsQueries) updateSettings(w http.ResponseWriter, r *http.Request) {
-	user, _ := httpd.GetUserFromContext(r)
-	type settingRequest struct {
-		LandUnit string `json:"landUnit" validate:"required,measurementUnitsVal"`
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
 	}
-	sReq := settingRequest{}
+	settingReqBody := struct {
+		LandUnit string `json:"landUnit" validate:"required,landUnitVal"`
+	}{}
 
-	if err := httpd.DecodeAndValidate(r, &sReq); err != nil {
-		httpd.GeneralError(400, err)(w, r)
+	if settingsValError := httpx.DecodeAndValidate(r, &settingReqBody); settingsValError != nil {
+		settingsValError(w, r)
 		return
 	}
 
 	_, err := q.DB.UpdateSettings(r.Context(), db.UpdateSettingsParams{
-		LandUnit: sReq.LandUnit,
+		LandUnit: settingReqBody.LandUnit,
 		UserID:   user.ID,
 	})
 	if err != nil {
-		httpd.GeneralError(400, err.Error())(w, r)
+		httpx.NewDBError(err.Error())(w, r)
+		return
 	}
 	w.WriteHeader(204)
 

@@ -26,7 +26,6 @@ each api is doc well so you know what meta you receive
     ]
 }
 ```
-***
 ---
 
 ### <span style="color:green">POST</span> /api/users/login
@@ -105,8 +104,6 @@ wrong email or password
 }
 ```
 </details>
-
----
 
 ### <span style="color:green">POST</span> /api/users/create
 <details>
@@ -244,8 +241,6 @@ invalid email, password, confirm password
 ```
 </details>
 
----
-
 ### <span style="color:blue">GET</span> /api/farms
 <details>
 
@@ -381,8 +376,6 @@ invalid email, password, confirm password
 ```
 </details>
 
----
-
 
 ### <span style="color:purple">PATCH</span> /api/fields/{fieldId}
 all the body `key:pair` are optional
@@ -490,7 +483,6 @@ all the body `key:pair` are optional
 ```
 </details>
 
----
 ### <span style="color:blue">GET</span> /api/fields/{fieldID}
 <details>
 
@@ -543,7 +535,6 @@ all the body `key:pair` are optional
 ```
 </details>
 
----
 
 ### <span style="color:red">DELETE</span> /api/fields/{fieldId}
 <details>
@@ -688,7 +679,6 @@ all the body `key:pair` are optional
 
 </details>
 
----
 
 ### <span style="color:purple">PATCH</span> /api/supplies/{supplyId}
 <details>
@@ -761,7 +751,6 @@ every field here is optional
 
 </details>
 
----
 
 ### <span style="color:blue">GET</span> /api/supplies
 <details>
@@ -785,7 +774,6 @@ every field here is optional
 ```
 </details>
 
----
 
 ### <span style="color:blue">GET</span> /api/supplies{supplyId}
 <details>
@@ -838,9 +826,8 @@ every field here is optional
 
 </details>
 
----
 
-### <span style="color:red">DELET</span> /api/supplies/{supplyId}
+### <span style="color:red">DELETE</span> /api/supplies/{supplyId}
 <details>
 
 #### body: `null`
@@ -868,7 +855,80 @@ every field here is optional
 </details>
 
 ---
+---
+
+### <span style="color:green">POST</span> /api/settings
+<details>
+
+#### body:
+```json
+{
+    "landUnit":"hello"
+}
+```
+#### response:
+
+<span style="color:green">204</span> `null`
 
 
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"landUnit: LandUnit is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"landUnit"
+            }
+        },
+        {
+            "message":"landUnit: LandUnit should contain one of 'stremata, hectares, m2'",
+            "appCode":"invalid_land_unit",
+            "meta":
+            {
+                "oneof":"stremata, hectares, m2"
+            }
+        }
+    ]
+}
+```
+
+</details>
+
+
+### <span style="color:blue">GET</span> /api/setting
+<details>
+
+#### body: `null`
+#### response:
+<span style="color:green">200</span>
+```json
+{
+    "id":1,
+    "userId":1,
+    "landUnit":"m2",
+    "createdAt":"2026-02-02T00:47:18.105067Z",
+    "updatedAt":"2026-02-02T00:47:18.105067Z"
+}
+```
+
+<span style="color:red">401</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Unauthorized",
+            "appCode":"unauthorized_error",
+            "meta":null
+        }
+    ]
+}
+```
+
+</details>
 
 <!-- <span style="color:red"></span> -->
