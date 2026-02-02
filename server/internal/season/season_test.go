@@ -1,4 +1,4 @@
-package field
+package season
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/xaosmaker/server/internal/db"
 )
 
-func TestFieldRouter(t *testing.T) {
+func TestSeasonRouter(t *testing.T) {
 	cases := []struct {
 		name    string
 		url     string
@@ -18,7 +18,9 @@ func TestFieldRouter(t *testing.T) {
 	}{
 		{"test get withoy user", "/", "GET", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
 		{"test get/{id} withoy user", "/1", "GET", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
-		{"test post withoy user", "/", "POST", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
+		{"test get/{id}/{id} withoy user", "/1/details", "GET", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
+		{"test get/statistics/{id} withoy user", "/statistics/1", "GET", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
+		{"test post withoy user", "/1", "POST", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
 		{"test patch/{id} withoy user", "/1", "PATCH", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
 		{"test delete/{id} withoy user", "/1", "DELETE", 401, `{"errors":[{"message":"Unauthorized","appCode":"unauthorized_error","meta":null}]}`},
 	}
@@ -26,7 +28,7 @@ func TestFieldRouter(t *testing.T) {
 	for _, c := range cases {
 		ctx := context.Background()
 		conn := db.ConnectDb(ctx)
-		server := FieldRouter(conn)
+		server := SeasonsRouter(conn)
 		t.Cleanup(func() { conn.Close() })
 
 		t.Run(c.name, func(t *testing.T) {

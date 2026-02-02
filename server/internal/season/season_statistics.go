@@ -4,27 +4,27 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/xaosmaker/server/internal/httpd"
+	"github.com/xaosmaker/server/internal/httpx"
 )
 
 func (q seasonsQueries) getSeasonStatictic(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	seasonId, httpErr := httpd.GetPathValueToInt64(r, "seasonId")
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 	if s, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || s != *user.FarmID {
-		httpd.GeneralError(404, "Season not found")(w, r)
+		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
 		return
 	}
 	stats, err := q.DB.GetSeasonStatistics(r.Context(), seasonId)
 	if err != nil {
-		httpd.GeneralError(404, "No available stats")
+		httpx.NewNotFoundError(404, "Statistics not found", "Statistics")(w, r)
 		return
 	}
 	data := make([]seasonStatisticsResponse, 0, len(stats))
@@ -36,7 +36,7 @@ func (q seasonsQueries) getSeasonStatictic(w http.ResponseWriter, r *http.Reques
 	}
 	dataEnc, err := json.Marshal(data)
 	if err != nil {
-		httpd.GeneralError(500, "No available stats")
+		httpx.ServerError(500, nil)(w, r)
 		return
 	}
 	w.WriteHeader(200)

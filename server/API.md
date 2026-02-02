@@ -931,4 +931,385 @@ every field here is optional
 
 </details>
 
+---
+---
+
+### <span style="color:blue">GET</span>  /api/seasons
+this endpoint return all the **ACTIVE** seasons for a login user
+<details>
+
+#### body: `null`
+#### response: 
+
+<span style="color:green">200</span>
+```json
+[
+    {
+        "id":1,
+        "fieldId":1,
+        "name":"season 2025",
+        "startSeason":"2025-05-11T22:00:00Z",
+        "finishSeason":null,
+        "crop":10,
+        "boundary":null,
+        "areaInMeters":35000,
+        "createdAt":"2026-10-11T00:00:00Z",
+        "updatedAt":"2026-10-11T00:00:00Z",
+        "landUnit":"m2",
+        "cropName":"DIVA",
+        "fieldName":"γουρουνια",
+        "fieldAreaInMeters":35000
+    }
+]
+```
+or `[]`
+</details>
+
+###  <span style="color:purple">PATCH</span> /api/seasons/{seasonId}
+<details>
+
+#### body:
+all fields are optional
+```json
+{
+    "name":"test",
+    "startSeason":"2025-12-02T22:00:00Z",
+    "finishSeason":"2025-12-02T22:00:00Z",
+    "crop":1,
+    "areaInMeters":35000
+}
+
+```
+#### response:
+
+<span style="color:green">204</span> `null`
+
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"The Date to finish season must be greater of the last job: greater Than 2025-12-05T22:00:00Z",
+            "appCode":"invalid_season_finish_date",
+            "meta":
+            {
+                "date":"2025-12-05T22:00:00Z",
+                "dateLimit":"greater"
+            }
+        },
+        {
+            "message":"season can't start before the previous season!  season should start after 2025-12-02 22:00:00 +0000 UTC",
+            "appCode":"invalid_season_start_date",
+            "meta":{
+                "date":"2025-12-02T22:00:00Z",
+                "dateLimit":"greater"
+            }
+        },
+        {
+            "message":"Cannot Edit season when a season is finished",
+            "appCode":"season_finish_error",
+            "meta":null
+        },
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        },
+        {
+            "message":"The Date to start season must be lower of the first job: lower Than 2025-05-10T22:00:00Z",
+            "appCode":"invalid_season_start_date",
+            "meta":
+            {
+                "date":"2025-05-10T22:00:00Z",
+                "dateLimit":"lower"
+            }
+        },
+        {
+            "message":"No area to cultivate, remaining area: 0.00",
+            "appCode":"invalid_season_area",
+            "meta":
+            {
+                "area":"0.00"
+            }
+        },
+        {"message":"The Date to finish season must be greater of the last job: greater Than 2025-09-11 22:00:00 +0000 UTC",
+            "appCode":"invalid_season_finish_date",
+            "meta":{"date":"2025-09-11T22:00:00Z",
+                "dateLimit":"greater"
+            }
+        }
+    ]
+}
+
+```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Season not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Season"
+            }
+        }
+    ]
+}
+```
+
+</details>
+
+### <span style="color:green">POST</span> /api/seasons/{fieldId}
+<details>
+
+#### body:
+```json
+{
+    "name":"test",
+    "startSeason":"2025-12-02T22:00:00Z",
+    "crop":1,
+    "areaInMeters":35000
+}
+
+```
+
+#### response:
+
+<span style="color:green">201</span> `null`
+
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+
+        {
+            "message":"name: Name is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"name"
+            }
+        },
+        {
+            "message":"startSeason: StartSeason is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"startSeason"
+            }
+        },
+        {
+            "message":"crop: Crop is Required!",
+            "appCode":"required_field",
+            "meta":{"name":"crop"
+            }
+        },
+        {
+            "message":"areaInMeters: AreaInMeters is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"areaInMeters"
+            }
+        },
+        {
+            "message":"name: Name should contain only chars spaces and number",
+            "appCode":"invalid_num_space_char",
+            "meta":null
+        },
+        {
+            "message":"startSeason: StartSeason should be of format '2026-01-13T02:12:00.000Z'",
+            "appCode":"invalid_timestamp",
+            "meta":
+            {
+                "format":"'2026-01-13T02:12:00.000Z'"
+            }
+        },
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"inv[0/13105]param",
+            "meta":null
+        },
+        {
+            "message":"season can't start before the previous season!  season should start after 2025-12-02 22:00:00 +0000 UTC",
+            "appCode":"invalid_season_start_date",
+            "meta":{"date":"2025-12-02T22:00:00Z",
+                "dateLimit":"greater"
+            }
+        },
+        {
+            "message":"No area to cultivate, remaining area: 35000.00",
+            "appCode":"invalid_season_area",
+            "meta":
+            {
+                "area":"35000.00"
+            }
+        }
+    ]
+}
+```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Field not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Field"
+            }
+        }
+    ]
+}
+```
+</details>
+
+### <span style="color:blue">GET</span> /api/seasons/{fieldId}
+<details>
+
+#### body: `null`
+#### response:
+
+<span style="color:green">200</span>
+```json
+[
+    {
+        "id":1,
+        "fieldId":1,
+        "name":"season 2025",
+        "startSeason":"2025-05-11T22:00:00Z",
+        "finishSeason":null,
+        "crop":10,
+        "boundary":null,
+        "areaInMeters":35000,
+        "createdAt":"2026-10-11T00:00:00Z",
+        "updatedAt":"2026-10-11T00:00:00Z",
+        "landUnit":"m2",
+        "cropName":"DIVA",
+        "fieldName":"γουρουνια",
+        "fieldAreaInMeters":35000
+    }
+]
+```
+or `[]`
+
+<span style="color:red">404</span>
+
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Field does not exist",
+            "appCode":"not_found_error",
+            "meta:
+            {
+            "name":"Field"
+            }
+        }
+    ]
+}
+```
+</details>
+
+
+#### <span style="color:blue">GET</span> /api/seasons/{seasonId}/details
+<details>
+
+#### body: `null`
+#### response:
+```json
+{
+        "id":1,
+        "fieldId":1,
+        "name":"season 2025",
+        "startSeason":"2025-05-11T22:00:00Z",
+        "finishSeason":null,
+        "crop":10,
+        "boundary":null,
+        "areaInMeters":35000,
+        "createdAt":"2026-10-11T00:00:00Z",
+        "updatedAt":"2026-10-11T00:00:00Z",
+        "landUnit":"m2",
+        "cropName":"DIVA",
+        "fieldName":"γουρουνια",
+        "fieldAreaInMeters":35000
+}
+```
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        }
+    ]
+}
+```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Season not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Season"
+            }
+        }
+    ]
+}
+```
+
+
+</details>
+
+### <span style="color:red">DELETE</span> /api/seasons/{seasonId}
+
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        },
+        {
+            "message":"Cannot delete season when a season is finished",
+            "appCode":"season_finish_error",
+            "meta":null
+        }
+    ]
+}
+```
+
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Season not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Season"
+            }
+        }
+    ]
+}
+```
 <!-- <span style="color:red"></span> -->
