@@ -23,6 +23,12 @@ const (
 	INVALID_MIN            ErrorCode = "invalid_min"            // min: the length or the number we expect
 	INVALID_NUM_SPACE_CHAR ErrorCode = "invalid_num_space_char" //
 	INVALID_TIMESTAMP      ErrorCode = "invalid_timestamp"      //format: format of the timestamp
+	INVALID_NUMBER         ErrorCode = "invalid_number"
+	// season errors
+	INVALID_SEASON_START_DATE  ErrorCode = "invalid_season_start_date"  // date: min date of start season, dateLimit: lower || greater
+	INVALID_SEASON_FINISH_DATE ErrorCode = "invalid_season_finish_date" // date: min date  for season finish, dateLimit: lower || greater
+	SEASON_FINISH_ERROR        ErrorCode = "season_finish_error"
+	INVALID_SEASON_AREA        ErrorCode = "invalid_season_area" // area: remaining area
 
 	// auth errors
 	EMAIL_EXIST_ERROR          ErrorCode = "email_exist_error"          //

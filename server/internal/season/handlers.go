@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/db"
-	"github.com/xaosmaker/server/internal/httpd"
+	"github.com/xaosmaker/server/internal/httpx"
 	"github.com/xaosmaker/server/internal/util"
 )
 
@@ -14,13 +16,15 @@ import (
 // on finished season WE CAN ADD NOTHING!
 
 func (q seasonsQueries) getAllActiveSeasons(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
+		return
 	}
 	seasons, err := q.DB.GetALLActiveSeasons(r.Context(), *user.FarmID)
 	if err != nil {
-		httpd.GeneralError(400, err.Error())(w, r)
+		httpx.NewDBError(err.Error())(w, r)
+		return
 	}
 	seasonRes := make([]seasonResponse, 0, len(seasons))
 	for _, s := range seasons {
@@ -32,137 +36,158 @@ func (q seasonsQueries) getAllActiveSeasons(w http.ResponseWriter, r *http.Reque
 }
 
 func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
-	type seasonRequest struct {
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	seasonReqBoby := struct {
 		Name         *string  `json:"name" validate:"omitnil,alphanumspace"`
 		StartSeason  *string  `json:"startSeason" validate:"omitnil,isTimestamptz"`
 		FinishSeason *string  `json:"finishSeason" validate:"omitnil,isTimestamptz"`
 		Crop         *int64   `json:"crop" validate:"omitnil,number"`
 		AreaInMeters *float64 `json:"areaInMeters" validate:"omitnil,number"`
-	}
+	}{}
 
-	seasonId, httpErr := httpd.GetPathValueToInt64(r, "seasonId")
-	if httpErr != nil {
+	if httpErr := httpx.DecodeAndValidate(r, &seasonReqBoby); httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	user, httpErr := httpd.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
-	}
-
-	seasonBoby := seasonRequest{}
-	if httpErr := httpd.DecodeAndValidate(r, &seasonBoby); httpErr != nil {
-		httpErr(w, r)
-		return
-	}
+	// check if season exist for the user
 	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || farmId != *user.FarmID {
-		httpd.GeneralError(404, "resourse not found")(w, r)
+		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
 		return
 	}
 
 	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
 	if err != nil {
-		httpd.GeneralError(404, "resourse not found")(w, r)
+		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
 		return
 	}
 
-	// hehe we check if the startSeason < the first job
-	// the startSeason can't be greater than the first job
-
-	if seasonBoby.StartSeason != nil {
-
-		startSeason := *util.UnsafeStrToTimeConverter(seasonBoby.StartSeason)
-		if lastSeason, err := q.DB.GetLastFinishSeason(r.Context(), season.FieldID); err == nil {
-			if startSeason.Before(*lastSeason.FinishSeason) {
-				httpd.GeneralError(400, fmt.Sprintf("season can't start before the previous season create season after %v", lastSeason.FinishSeason))(w, r)
-				return
-
-			}
-		}
-		firstJob, err := q.DB.GetFirstJobBySeasonId(r.Context(), seasonId)
-		if err == nil && firstJob.JobDate.Before(startSeason) {
-			httpd.GeneralError(400, fmt.Sprintf("The Date to start season must be lower of the first job: lower Than %v", firstJob.JobDate))(w, r)
-			return
-
-		}
-	}
-
+	// check if the season is finised
 	if season.FinishSeason != nil {
-		httpd.GeneralError(400, "Cannot Edit season when a season is finished")(w, r)
+		/*
+			if the season is finished we can not modify it
+		*/
+		httpx.ServerError(400, httpx.NewErrMessage("Cannot Edit season when a season is finished", apperror.SEASON_FINISH_ERROR, nil))(w, r)
 		return
+	}
+
+	if seasonReqBoby.StartSeason != nil {
+		/*
+			here we check if the season start correct after the previous seasn
+			and before the first job
+		*/
+
+		reqStartSeason := *util.UnsafeStrToTimeConverter(seasonReqBoby.StartSeason)
+
+		// check if season start before previous season
+		if startSeasonError := q.checkIfSeasonStartIsAfterPrevSeason(r, season.FieldID, reqStartSeason); startSeasonError != nil {
+			startSeasonError(w, r)
+			return
+		}
+
+		// check if season start before a job
+		if startSeasonError := q.checkIfSeasonStartIsBeforeFirstJob(r, seasonId, reqStartSeason); startSeasonError != nil {
+			startSeasonError(w, r)
+			return
+		}
 	}
 
 	// here we check if the finishSeason date in > the last job
 	// then finish season can't be lower than the last job
-	if seasonBoby.FinishSeason != nil {
-		finishSeasonTime := *util.UnsafeStrToTimeConverter(seasonBoby.FinishSeason)
-		lastJob, _ := q.DB.GetLastJobBySeasonId(r.Context(), seasonId)
-		if lastJob.JobDate.After(finishSeasonTime) {
-			httpd.GeneralError(400, fmt.Sprintf("The Date to finish season must be greater of the last job: greater Than %v", lastJob.JobDate))(w, r)
+	if seasonReqBoby.FinishSeason != nil {
+		/*
+			here we check if the finish season is finish after the start of season
+			and finish after the last job
+		*/
+
+		reqFinishSeasonTime := *util.UnsafeStrToTimeConverter(seasonReqBoby.FinishSeason)
+
+		if finishSeasonError := q.checkIfFinishSeasonIsAfterLastJob(r, seasonId, reqFinishSeasonTime); finishSeasonError != nil {
+			finishSeasonError(w, r)
 			return
 		}
+
 		startSeason := season.StartSeason
-		if seasonBoby.StartSeason != nil {
-			startSeason = *util.UnsafeStrToTimeConverter(seasonBoby.StartSeason)
-
+		fmt.Println("change to req.body", startSeason, seasonReqBoby.StartSeason)
+		if seasonReqBoby.StartSeason != nil {
+			fmt.Println("change to req.body")
+			startSeason = *util.UnsafeStrToTimeConverter(seasonReqBoby.StartSeason)
 		}
-		if startSeason.After(finishSeasonTime) {
-			httpd.GeneralError(400, "finish seasons can't be before start season")(w, r)
+		fmt.Println("enter here", startSeason, reqFinishSeasonTime)
+		if startSeason.After(reqFinishSeasonTime) {
+			fmt.Println("continue")
+			httpx.ServerError(400, httpx.NewErrMessage(fmt.Sprintf("The Date to finish season must be greater of the last job: greater Than %v", startSeason.Format(time.RFC3339)),
+				apperror.INVALID_SEASON_FINISH_DATE, httpx.Meta{"date": startSeason.Format(time.RFC3339), "dateLimit": "greater"},
+			))(w, r)
 			return
-
 		}
 	}
 
-	if seasonBoby.AreaInMeters != nil {
-		*seasonBoby.AreaInMeters = *seasonBoby.AreaInMeters * float64(httpd.UnitConverter(user.LandUnit))
-		if *seasonBoby.AreaInMeters > season.AreaInMeters {
-			dif := *seasonBoby.AreaInMeters - season.AreaInMeters
-			if val, _ := q.DB.GetRemainingAreaOfFieldForSeason(r.Context(), season.FieldID); val < dif {
-				httpd.GeneralError(400, fmt.Sprintf("No area to cultivate, remaining area: %.2f", val/float64(httpd.UnitConverter(user.LandUnit))))(w, r)
-				return
-			}
+	if seasonReqBoby.AreaInMeters != nil {
+		// change the area to m2
+		*seasonReqBoby.AreaInMeters = *seasonReqBoby.AreaInMeters * float64(util.UnitConverter(user.LandUnit))
+
+		//the diff here is how is grow or shring the field and check only is this available area exist or not
+		changeAreaDif := *seasonReqBoby.AreaInMeters - season.AreaInMeters
+
+		if seasonAreaError := q.checkIfSeasonAreaIsLowerOrEqualToFieldArea(r, season.FieldID, changeAreaDif, user.LandUnit); seasonAreaError != nil {
+			seasonAreaError(w, r)
+			return
 		}
 	}
 
 	err = q.DB.UpdateSeason(r.Context(), db.UpdateSeasonParams{
 		ID:           seasonId,
-		Name:         seasonBoby.Name,
-		Crop:         seasonBoby.Crop,
-		AreaInMeters: seasonBoby.AreaInMeters,
-		StartSeason:  util.UnsafeStrToTimeConverter(seasonBoby.StartSeason),
-		FinishSeason: util.UnsafeStrToTimeConverter(seasonBoby.FinishSeason),
+		Name:         seasonReqBoby.Name,
+		Crop:         seasonReqBoby.Crop,
+		AreaInMeters: seasonReqBoby.AreaInMeters,
+		StartSeason:  util.UnsafeStrToTimeConverter(seasonReqBoby.StartSeason),
+		FinishSeason: util.UnsafeStrToTimeConverter(seasonReqBoby.FinishSeason),
 	})
+	if err != nil {
+		httpx.NewDBError(err.Error())(w, r)
+		return
+	}
 	w.WriteHeader(204)
 
 }
 
 func (q seasonsQueries) deleteSeason(w http.ResponseWriter, r *http.Request) {
-	seasonId, httpErr := httpd.GetPathValueToInt64(r, "seasonId")
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil && farmId != *user.FarmID {
-		httpd.GeneralError(404, "Resourse not found")(w, r)
+	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || farmId != *user.FarmID {
+		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
 		return
 	}
 	if season, _ := q.DB.GetSeasonById(r.Context(), seasonId); season.FinishSeason != nil {
-		httpd.GeneralError(400, "Can't delete a finished season")(w, r)
+		httpx.ServerError(400, httpx.NewErrMessage("Cannot delete season when a season is finished", apperror.SEASON_FINISH_ERROR, nil))(w, r)
 		return
 
 	}
 
 	err := q.DB.DeleteSeason(r.Context(), seasonId)
 	if err != nil {
-		httpd.GeneralError(404, err.Error())(w, r)
+		httpx.NewDBError(err.Error())(w, r)
 		return
 	}
 	w.WriteHeader(204)
@@ -170,13 +195,13 @@ func (q seasonsQueries) deleteSeason(w http.ResponseWriter, r *http.Request) {
 }
 
 func (q seasonsQueries) getSeasonDetails(w http.ResponseWriter, r *http.Request) {
-	seasonId, httpErr := httpd.GetPathValueToInt64(r, "seasonId")
+	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
 
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -185,7 +210,7 @@ func (q seasonsQueries) getSeasonDetails(w http.ResponseWriter, r *http.Request)
 	season, err := q.DB.GetSeasonById(r.Context(), seasonId)
 
 	if err != nil {
-		httpd.GeneralError(404, "Resourse Not Found")(w, r)
+		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
 		return
 	}
 
@@ -194,82 +219,90 @@ func (q seasonsQueries) getSeasonDetails(w http.ResponseWriter, r *http.Request)
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpd.GeneralError(404, "Resourse Not Found")(w, r)
+		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
 		return
 	}
-	data, _ := json.Marshal(toSeasonDetailResponse(season, user.LandUnit))
+	data, err := json.Marshal(toSeasonDetailResponse(season, user.LandUnit))
+	if err != nil {
+		httpx.ServerError(500, nil)(w, r)
+	}
 	w.WriteHeader(200)
 	w.Write(data)
 }
 
 func (q seasonsQueries) createSeason(w http.ResponseWriter, r *http.Request) {
-	type seasonRequest struct {
+
+	user, httpErr := httpx.GetUserFromContext(r)
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	fieldId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
+	if httpErr != nil {
+		httpErr(w, r)
+		return
+	}
+
+	seasonReqBoby := struct {
 		Name         *string `json:"name" validate:"required,alphanumspace"`
 		StartSeason  string  `json:"startSeason" validate:"required,isTimestamptz"`
 		Crop         int64   `json:"crop" validate:"required,number"`
 		AreaInMeters float64 `json:"areaInMeters" validate:"required,number"`
-	}
-	seasonBoby := seasonRequest{}
-	if httpErr := httpd.DecodeAndValidate(r, &seasonBoby); httpErr != nil {
+	}{}
+
+	if httpErr := httpx.DecodeAndValidate(r, &seasonReqBoby); httpErr != nil {
 		httpErr(w, r)
 		return
 
-	}
-	user, httpErr := httpd.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
-	}
-
-	seasonBoby.AreaInMeters = seasonBoby.AreaInMeters * float64(httpd.UnitConverter(user.LandUnit))
-	fieldId, httpErr := httpd.GetPathValueToInt64(r, "fieldId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
-	}
-
-	if lastSeason, err := q.DB.GetLastFinishSeason(r.Context(), fieldId); err == nil {
-		curentStartSeason := *util.UnsafeStrToTimeConverter(&seasonBoby.StartSeason)
-		if curentStartSeason.Before(*lastSeason.FinishSeason) {
-			httpd.GeneralError(400, fmt.Sprintf("season can't start before the previous season create season after %v", lastSeason.FinishSeason))(w, r)
-			return
-
-		}
 	}
 
 	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
 		FieldID: fieldId,
 		UserID:  user.ID,
 	})
+
 	if err != nil {
-		httpd.GeneralError(400, "Field doent exist")(w, r)
+		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
 		return
 	}
-	if val, _ := q.DB.GetRemainingAreaOfFieldForSeason(r.Context(), fieldId); val < seasonBoby.AreaInMeters {
-		httpd.GeneralError(400, fmt.Sprintf("No area to cultivate, remaining area: %.2f", val/float64(httpd.UnitConverter(user.LandUnit))))(w, r)
+
+	if seasonStartError := q.checkIfSeasonStartIsAfterPrevSeason(r, fieldId, *util.UnsafeStrToTimeConverter(&seasonReqBoby.StartSeason)); seasonStartError != nil {
+		seasonStartError(w, r)
 		return
 	}
+
+	// convert to m2 where we save our data
+	seasonReqBoby.AreaInMeters = seasonReqBoby.AreaInMeters * float64(util.UnitConverter(user.LandUnit))
+	// if you want to start a season or add more meter you cant
+	if seasonAreaError := q.checkIfSeasonAreaIsLowerOrEqualToFieldArea(r, fieldId, seasonReqBoby.AreaInMeters, user.LandUnit); seasonAreaError != nil {
+		seasonAreaError(w, r)
+		return
+	}
+
 	_, err = q.DB.CreateSeason(r.Context(), db.CreateSeasonParams{
-		Name:         seasonBoby.Name,
+		Name:         seasonReqBoby.Name,
 		FieldID:      fieldId,
-		Crop:         seasonBoby.Crop,
-		AreaInMeters: seasonBoby.AreaInMeters,
-		StartSeason:  *util.UnsafeStrToTimeConverter(&seasonBoby.StartSeason),
+		Crop:         seasonReqBoby.Crop,
+		AreaInMeters: seasonReqBoby.AreaInMeters,
+		StartSeason:  *util.UnsafeStrToTimeConverter(&seasonReqBoby.StartSeason),
 	})
 	if err != nil {
-		httpd.GeneralError(400, err.Error())(w, r)
+		httpx.NewDBError(err.Error())(w, r)
+		return
 	}
+
 	w.WriteHeader(201)
 
 }
 
 func (q seasonsQueries) getAllSeasons(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpd.GetUserFromContext(r)
+	user, httpErr := httpx.GetUserFromContext(r)
 	if httpErr != nil {
 		httpErr(w, r)
 		return
 	}
-	fieldId, httpErr := httpd.GetPathValueToInt64(r, "fieldId")
+	fieldId, httpErr := httpx.GetPathValueToInt64(r, "fieldId")
 	if httpErr != nil {
 		httpErr(w, r)
 		return
@@ -279,19 +312,23 @@ func (q seasonsQueries) getAllSeasons(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpd.GeneralError(400, "Field doent exist")(w, r)
+		httpx.NewNotFoundError(404, "Field does not exist", "Field")(w, r)
 		return
 	}
+
 	seasons, _ := q.DB.GetSeasonsByFieldId(r.Context(), fieldId)
-	seasonsSlice := []seasonResponse{}
+
+	seasonsSlice := make([]seasonResponse, 0, len(seasons))
+
 	for _, season := range seasons {
 		seasonsSlice = append(seasonsSlice, toSeasonResponse(season, user.LandUnit))
-
 	}
+
 	seasonsEncoded, err := json.Marshal(seasonsSlice)
 	if err != nil {
-		httpd.GeneralError(500, nil)(w, r)
+		httpx.ServerError(500, nil)(w, r)
 	}
+
 	w.WriteHeader(200)
 	w.Write(seasonsEncoded)
 
