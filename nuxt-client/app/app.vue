@@ -1,6 +1,19 @@
+<script setup lang="ts">
+const { locale } = useI18n();
+const lang = computed(() => locale.value || "en");
+useHead({
+  titleTemplate: "My Farm - %s",
+  htmlAttrs: {
+    lang: lang,
+    dir: "ltr",
+  },
+});
+</script>
+
 <template>
-  <div>
-    <NuxtRouteAnnouncer class="t-10" />
-    <NuxtWelcome />
-  </div>
+  <main>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </main>
 </template>
