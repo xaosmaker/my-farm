@@ -1,4 +1,8 @@
 {
+  "Language": {
+    "en": "English",
+    "el": "Greek"
+  },
   "Login": {
     "title": "My farm login",
     "desc": "Login to My Farm account"

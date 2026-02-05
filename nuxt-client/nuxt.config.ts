@@ -34,7 +34,7 @@ export default defineNuxtConfig({
     baseUrl: "http:localhost:3000",
     locales: [
       { code: "en", name: "English", file: "en.json", language: "en_US" },
-      { code: "gr", name: "Greek", file: "gr.json", language: "GR" },
+      { code: "el", name: "Greek", file: "gr.json", language: "el_GR" },
     ],
   },
   colorMode: {
