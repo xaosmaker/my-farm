@@ -207,15 +207,6 @@
       "createFieldButton": "Create Field"
     }
   },
-  "Login": {
-    "title": "My Farm Login",
-    "desc": "Login to My Farm account",
-    "email": "Email",
-    "password": "Password",
-    "button": "Login",
-    "showPassword": "Show Password",
-    "registerLink": "Register"
-  },
   "Register": {
     "title": "My Farm Register",
     "desc": "Create account for My Farm",
