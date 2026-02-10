@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -9,7 +10,12 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@nuxt/hints",
     "nuxt-i18n-micro",
+    "shadcn-nuxt",
   ],
+  css: ["~/assets/css/tailwind.css"],
+  vite: {
+    plugins: [tailwindcss() as any],
+  },
   i18n: {
     locales: [
       { code: "en", iso: "en-US", dir: "ltr" },
@@ -22,4 +28,19 @@ export default defineNuxtConfig({
     autoDetectLanguage: true,
     localeCookie: "my-farm-lang",
   },
+  shadcn: {
+    /**
+     * Prefix for all the imported component.
+     * @default "Ui"
+     */
+    prefix: "",
+    /**
+     * Directory that the component lives in.
+     * Will respect the Nuxt aliases.
+     * @link https://nuxt.com/docs/api/nuxt-config#alias
+     * @default "@/components/ui"
+     */
+    componentDir: "@/components/ui",
+  },
 });
+
