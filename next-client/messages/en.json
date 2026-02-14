@@ -1,5 +1,8 @@
 {
-  "test": {
-    "t": "Hello from england"
+  "Global": {
+    "Language": {
+      "en": "English",
+      "el": "Greek"
+    }
   }
 }

@@ -1,5 +1,8 @@
 {
-  "test": {
-    "t": "Hello from greece"
+  "Global": {
+    "Language": {
+      "en": "Αγγλικά",
+      "el": "Ελληνικά"
+    }
   }
 }
