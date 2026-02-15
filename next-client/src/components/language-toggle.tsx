@@ -21,7 +21,6 @@ export default function LanguageToggle() {
   const t = useTranslations("Global.Language");
 
   function changeLocale(value: string) {
-    console.log(value);
     startTransition(() => {
       router.replace(
         // @ts-expect-error -- TypeScript will validate that only known `params`

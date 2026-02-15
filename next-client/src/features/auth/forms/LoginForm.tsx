@@ -1,25 +1,16 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Controller, useForm } from "react-hook-form";
+import { FieldGroup } from "@/components/ui/field";
+import { useForm } from "react-hook-form";
 import { loginSchema, type LoginSchema } from "../schemas/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ControlledInput from "@/components/ControlledInput";
+import ControlledPasswordInput from "@/components/ControlledPasswordInput";
+import BaseForm from "@/components/BaseForm";
+import { useTranslations } from "next-intl";
 
 export default function LoginForm() {
-  const { control } = useForm<LoginSchema>({
+  const { control, reset, handleSubmit } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
     defaultValues: {
@@ -27,37 +18,37 @@ export default function LoginForm() {
       password: "",
     },
   });
+  const t = useTranslations("LoginForm");
+
+  function onSubmit(data: LoginSchema) {
+    console.log(data);
+  }
+
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Login Desc</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form>
-          <FieldGroup>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="name" className="ml-2">
-                    label
-                  </FieldLabel>
-                  <Input
-                    id="name"
-                    {...field}
-                    aria-invalid={fieldState.invalid}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </form>
-      </CardContent>
-    </Card>
+    <BaseForm
+      formTitle={t("title")}
+      formDesc={t("desc")}
+      submitButton={t("submitButton")}
+      resetForm={reset}
+      submitFormName="login-form"
+    >
+      <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+        <FieldGroup>
+          <ControlledInput
+            control={control}
+            name="email"
+            label="Email"
+            type="email"
+            required
+          />
+          <ControlledPasswordInput
+            control={control}
+            name="password"
+            label={t("password")}
+            required
+          />
+        </FieldGroup>
+      </form>
+    </BaseForm>
   );
 }

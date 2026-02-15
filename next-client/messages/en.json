@@ -3,6 +3,20 @@
     "Language": {
       "en": "English",
       "el": "Greek"
+    },
+    "Form": {
+      "prevPage": "Go to previous page",
+      "resetForm": "Refresh form"
+    },
+    "Password": {
+      "showPass": "Show Password",
+      "hidePass": "Hide Password"
     }
+  },
+  "LoginForm": {
+    "submitButton": "Login",
+    "title": "My Farm Login",
+    "desc": "Login To My Farm Account",
+    "password": "Password"
   }
 }
