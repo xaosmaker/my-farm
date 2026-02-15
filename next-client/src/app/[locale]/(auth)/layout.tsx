@@ -8,14 +8,14 @@ export default function UnauthLayout({
 }) {
   return (
     <main>
-      <header className="flex justify-between px-10 py-4">
+      <header className="flex justify-between px-10 py-4 shadow-md dark:shadow-neutral-700/80">
         <p className="text-4xl">My Farm</p>
         <div className="flex gap-2">
           <ThemeToggle />
           <LanguageToggle />
         </div>
       </header>
-      <section>{children}</section>
+      <section className="mt-10">{children}</section>
     </main>
   );
 }
