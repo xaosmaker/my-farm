@@ -4,6 +4,9 @@
       "en": "English",
       "el": "Greek"
     },
+    "metaData": {
+      "login": "Login"
+    },
     "Form": {
       "prevPage": "Go to previous page",
       "resetForm": "Refresh form"
