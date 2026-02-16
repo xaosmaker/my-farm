@@ -1,6 +1,6 @@
 "use client";
 
-import { FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup } from "@/components/ui/field";
 import { useForm } from "react-hook-form";
 import { loginSchema, type LoginSchema } from "../schemas/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,10 +8,17 @@ import ControlledInput from "@/components/ControlledInput";
 import ControlledPasswordInput from "@/components/ControlledPasswordInput";
 import BaseForm from "@/components/BaseForm";
 import { useTranslations } from "next-intl";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function LoginForm() {
-  const { control, reset, handleSubmit } = useForm<LoginSchema>({
+  const {
+    control,
+    reset,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
     defaultValues: {
@@ -27,7 +34,11 @@ export default function LoginForm() {
       email: data.email,
       password: data.password,
     });
-    console.log(res);
+
+    if (res.error) {
+      setError("root", { message: t("wrongCred") });
+    }
+    return redirect("/");
   }
 
   return (
@@ -54,6 +65,7 @@ export default function LoginForm() {
             required
           />
         </FieldGroup>
+        {errors.root && <FieldError className="mt-5" errors={[errors.root]} />}
       </form>
     </BaseForm>
   );
