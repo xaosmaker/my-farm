@@ -8,6 +8,7 @@ import ControlledInput from "@/components/ControlledInput";
 import ControlledPasswordInput from "@/components/ControlledPasswordInput";
 import BaseForm from "@/components/BaseForm";
 import { useTranslations } from "next-intl";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
   const { control, reset, handleSubmit } = useForm<LoginSchema>({
@@ -20,8 +21,13 @@ export default function LoginForm() {
   });
   const t = useTranslations("LoginForm");
 
-  function onSubmit(data: LoginSchema) {
-    console.log(data);
+  async function onSubmit(data: LoginSchema) {
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+    console.log(res);
   }
 
   return (
