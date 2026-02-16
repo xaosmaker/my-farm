@@ -69,6 +69,7 @@ services:
     container_name: farm-client
     volumes:
       - ./client:/client
+      -  /client/node_modules
     expose:
       - "3000"
     env_file:
