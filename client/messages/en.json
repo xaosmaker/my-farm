@@ -1,5 +1,6 @@
 {
   "Global": {
+    "Error": {},
     "Language": {
       "en": "English",
       "el": "Greek"
@@ -20,6 +21,7 @@
     "submitButton": "Login",
     "title": "My Farm Login",
     "desc": "Login To My Farm Account",
-    "password": "Password"
+    "password": "Password",
+    "wrongCred": "Email or password don't match"
   }
 }
