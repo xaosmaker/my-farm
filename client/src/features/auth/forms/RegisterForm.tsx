@@ -8,17 +8,13 @@ import ControlledInput from "@/components/ControlledInput";
 import ControlledPasswordInput from "@/components/ControlledPasswordInput";
 import BaseForm from "@/components/BaseForm";
 import { useTranslations } from "next-intl";
-import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const et = useTranslations("Global.Error");
-  const t = useTranslations("LoginForm");
   const {
     control,
     reset,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema(et)),
@@ -28,19 +24,10 @@ export default function LoginForm() {
       password: "",
     },
   });
+  const t = useTranslations("RegisterForm");
 
   async function onSubmit(data: LoginSchema) {
-    const res = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    });
-
-    if (res.error) {
-      setError("root", { message: et("wrongCred") });
-      return;
-    }
-    return redirect("/");
+    console.log(data);
   }
 
   return (

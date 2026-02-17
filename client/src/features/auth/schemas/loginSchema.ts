@@ -1,8 +1,10 @@
+import { TFnError } from "@/types/TFnError";
 import { z } from "zod/v4";
 
-export const loginSchema = z.object({
-  email: z.email("email Error"),
-  password: z.string().min(1, { error: "password Error" }),
-});
-
-export type LoginSchema = z.infer<typeof loginSchema>;
+export function loginSchema(te: TFnError) {
+  return z.object({
+    email: z.email(te("invalid_email")),
+    password: z.string().min(1, { error: te("required_generic") }),
+  });
+}
+export type LoginSchema = z.infer<ReturnType<typeof loginSchema>>;

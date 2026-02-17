@@ -1,6 +1,11 @@
 {
   "Global": {
-    "Error": {},
+    "Error": {
+      "invalid_email": "Enter a valid email",
+      "wrongCred": "Email or password don't match",
+      "required_field": "{name}: This Field is required",
+      "required_generic": "This Field is required"
+    },
     "Language": {
       "en": "English",
       "el": "Greek"
@@ -21,7 +26,13 @@
     "submitButton": "Login",
     "title": "My Farm Login",
     "desc": "Login To My Farm Account",
+    "password": "Password"
+  },
+  "RegisterForm": {
+    "submitButton": "Sign Up",
+    "title": "My Farm Sign Up",
+    "desc": "Create Account for My Farm",
     "password": "Password",
-    "wrongCred": "Email or password don't match"
+    "confirmPassword": "Confirm Password"
   }
 }
