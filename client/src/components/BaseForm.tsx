@@ -26,6 +26,7 @@ export default function BaseForm({
   formDesc,
   submitButton,
   submitFormName,
+  isPending,
   resetForm,
 }: {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ export default function BaseForm({
   formDesc: string;
   submitFormName: string;
   submitButton: string;
+  isPending?: boolean;
   resetForm: () => void;
 }) {
   const t = useTranslations("Global.Form");
@@ -49,6 +51,7 @@ export default function BaseForm({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                disabled={isPending}
                 onClick={() => router.back()}
                 aria-label={t("prevPage")}
                 variant="ghost"
@@ -61,6 +64,7 @@ export default function BaseForm({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                disabled={isPending}
                 aria-label={t("resetForm")}
                 onClick={resetForm}
                 variant="ghost"
@@ -72,6 +76,7 @@ export default function BaseForm({
           </Tooltip>
         </TooltipProvider>
         <Button
+          disabled={isPending}
           type="submit"
           form={submitFormName}
           className="bg-green-600 hover:bg-green-500"
