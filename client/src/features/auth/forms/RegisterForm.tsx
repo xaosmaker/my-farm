@@ -2,32 +2,35 @@
 
 import { FieldError, FieldGroup } from "@/components/ui/field";
 import { useForm } from "react-hook-form";
-import { loginSchema, type LoginSchema } from "../schemas/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ControlledInput from "@/components/ControlledInput";
 import ControlledPasswordInput from "@/components/ControlledPasswordInput";
 import BaseForm from "@/components/BaseForm";
 import { useTranslations } from "next-intl";
+import { registerSchema, RegisterSchema } from "../schemas/registerSchema";
+import { useActionState, useTransition } from "react";
+import { registerAction } from "../authActions";
+import ServerError from "@/components/ServerError";
 
 export default function RegisterForm() {
   const et = useTranslations("Global.Error");
-  const {
-    control,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema(et)),
+  const { control, reset, handleSubmit } = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema(et)),
     mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
   const t = useTranslations("RegisterForm");
+  const [state, action] = useActionState(registerAction, undefined);
+  const [isPending, startTransition] = useTransition();
 
-  async function onSubmit(data: LoginSchema) {
-    console.log(data);
+  async function onSubmit(data: RegisterSchema) {
+    startTransition(() => {
+      action(data);
+    });
   }
 
   return (
@@ -37,6 +40,7 @@ export default function RegisterForm() {
       submitButton={t("submitButton")}
       resetForm={reset}
       submitFormName="login-form"
+      isPending={isPending}
     >
       <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
@@ -53,8 +57,14 @@ export default function RegisterForm() {
             label={t("password")}
             required
           />
+          <ControlledPasswordInput
+            control={control}
+            name="confirmPassword"
+            label={t("confirmPassword")}
+            required
+          />
         </FieldGroup>
-        {errors.root && <FieldError className="mt-5" errors={[errors.root]} />}
+        <ServerError errors={state?.errors} />
       </form>
     </BaseForm>
   );
