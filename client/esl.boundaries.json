@@ -13,7 +13,6 @@
           "src/hooks/**/*",
           "src/lib/**/*",
           "src/types/**/*",
-          "src/utils/**/*",
           "src/i18n/**/*"
         ]
       },
