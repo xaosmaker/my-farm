@@ -1,6 +1,11 @@
 {
   "Global": {
-    "Error": {},
+    "Error": {
+      "invalid_email": "Εισάγετε ένα έγκυρο email",
+      "wrongCred": "Το email ή ο κωδικός πρόσβασης δεν ταιριάζουν",
+      "required_field": "{name}: Αυτό το πεδίο είναι υποχρεωτικό",
+      "required_generic": "Αυτό το πεδίο είναι υποχρεωτικό"
+    },
     "Language": {
       "en": "Αγγλικά",
       "el": "Ελληνικά"
@@ -21,7 +26,13 @@
     "submitButton": "Είσοδος",
     "title": "Είσοδος στο My Farm",
     "desc": "Συνδεθείτε στον λογαριασμό My Farm",
+    "password": "Κωδικός πρόσβασης"
+  },
+  "RegisterForm": {
+    "submitButton": "Εγγραφή",
+    "title": "Εγγραφή στο My Farm",
+    "desc": "Δημιουργία λογαριασμού για το My Farm",
     "password": "Κωδικός πρόσβασης",
-    "wrongCred": "Το email ή ο κωδικός πρόσβασης δεν ταιριάζουν"
+    "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης"
   }
 }
