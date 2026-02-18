@@ -1,6 +1,6 @@
 "use client";
 
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ControlledInput from "@/components/ControlledInput";
@@ -12,6 +12,8 @@ import { useActionState, useTransition } from "react";
 import { registerAction } from "../authActions";
 import ServerError from "@/components/ServerError";
 import { toast } from "sonner";
+import { CheckCircle2Icon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function RegisterForm() {
   const et = useTranslations("Global.Error");
@@ -34,9 +36,7 @@ export default function RegisterForm() {
     });
   }
   if (state?.success) {
-    toast.success(
-      "Account created successfull login to your email and activate your account ",
-    );
+    toast.success(t("successTitle"));
   }
 
   return (
@@ -70,6 +70,16 @@ export default function RegisterForm() {
             required
           />
         </FieldGroup>
+
+        {state?.success && (
+          <Alert variant="default" className="mt-10 text-green-500">
+            <CheckCircle2Icon />
+            <AlertTitle>{t("successTitle")}</AlertTitle>
+            <AlertDescription className="text-green-500">
+              {t("successDesc")}
+            </AlertDescription>
+          </Alert>
+        )}
         <ServerError errors={state?.errors} />
       </form>
     </BaseForm>

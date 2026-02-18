@@ -39,6 +39,8 @@
     "title": "My Farm Sign Up",
     "desc": "Create Account for My Farm",
     "password": "Password",
-    "confirmPassword": "Confirm Password"
+    "confirmPassword": "Confirm Password",
+    "successTitle": "Your account created successfully",
+    "successDesc": "Go to your email and follow the instruction"
   }
 }

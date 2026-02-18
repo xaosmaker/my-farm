@@ -10,10 +10,6 @@ export async function registerAction(
   formData: RegisterSchema,
 ) {
   const t = await getTranslations("Global.Error");
-  await new Promise((resolve) => {
-    setTimeout(resolve, 1000);
-  });
-  return { success: true, errors: undefined };
   const res = await fetch(`${SERVER_URL}/api/users/create`, {
     method: "POST",
     headers: {
