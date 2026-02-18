@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
 import Axe from "@/lib/Axe";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,7 +55,14 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider>
-            <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            <NextIntlClientProvider>
+              {children}
+              <Toaster
+                position="top-right"
+                duration={3000}
+                closeButton={true}
+              />
+            </NextIntlClientProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>
