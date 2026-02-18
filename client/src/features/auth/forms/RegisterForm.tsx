@@ -11,6 +11,7 @@ import { registerSchema, RegisterSchema } from "../schemas/registerSchema";
 import { useActionState, useTransition } from "react";
 import { registerAction } from "../authActions";
 import ServerError from "@/components/ServerError";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
   const et = useTranslations("Global.Error");
@@ -31,6 +32,11 @@ export default function RegisterForm() {
     startTransition(() => {
       action(data);
     });
+  }
+  if (state?.success) {
+    toast.success(
+      "Account created successfull login to your email and activate your account ",
+    );
   }
 
   return (
