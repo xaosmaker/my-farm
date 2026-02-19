@@ -1,8 +1,12 @@
 import H1 from "@/components/H1";
-import { getAuth } from "@/lib/getAuth";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-  await getAuth();
+  const session = await auth();
+  if (session?.user) {
+    redirect("/farm");
+  }
   return (
     <section>
       <H1 className="text-center">Home Page</H1>

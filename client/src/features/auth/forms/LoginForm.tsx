@@ -42,7 +42,7 @@ export default function LoginForm() {
       setError("root", { message: et("wrongCred") });
       return;
     }
-    router.push("/");
+    router.push("/farm");
     return;
   }
 
