@@ -1,5 +1,6 @@
 import LanguageToggle from "@/components/language-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function UnauthLayout({
@@ -16,6 +17,9 @@ export default function UnauthLayout({
         <div className="flex gap-2">
           <ThemeToggle />
           <LanguageToggle />
+          <Button asChild className="bg-green-500 hover:bg-green-600">
+            <Link href="/login">Login</Link>
+          </Button>
         </div>
       </header>
       <section className="mt-10">{children}</section>

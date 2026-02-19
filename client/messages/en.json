@@ -56,5 +56,14 @@
     "submitButton": "Send",
     "wrong": "something went wrong",
     "resend": "Resend Verification code"
+  },
+  "Navigation": {
+    "home": "Home",
+    "settings": "Settings",
+    "fields": "Fields",
+    "supplies": "Supplies",
+    "seasons": "Seasons",
+    "signOut": "Sign Out",
+    "userAriaButton": "Open user options menu"
   }
 }
