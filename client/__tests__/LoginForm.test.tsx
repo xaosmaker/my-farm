@@ -125,6 +125,6 @@ describe("Login Form Tests", () => {
       password: "test",
       redirect: false,
     });
-    expect(router.push).toHaveBeenCalledWith("/");
+    expect(router.push).toHaveBeenCalledWith("/farm");
   });
 });
