@@ -38,7 +38,7 @@ export default function LoginForm() {
       password: data.password,
     });
 
-    if (res.error) {
+    if (res?.error) {
       setError("root", { message: et("wrongCred") });
       return;
     }
