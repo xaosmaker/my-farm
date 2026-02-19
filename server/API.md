@@ -483,6 +483,33 @@ all the body `key:pair` are optional
 ```
 </details>
 
+### <span style="color:blue">GET</span> /api/fields
+<details>
+
+#### body: `null`
+#### response:
+<span style="color:green">200</span>
+```json
+[
+
+    {
+        "id":1,
+        "name":"γουρουνια",
+        "epsg2100Boundary":null,
+        "epsg4326Boundary":null,
+        "mapLocation":null,
+        "fieldLocation":"γουρουνια",
+        "areaInMeters":35000,
+        "isOwned":false,
+        "createdAt":"2026-10-11T00:00:00Z",
+        "updatedAt":"2026-10-11T00:00:00Z",
+        "landUnit":"m2"
+    }
+]
+```
+</details>
+
+
 ### <span style="color:blue">GET</span> /api/fields/{fieldID}
 <details>
 
