@@ -9,9 +9,11 @@ import ControlledPasswordInput from "@/components/ControlledPasswordInput";
 import BaseForm from "@/components/BaseForm";
 import { useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const et = useTranslations("Global.Error");
   const t = useTranslations("LoginForm");
   const {
@@ -40,7 +42,8 @@ export default function LoginForm() {
       setError("root", { message: et("wrongCred") });
       return;
     }
-    return redirect("/");
+    router.push("/");
+    return;
   }
 
   return (
@@ -68,6 +71,12 @@ export default function LoginForm() {
           />
         </FieldGroup>
         {errors.root && <FieldError className="mt-5" errors={[errors.root]} />}
+        <div className="mt-5 flex gap-2 text-xs">
+          {t("hasAccount")}
+          <Link className="text-blue-500" href="/register">
+            {t("signUp")}
+          </Link>
+        </div>
       </form>
     </BaseForm>
   );

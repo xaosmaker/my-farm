@@ -14,6 +14,7 @@ import ServerError from "@/components/ServerError";
 import { toast } from "sonner";
 import { CheckCircle2Icon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 export default function RegisterForm() {
   const et = useTranslations("Global.Error");
@@ -81,6 +82,13 @@ export default function RegisterForm() {
           </Alert>
         )}
         <ServerError errors={state?.errors} />
+
+        <div className="mt-5 flex gap-2 text-xs">
+          {t("hasAccount")}
+          <Link className="text-blue-500" href="/login">
+            {t("login")}
+          </Link>
+        </div>
       </form>
     </BaseForm>
   );
