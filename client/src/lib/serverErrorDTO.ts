@@ -21,10 +21,28 @@ function errorMessageDTO(serverErrors: unknown[], t: TFnError) {
         "meta" in error &&
         typeof error.meta === "object"
       ) {
+        const meta = error.meta as { [x: string]: string | number | Date };
+        if (meta) {
+          for (const key of Object.keys(meta)) {
+            if (
+              typeof meta[key] === "string" &&
+              t.has(
+                `Meta.${meta[key] as keyof Messages["Global"]["Error"]["Meta"]}`,
+              )
+            ) {
+              meta[key] = t(
+                `Meta.${meta[key] as keyof Messages["Global"]["Error"]["Meta"]}`,
+              );
+            }
+          }
+        }
         return {
-          message: t(error.appCode as keyof Messages["Global"]["Error"], {
-            ...error.meta,
-          }),
+          message: t(
+            error.appCode as Exclude<keyof Messages["Global"]["Error"], "Meta">,
+            {
+              ...meta,
+            },
+          ),
         };
       }
     }
