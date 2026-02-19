@@ -10,7 +10,8 @@
       "invalid_password_number": "Password should contain 1 number",
       "invalid_password": "Password should contain 1 capital letter 1 number and has min lenght {min}",
       "password_mismatch_error": "Passwords mismatch",
-      "email_exist_error": "This email is already in use, try another"
+      "email_exist_error": "This email is already in use, try another",
+      "invalid_verification_token": "Invalid Token"
     },
     "Language": {
       "en": "English",
@@ -46,5 +47,14 @@
     "successDesc": "Go to your email and follow the instruction",
     "login": "Login",
     "hasAccount": "Already have an account"
+  },
+  "Verification": {
+    "title": "Resend Verification Email",
+    "desc": "Resend Verification Email for the user",
+    "successTitle": "Email Send",
+    "successDesc": "Go to your email and click the link",
+    "submitButton": "Send",
+    "wrong": "something went wrong",
+    "resend": "Resend Verification code"
   }
 }
