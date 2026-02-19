@@ -16,7 +16,7 @@ describe("Login Page Tests", () => {
     (auth as Mock).mockResolvedValue({ user: {} });
     const comp = await LoginPage();
     render(comp);
-    expect(redirect).toHaveBeenCalledWith("/");
+    expect(redirect).toHaveBeenCalledWith("/farm");
   });
 
   it("Login Page Render form", async () => {
