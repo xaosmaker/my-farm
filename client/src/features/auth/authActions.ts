@@ -59,6 +59,7 @@ export async function resendVerifyEmailAction(
   if (res.ok) {
     return { success: true, errors: undefined };
   }
+  const t = await getTranslations("Global.Error");
   const data = await res.json();
-  return { success: false, errors: toResponseError(data) };
+  return { success: false, errors: serverErrorDTO(data, t) };
 }

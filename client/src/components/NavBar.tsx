@@ -13,7 +13,7 @@ import { LogOut, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import LanguageToggle from "./language-toggle";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -22,13 +22,12 @@ export default function NavBar({
 }: {
   children: Readonly<ReactNode>;
 }) {
-  const router = useRouter();
   const { data: session } = useSession();
   const url = usePathname();
   const t = useTranslations("Navigation");
 
   if (session?.user && !session?.user?.farmId && !(url === "/farm/create")) {
-    router.push("/farm/create");
+    redirect("/farm/create");
   }
   return (
     <header className="flex h-14 items-center justify-between px-5 pl-2 shadow shadow-current/10">
