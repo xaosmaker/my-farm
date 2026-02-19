@@ -35,7 +35,7 @@ export default function BaseForm({
   submitFormName: string;
   submitButton: string;
   isPending?: boolean;
-  resetForm: () => void;
+  resetForm?: () => void;
 }) {
   const t = useTranslations("Global.Form");
   const router = useRouter();
