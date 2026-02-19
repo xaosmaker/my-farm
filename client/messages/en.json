@@ -32,7 +32,9 @@
     "submitButton": "Login",
     "title": "My Farm Login",
     "desc": "Login To My Farm Account",
-    "password": "Password"
+    "password": "Password",
+    "signUp": "Sign Up",
+    "hasAccount": "Don't have and acount"
   },
   "RegisterForm": {
     "submitButton": "Sign Up",
@@ -41,6 +43,8 @@
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "successTitle": "Your account created successfully",
-    "successDesc": "Go to your email and follow the instruction"
+    "successDesc": "Go to your email and follow the instruction",
+    "login": "Login",
+    "hasAccount": "Already have an account"
   }
 }
