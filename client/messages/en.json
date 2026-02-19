@@ -1,6 +1,9 @@
 {
   "Global": {
     "Error": {
+      "Meta": {
+        "Farm": "Farm name"
+      },
       "invalid_email": "Enter a valid email",
       "wrongCred": "Email or password don't match",
       "required_field": "{name}: This Field is required",

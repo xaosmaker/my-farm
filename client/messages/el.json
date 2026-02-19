@@ -1,6 +1,9 @@
 {
   "Global": {
     "Error": {
+      "Meta": {
+        "Farm": "Όνομα φάρμας"
+      },
       "invalid_email": "Εισάγετε ένα έγκυρο email",
       "wrongCred": "Το email ή ο κωδικός πρόσβασης δεν ταιριάζουν",
       "required_field": "{name}: Αυτό το πεδίο είναι υποχρεωτικό",
