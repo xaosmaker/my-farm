@@ -8,7 +8,6 @@ import ControlledInput from "@/components/ControlledInput";
 import { useActionState, useTransition } from "react";
 import { createFarmAction } from "../farmActions";
 import ServerError from "@/components/ServerError";
-import { toast } from "sonner";
 import { signOut } from "next-auth/react";
 
 export default function CreateFarmForm() {
