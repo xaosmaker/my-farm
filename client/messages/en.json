@@ -11,7 +11,9 @@
       "invalid_password": "Password should contain 1 capital letter 1 number and has min lenght {min}",
       "password_mismatch_error": "Passwords mismatch",
       "email_exist_error": "This email is already in use, try another",
-      "invalid_verification_token": "Invalid Token"
+      "invalid_verification_token": "Invalid Token",
+      "invalid_num_space_char": "{name,select, undefined {This field} other {{name}:}} should contains char, spaces and numbers",
+      "exist_error": "{name} already exists. Please choose a different name."
     },
     "Language": {
       "en": "English",
@@ -30,6 +32,15 @@
     "Password": {
       "showPass": "Show Password",
       "hidePass": "Hide Password"
+    }
+  },
+  "Farm": {
+    "Create": {
+      "title": "Create your farm",
+      "desc": "Set up your farm and manage your fields efficiently",
+      "submitButton": "Create farm",
+      "name": "Farm name",
+      "success": "Farm Created successfully. Login To Continue"
     }
   },
   "LoginForm": {

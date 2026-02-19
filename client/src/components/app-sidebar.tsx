@@ -17,7 +17,7 @@ import { Messages, useTranslations } from "next-intl";
 const items = [
   {
     title: "home",
-    url: "/",
+    url: "/farm",
     icon: Home,
   },
   {
