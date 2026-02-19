@@ -18,7 +18,10 @@
       "el": "Greek"
     },
     "metaData": {
-      "login": "Login"
+      "login": "Login",
+      "register": "Sign Up",
+      "home": "Home",
+      "dashboard": "Dashboard"
     },
     "Form": {
       "prevPage": "Go to previous page",
