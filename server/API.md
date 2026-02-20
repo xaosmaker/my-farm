@@ -304,6 +304,8 @@ invalid email, password, confirm password
     "isOwned": true
 }
 ```
+chaviats: go cast the areaInMeters to `float` 
+if the field is in other format the error we receive is required_field
 #### response:
 
 <span style="color:green">201</span>
