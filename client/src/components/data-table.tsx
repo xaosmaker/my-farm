@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -15,6 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useState } from "react";
+import { Input } from "./ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,14 +28,31 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [globalFilter, setGlobalFilter] = useState<string>("");
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: "includesString",
+    state: {
+      globalFilter,
+    },
+    onGlobalFilterChange: setGlobalFilter,
   });
 
   return (
     <div className="overflow-hidden rounded-md border">
+      <div className="ml-2 flex items-center py-4">
+        <Input
+          placeholder="..."
+          value={globalFilter}
+          onChange={(event) =>
+            table.setGlobalFilter(String(event.target.value))
+          }
+          className="max-w-sm"
+        />
+      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
