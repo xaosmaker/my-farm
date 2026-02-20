@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import {
@@ -16,8 +17,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { usePathname } from "next/navigation";
+import { getFromLocalStorage } from "@/lib/localStorageUtils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -28,7 +38,11 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const path = usePathname();
   const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [firstMount, setFirstMount] = useState<boolean>(false);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
   const table = useReactTable({
     data,
     columns,
@@ -37,13 +51,29 @@ export function DataTable<TData, TValue>({
     globalFilterFn: "includesString",
     state: {
       globalFilter,
+      columnVisibility,
     },
     onGlobalFilterChange: setGlobalFilter,
+    onColumnVisibilityChange: setColumnVisibility,
   });
+
+  // save the visibility of the user to local storage
+  useEffect(() => {
+    if (!firstMount) {
+      const data = getFromLocalStorage(`${path.split("/")[2]}TableVisibility`);
+      setColumnVisibility(data);
+      setFirstMount(true);
+    } else {
+      localStorage.setItem(
+        `${path.split("/")[2]}TableVisibility`,
+        JSON.stringify(columnVisibility),
+      );
+    }
+  }, [path, columnVisibility, firstMount]);
 
   return (
     <div className="overflow-hidden rounded-md border">
-      <div className="ml-2 flex items-center py-4">
+      <div className="mx-2 flex items-center py-4">
         <Input
           placeholder="..."
           value={globalFilter}
@@ -52,6 +82,32 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <Table>
         <TableHeader>
