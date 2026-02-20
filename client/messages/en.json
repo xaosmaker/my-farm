@@ -54,6 +54,12 @@
     "column": "Column",
     "noResults": "No Results."
   },
+  "ActionMenu": {
+    "action": "Action Menu for {name}"
+  },
+  "UpdateItem": {
+    "label": "Update {name}"
+  },
   "Fields": {
     "pageTitle": "Fields",
     "Table": {

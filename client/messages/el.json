@@ -54,6 +54,12 @@
     "column": "Στήλες",
     "noResults": "Δεν βρέθηκαν αποτελέσματα."
   },
+  "ActionMenu": {
+    "action": "Μενού ενεργειών για {name}"
+  },
+  "UpdateItem": {
+    "label": "Ενημερώστε τα {name}"
+  },
   "Fields": {
     "pageTitle": "Χωράφια",
     "Table": {
