@@ -46,6 +46,10 @@
       "hidePass": "Hide Password"
     }
   },
+  "Columns": {
+    "column": "Column",
+    "noResults": "No Results."
+  },
   "Fields": {
     "pageTitle": "Fields",
     "Table": {
