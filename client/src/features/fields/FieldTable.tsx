@@ -1,7 +1,11 @@
+"use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Field } from "./fieldTypes";
 import { DataTable } from "@/components/data-table";
-import { useTranslations } from "next-intl";
+import { Messages, useTranslations } from "next-intl";
+import AddButtonMenu from "@/components/AddButtonMenu";
+import EllipsisMenu from "@/components/EllipsisMenu";
+import UpdateItem from "@/components/UpdateItem";
 
 export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
   const t = useTranslations("Fields.Table");
@@ -30,6 +34,24 @@ export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
     {
       accessorKey: "isOwned",
       header: t("isOwned"),
+    },
+    {
+      id: "fieldActions",
+      header: () => {
+        return (
+          <AddButtonMenu href="/fields/create" label={t("createFieldButton")} />
+        );
+      },
+      cell: ({ row: { original } }) => (
+        <EllipsisMenu label={original.name}>
+          <>
+            <UpdateItem
+              href={`/fields/${original.id}/update`}
+              label={original.name}
+            />
+          </>
+        </EllipsisMenu>
+      ),
     },
   ];
   return <DataTable columns={columns} data={fieldData} />;
