@@ -1,15 +1,16 @@
 "use server";
 
-import { FieldFormData } from "@/features/fields/fieldValidators";
 import { redirect } from "next/navigation";
 import { baseFetch } from "@/lib/baseFetch";
 import { serverErrorDTO } from "@/lib/serverErrorDTO";
 import { getTranslations } from "next-intl/server";
 import { Field } from "./fieldTypes";
+import { FieldSchema } from "./fieldSchema";
+import { revalidatePath } from "next/cache";
 
 export async function createFieldAction(
   _previousState: unknown,
-  formData: FieldFormData,
+  formData: FieldSchema,
 ) {
   const d = {
     name: formData.name,
@@ -39,7 +40,7 @@ export async function createFieldAction(
 export async function updateFieldAction(
   oldData: Field,
   _previousState: unknown | undefined,
-  formData: FieldFormData,
+  formData: FieldSchema,
 ) {
   const d: {
     [k: string]: string | number | boolean;
@@ -47,7 +48,7 @@ export async function updateFieldAction(
   if (oldData) {
     for (const key in formData) {
       const k = key as keyof Field;
-      const s = key as keyof FieldFormData;
+      const s = key as keyof FieldSchema;
 
       if (s === "govPDF" || oldData[k]?.toString() === formData[s].toString()) {
         continue;
@@ -78,16 +79,18 @@ export async function updateFieldAction(
   return undefined;
 }
 
-// export async function deleteFieldAction(_previousState: unknown, id: string) {
-//   const res = await baseFetch({
-//     path: `${SERVER_URL}/api/fields/${id}`,
-//     method: "DELETE",
-//     body: undefined,
-//   });
-//   if (res.ok) {
-//     redirect("/fields");
-//   }
-//   const data = await res.json();
-//   return data;
-//   // return toResponseError(data);
-// }
+export async function deleteFieldAction(_prevState: unknown, fieldId: string) {
+  console.log(fieldId, "delete action");
+  const res = await baseFetch({
+    path: `/api/fields/${fieldId}`,
+    method: "DELETE",
+    body: undefined,
+  });
+  if (res.ok) {
+    revalidatePath("/api/fields");
+    return { success: true, errors: undefined };
+  }
+  const t = await getTranslations("Global.Error");
+  const data = await res.json();
+  return { success: false, errors: serverErrorDTO(data, t) };
+}

@@ -57,6 +57,13 @@
   "ActionMenu": {
     "action": "Action Menu for {name}"
   },
+  "DeleteComponent": {
+    "delete": "Delete {name}",
+    "deleteTitle": "Are you sure you want to delete {name}",
+    "deleteDesc": "This action is Permanent! Do you want to continue",
+    "cancelButton": "Cancel",
+    "confirmButton": "Delete"
+  },
   "UpdateItem": {
     "label": "Update {name}"
   },

@@ -6,6 +6,8 @@ import { Messages, useTranslations } from "next-intl";
 import AddButtonMenu from "@/components/AddButtonMenu";
 import EllipsisMenu from "@/components/EllipsisMenu";
 import UpdateItem from "@/components/UpdateItem";
+import DeleteItem from "@/components/DeleteItem";
+import { deleteFieldAction } from "./actions";
 
 export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
   const t = useTranslations("Fields.Table");
@@ -48,6 +50,11 @@ export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
             <UpdateItem
               href={`/fields/${original.id}/update`}
               label={original.name}
+            />
+            <DeleteItem
+              formAction={deleteFieldAction}
+              label={original.name}
+              id={original.id.toString()}
             />
           </>
         </EllipsisMenu>
