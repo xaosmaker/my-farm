@@ -10,7 +10,9 @@ export async function baseFetch({
 }: {
   path: string;
   method: allowedMethods;
-  body: { [key: string]: string } | undefined;
+  body:
+    | { [key: string]: string | boolean | number | null | undefined }
+    | undefined;
 }) {
   const session = await getAuth();
   return fetch(`${SERVER_URL}${path}`, {
