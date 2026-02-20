@@ -34,7 +34,8 @@
       "register": "Sign Up",
       "home": "Home",
       "dashboard": "Dashboard",
-      "field": "Fields"
+      "field": "Fields",
+      "settings": "Settings"
     },
     "Form": {
       "prevPage": "Go to previous page",
@@ -105,5 +106,13 @@
     "seasons": "Seasons",
     "signOut": "Sign Out",
     "userAriaButton": "Open user options menu"
+  },
+  "Settings": {
+    "formTitle": "Change Settings",
+    "formDesc": "Change your settings",
+    "formButton": "Save",
+    "landUnit": "Field Measurement Unit",
+    "ariaLabel": "Change Land Measurement Unit",
+    "success": "Settings updated successfully"
   }
 }
