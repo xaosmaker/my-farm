@@ -27,7 +27,7 @@
       "exist_error": "Το {name} υπάρχει ήδη. Παρακαλώ επιλέξτε ένα διαφορετικό όνομα.",
       "invalid_number": "Δώστε έναν έγκυρο αριθμό για το πεδίο",
       "invalid_min": "Ο αριθμός πρέπει να είναι μεγαλύτερος από {min}",
-      "not_found_error": "Ο πόρος {name} δεν βρέθηκε"
+      "not_found_error": "Το {name} δεν βρέθηκε"
     },
     "Language": {
       "en": "Αγγλικά",
@@ -57,8 +57,15 @@
   "ActionMenu": {
     "action": "Μενού ενεργειών για {name}"
   },
+  "DeleteComponent": {
+    "delete": "Διαγραφή για {name}",
+    "deleteTitle": "Είσαι σίγουρος ότι θες να διαγράψεις {name}",
+    "deleteDesc": "Αυτή η διαδικασία είναι μόνιμή! Θες αν συνεχίσεις?",
+    "cancelButton": "Ακύρωσή",
+    "confirmButton": "Διαγραφή"
+  },
   "UpdateItem": {
-    "label": "Ενημερώστε τα {name}"
+    "label": "Ενημερώση για {name}"
   },
   "Fields": {
     "pageTitle": "Χωράφια",
