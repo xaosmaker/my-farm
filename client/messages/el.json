@@ -1,4 +1,11 @@
 {
+  "Units": {
+    "m2": "Τετραγωνικά Μέτρα",
+    "hectares": "Εκτάρια",
+    "stremata": "Στρέμματα",
+    "false": "Όχι",
+    "true": "Ναι"
+  },
   "Global": {
     "Error": {
       "Meta": {
@@ -26,7 +33,8 @@
       "login": "Είσοδος",
       "register": "Εγγραφή",
       "home": "Αρχική",
-      "dashboard": "Πίνακας Ελέγχου"
+      "dashboard": "Πίνακας Ελέγχου",
+      "field": "Χωράφια"
     },
     "Form": {
       "prevPage": "Μετάβαση στην προηγούμενη σελίδα",
@@ -35,6 +43,21 @@
     "Password": {
       "showPass": "Εμφάνιση κωδικού",
       "hidePass": "Απόκρυψη κωδικού"
+    }
+  },
+  "Fields": {
+    "pageTitle": "Χωράφια",
+    "Table": {
+      "id": "ID",
+      "name": "Χωράφια",
+      "areaInMeters": "Εκταση",
+      "landUnit": "Μοναδα",
+      "fieldLocation": "Τοποθεσία",
+      "mapLocation": "Χάρτης",
+      "createField": "Actions",
+      "comingSoon": "σύντομα κοντά σας",
+      "createFieldButton": "Δημιουργία Χωραφιού",
+      "isOwned": "Ιδιόκτητο"
     }
   },
   "Farm": {

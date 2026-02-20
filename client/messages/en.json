@@ -1,4 +1,11 @@
 {
+  "Units": {
+    "m2": "Square Meters",
+    "hectares": "Hectares",
+    "stremata": "Stremata",
+    "false": "No",
+    "true": "Yes"
+  },
   "Global": {
     "Error": {
       "Meta": {
@@ -26,7 +33,8 @@
       "login": "Login",
       "register": "Sign Up",
       "home": "Home",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "field": "Fields"
     },
     "Form": {
       "prevPage": "Go to previous page",
@@ -35,6 +43,21 @@
     "Password": {
       "showPass": "Show Password",
       "hidePass": "Hide Password"
+    }
+  },
+  "Fields": {
+    "pageTitle": "Fields",
+    "Table": {
+      "id": "ID",
+      "name": "Fields",
+      "areaInMeters": "Area",
+      "landUnit": "Unit",
+      "fieldLocation": "Location",
+      "mapLocation": "Map",
+      "createField": "Actions",
+      "comingSoon": "Coming Soon",
+      "createFieldButton": "Create Field",
+      "isOwned": "Owned"
     }
   },
   "Farm": {
