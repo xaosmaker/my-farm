@@ -9,11 +9,12 @@
   "Global": {
     "Error": {
       "Meta": {
-        "Farm": "Farm name"
+        "Farm": "Farm name",
+        "Field": "Field name"
       },
       "invalid_email": "Enter a valid email",
       "wrongCred": "Email or password don't match",
-      "required_field": "{name}: This Field is required",
+      "required_field": "{name} is required",
       "required_generic": "This Field is required",
       "invalid_password_length": "Password should be 8 chars and more",
       "invalid_password_cap_letter": "Password should contain 1 cappital Letter",
@@ -23,7 +24,10 @@
       "email_exist_error": "This email is already in use, try another",
       "invalid_verification_token": "Invalid Token",
       "invalid_num_space_char": "{name,select, undefined {This field} other {{name}:}} should contains char, spaces and numbers",
-      "exist_error": "{name} already exists. Please choose a different name."
+      "exist_error": "{name} already exists. Please choose a different name.",
+      "invalid_number": "Provide a valid number for the field",
+      "invalid_min": "The number should be greater than {min}",
+      "not_found_error": "The resource {name} not found "
     },
     "Language": {
       "en": "English",
@@ -63,6 +67,24 @@
       "comingSoon": "Coming Soon",
       "createFieldButton": "Create Field",
       "isOwned": "Owned"
+    },
+    "Update": {
+      "title": "Edit field",
+      "desc": "Edit your Field",
+      "submitButton": "Update Field",
+      "name": "Field Name",
+      "fieldLocation": "Location",
+      "areaInMeters": "Area",
+      "owned": "Owned"
+    },
+    "Create": {
+      "title": "Create Field",
+      "desc": "Create your field",
+      "submitButton": "Create Field",
+      "name": "Field Name",
+      "fieldLocation": "Location",
+      "areaInMeters": "Area",
+      "owned": "Owned"
     }
   },
   "Farm": {

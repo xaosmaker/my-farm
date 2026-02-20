@@ -21,3 +21,17 @@ export async function getFields(translate: boolean = true) {
   }
   return data;
 }
+
+export async function getField(fieldId: string) {
+  const res = await baseFetch({
+    path: `/api/fields/${fieldId}`,
+    method: "GET",
+    body: undefined,
+  });
+  if (res.ok) {
+    const data: Field = await res.json();
+    return data;
+  }
+  const t = await getTranslations("Global.Error");
+  throw new Error(t("not_found_error", { name: "" }));
+}
