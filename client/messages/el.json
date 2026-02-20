@@ -46,6 +46,10 @@
       "hidePass": "Απόκρυψη κωδικού"
     }
   },
+  "Columns": {
+    "column": "Στήλες",
+    "noResults": "Δεν βρέθηκαν αποτελέσματα."
+  },
   "Fields": {
     "pageTitle": "Χωράφια",
     "Table": {

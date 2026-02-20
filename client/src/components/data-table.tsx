@@ -28,6 +28,8 @@ import {
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
 import { getFromLocalStorage } from "@/lib/localStorageUtils";
+import { useTranslations } from "next-intl";
+import { Separator } from "./ui/separator";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,6 +44,7 @@ export function DataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [firstMount, setFirstMount] = useState<boolean>(false);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const t = useTranslations("Columns");
 
   const table = useReactTable({
     data,
@@ -73,7 +76,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="overflow-hidden rounded-md border">
-      <div className="mx-2 flex items-center py-4">
+      <div className="flex items-center justify-between gap-2 px-2 py-4">
         <Input
           placeholder="..."
           value={globalFilter}
@@ -85,7 +88,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns
+              {t("column")}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -109,6 +112,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <Separator />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
