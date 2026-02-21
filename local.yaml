@@ -1,3 +1,5 @@
+
+
 services:
   farm-nginx:
     container_name: "farm-nginx"
@@ -29,7 +31,7 @@ services:
     expose:
       - 8090
     env_file:
-      - ./.local.env
+      - ${LOCAL_ENV}
     develop:
       watch:
         - action: sync+restart
@@ -54,7 +56,7 @@ services:
       - ./orm:/orm
 
     env_file:
-      - ./.local.env
+      -  ${LOCAL_ENV}
     networks:
       - "farm_nw"
       - farm_db_nw
@@ -73,7 +75,7 @@ services:
     expose:
       - "3000"
     env_file:
-      - ./.local.env
+      - $LOCAL_ENV
 
     networks:
       - "farm_nw"
@@ -96,7 +98,7 @@ services:
       timeout: 10s
       retries: 5
     env_file:
-      - ./.local.env
+      - ${LOCAL_ENV}
     networks:
       - farm_db_nw
 networks:
