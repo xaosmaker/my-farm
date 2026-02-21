@@ -9,7 +9,7 @@ services:
     expose:
       - 8090
     env_file:
-      - ./.test.env
+      - $TEST_ENV
     volumes:
       - ./server:/server
     networks:
@@ -33,12 +33,12 @@ services:
       - "5432"
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      test: ["CMD-SHELL", "pg_isready -U $TEST_POSTGRES_USER -d $TEST_POSTGRES_DB"]
       interval: 1s
       timeout: 10s
       retries: 5
     env_file:
-      - ./.test.env
+      - $TEST_ENV
     networks:
       - farm_test_db_nw
 
@@ -75,7 +75,7 @@ services:
   #   expose:
   #     - "3000"
   #   env_file:
-  #     - ./.test.env
+  #     - $TEST_ENV
   #
   #   networks:
   #     - "farm_test_nw"
