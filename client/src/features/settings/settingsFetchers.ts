@@ -1,5 +1,5 @@
 import { baseFetch } from "@/lib/baseFetch";
-import { UserSettings } from "./settingTypes";
+import { UserSettings } from "@/types/globalTypes";
 
 export async function getSettings() {
   const res = await baseFetch({

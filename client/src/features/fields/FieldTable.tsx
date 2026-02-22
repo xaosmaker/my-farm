@@ -2,12 +2,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Field } from "./fieldTypes";
 import { DataTable } from "@/components/data-table";
-import { Messages, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import AddButtonMenu from "@/components/AddButtonMenu";
 import EllipsisMenu from "@/components/EllipsisMenu";
 import UpdateItem from "@/components/UpdateItem";
 import DeleteItem from "@/components/DeleteItem";
-import { deleteFieldAction } from "./actions";
+import { deleteFieldAction } from "./fieldActions";
 
 export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
   const t = useTranslations("Fields.Table");

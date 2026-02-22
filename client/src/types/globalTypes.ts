@@ -1,4 +1,4 @@
-import { DateSTR } from "@/types/genetalTypes";
+import { DateSTR } from "./genetalTypes";
 
 export interface UserSettings {
   id: number;

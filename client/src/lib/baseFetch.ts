@@ -12,6 +12,7 @@ export async function baseFetch({
   method: allowedMethods;
   body:
     | { [key: string]: string | boolean | number | null | undefined }
+    | object
     | undefined;
 }) {
   const session = await getAuth();

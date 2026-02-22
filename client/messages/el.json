@@ -100,6 +100,47 @@
       "owned": "Ιδιόκτητο"
     }
   },
+  "Seasons": {
+    "pageTitle": "Καλλιέργειες",
+    "Table": {
+      "id": "ID",
+      "name": "Καλλιέργειες",
+      "startSeason": "Έναρξη σεζόν",
+      "finishSeason": "Λήξη σεζόν",
+      "fieldId": "Χωράφι",
+      "fieldName": "Όνομα Χωραφιού",
+      "areaInMeters": "Μ.Μ.",
+      "cropName": "Καλλιέργεια",
+      "landUnit": "Μονάδα",
+      "createSeasonButton": "Δημιουργία σεζόν"
+    },
+    "Update": {
+      "title": "Επεξεργασία σεζόν",
+      "desc": "Επεξεργαστείτε την σεζόν σας",
+      "submitButton": "Ενημέρωση σεζόν",
+      "name": "Όνομα σεζόν",
+      "startSeason": "Έναρξης σεζόν",
+      "finishSeason": "Λήξης σεζόν",
+      "fieldId": "Χωράφι",
+      "fieldName": "Όνομα Χωραφιού",
+      "areaInMeters": "Μ.Μ.",
+      "cropName": "Καλλιέργεια",
+      "landUnit": "Μονάδα"
+    },
+    "Create": {
+      "title": "Δημιουργία σεζόν",
+      "desc": "Δημιουργήστε την σεζόν σας",
+      "submitButton": "Δημιουργία σεζόν",
+      "name": "Όνομα σεζόν",
+      "startSeason": "Έναρξης σεζόν",
+      "finishSeason": "Λήξης σεζόν",
+      "fieldId": "Χωράφι",
+      "fieldName": "Όνομα Χωραφιού",
+      "areaInMeters": "Μ.Μ.",
+      "cropName": "Καλλιέργεια",
+      "landUnit": "Μονάδα"
+    }
+  },
   "Farm": {
     "Create": {
       "title": "Δημιουργήστε τη φάρμα σας",
