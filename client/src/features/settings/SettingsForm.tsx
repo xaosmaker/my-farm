@@ -1,5 +1,5 @@
 "use client";
-import { UserSettings } from "./settingTypes";
+
 import { useForm } from "react-hook-form";
 import { landUnits } from "@/lib/constants";
 import { useTranslations } from "next-intl";
@@ -9,6 +9,7 @@ import ControlledSelect from "@/components/ControlledSelect";
 import { useActionState, useTransition } from "react";
 import { updateSettingsAction } from "./settingsActions";
 import ServerError from "@/components/ServerError";
+import { UserSettings } from "@/types/globalTypes";
 
 export default function SettingsForm({
   userSettings,

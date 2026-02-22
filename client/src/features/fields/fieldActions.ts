@@ -87,7 +87,7 @@ export async function deleteFieldAction(_prevState: unknown, fieldId: string) {
     body: undefined,
   });
   if (res.ok) {
-    revalidatePath("/api/fields");
+    revalidatePath("/api/field:");
     return { success: true, errors: undefined };
   }
   const t = await getTranslations("Global.Error");

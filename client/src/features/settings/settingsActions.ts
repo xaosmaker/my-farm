@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { updateSettings } from "./settingsFetchers";
-import { UserSettings } from "./settingTypes";
 import { serverErrorDTO } from "@/lib/serverErrorDTO";
 import { getTranslations } from "next-intl/server";
+import { UserSettings } from "@/types/globalTypes";
 
 export async function updateSettingsAction(
   _prevState: unknown,

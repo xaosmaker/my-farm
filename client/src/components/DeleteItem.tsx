@@ -17,6 +17,7 @@ export default function DeleteItem({
   formAction,
   id,
   label,
+  redirectPath = "/fields",
 }: {
   label: string;
   formAction: (
@@ -27,6 +28,7 @@ export default function DeleteItem({
     errors: Array<{ message?: string } | undefined> | undefined;
   }>;
   id: string;
+  redirectPath?: string;
 }) {
   const t = useTranslations("DeleteComponent");
   const [state, action] = useActionState(formAction, undefined);
@@ -37,7 +39,7 @@ export default function DeleteItem({
     });
   }
   if (state?.success) {
-    return redirect("/fields");
+    return redirect(redirectPath);
   }
   return (
     <Dialog>
