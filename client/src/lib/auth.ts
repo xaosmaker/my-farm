@@ -46,6 +46,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user.access = jwtCook || "";
         user.validity = timestamp;
 
+        //TODO: TEMP FIX
+        let intl = "Europe/Athens";
+        if ("intl" in cred && cred.intl) {
+          intl = cred.intl as string;
+        }
+
+        user.intl = intl;
+
         return user;
       },
     }),

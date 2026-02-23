@@ -39,7 +39,8 @@
       "home": "Home",
       "dashboard": "Dashboard",
       "field": "Fields",
-      "settings": "Settings"
+      "settings": "Settings",
+      "Seasons": "Seasons"
     },
     "Form": {
       "prevPage": "Go to previous page",
@@ -101,7 +102,6 @@
     }
   },
   "Seasons": {
-    "pageTitle": "Seasons",
     "Table": {
       "id": "ID",
       "name": "Seasons",
