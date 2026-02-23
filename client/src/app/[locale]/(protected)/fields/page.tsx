@@ -1,6 +1,7 @@
 import H1 from "@/components/H1";
 import { getFields } from "@/features/fields/fieldFetchers";
 import FieldTable from "@/features/fields/FieldTable";
+import { getAuth } from "@/lib/getAuth";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -12,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FieldsPage() {
+  await getAuth();
   const fields = await getFields();
   const t = await getTranslations("Fields");
   return (
