@@ -6,6 +6,12 @@
     "false": "No",
     "true": "Yes"
   },
+  "SupplyTypes": {
+    "chemicals": "Chemicals",
+    "fertilizers": "Fertilizers",
+    "seeds": "Seeds",
+    "diesel": "Diesel"
+  },
   "Global": {
     "Error": {
       "Meta": {
@@ -40,7 +46,8 @@
       "dashboard": "Dashboard",
       "field": "Fields",
       "settings": "Settings",
-      "Seasons": "Seasons"
+      "seasons": "Seasons",
+      "supplies": "Supplies"
     },
     "Form": {
       "prevPage": "Go to previous page",
@@ -193,5 +200,33 @@
     "landUnit": "Field Measurement Unit",
     "ariaLabel": "Change Land Measurement Unit",
     "success": "Settings updated successfully"
+  },
+  "Supplies": {
+    "Table": {
+      "id": "ID",
+      "name": "Name",
+      "nickname": "Nickname",
+      "supplyType": "Type",
+      "measurementUnit": "Unit",
+      "createSupplyButton": "Create Supply"
+    },
+    "Create": {
+      "title": "Create Supply",
+      "desc": "Create your supply",
+      "submitButton": "Create Supply",
+      "name": "Name",
+      "nickname": "Nickname",
+      "supplyType": "Type",
+      "measurementUnit": "Unit"
+    },
+    "Update": {
+      "title": "Edit Supply",
+      "desc": "Edit your supply",
+      "submitButton": "Update Supply",
+      "name": "Name",
+      "nickname": "Nickname",
+      "supplyType": "Type",
+      "measurementUnit": "Unit"
+    }
   }
 }

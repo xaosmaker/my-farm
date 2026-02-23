@@ -6,6 +6,12 @@
     "false": "Όχι",
     "true": "Ναι"
   },
+  "SupplyTypes": {
+    "chemicals": "Φάρμακα",
+    "fertilizers": "Λιπάσματα",
+    "seeds": "Σπόροι",
+    "diesel": "Πετρέλαιο"
+  },
   "Global": {
     "Error": {
       "Meta": {
@@ -40,7 +46,8 @@
       "dashboard": "Πίνακας Ελέγχου",
       "field": "Χωράφια",
       "settings": "Ρυθμίσεις",
-      "Seasons": "Σεζόν"
+      "Seasons": "Σεζόν",
+      "supplies": "Εφόδια"
     },
     "Form": {
       "prevPage": "Μετάβαση στην προηγούμενη σελίδα",
@@ -194,5 +201,33 @@
     "landUnit": "Μονάδα μέτρησής εδάφους",
     "ariaLabel": "Αλλαγή μονάδας μέτρησης γης",
     "success": "Οι ρυθμίσεις ενημερώθηκαν με επιτυχία"
+  },
+  "Supplies": {
+    "Table": {
+      "id": "ID",
+      "name": "Όνομα",
+      "nickname": "Ψευδώνυμο",
+      "supplyType": "Τύπος",
+      "measurementUnit": "Μονάδα",
+      "createSupplyButton": "Δημιουργία Εφοδίου"
+    },
+    "Create": {
+      "title": "Δημιουργία Εφοδίου",
+      "desc": "Δημιουργήστε το εφόδιό σας",
+      "submitButton": "Δημιουργία Εφοδίου",
+      "name": "Όνομα",
+      "nickname": "Ψευδώνυμο",
+      "supplyType": "Τύπος",
+      "measurementUnit": "Μονάδα"
+    },
+    "Update": {
+      "title": "Επεξεργασία Εφοδίου",
+      "desc": "Επεξεργαστείτε το εφόδιό σας",
+      "submitButton": "Ενημέρωση Εφοδίου",
+      "name": "Όνομα",
+      "nickname": "Ψευδώνυμο",
+      "supplyType": "Τύπος",
+      "measurementUnit": "Μονάδα"
+    }
   }
 }
