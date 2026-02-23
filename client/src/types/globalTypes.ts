@@ -24,3 +24,13 @@ export interface Season {
   fieldName: string;
   fieldAreaInMeters: number;
 }
+
+export interface Supply {
+  id: number;
+  supplyType: string;
+  nickname: string | undefined;
+  name: string;
+  measurementUnit: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
