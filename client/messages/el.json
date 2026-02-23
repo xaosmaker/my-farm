@@ -39,7 +39,8 @@
       "home": "Αρχική",
       "dashboard": "Πίνακας Ελέγχου",
       "field": "Χωράφια",
-      "settings": "Ρυθμίσεις"
+      "settings": "Ρυθμίσεις",
+      "Seasons": "Σεζόν"
     },
     "Form": {
       "prevPage": "Μετάβαση στην προηγούμενη σελίδα",
@@ -101,7 +102,6 @@
     }
   },
   "Seasons": {
-    "pageTitle": "Καλλιέργειες",
     "Table": {
       "id": "ID",
       "name": "Καλλιέργειες",
@@ -109,7 +109,7 @@
       "finishSeason": "Λήξη σεζόν",
       "fieldId": "Χωράφι",
       "fieldName": "Όνομα Χωραφιού",
-      "areaInMeters": "Μ.Μ.",
+      "areaInMeters": "Έκταση",
       "cropName": "Καλλιέργεια",
       "landUnit": "Μονάδα",
       "createSeasonButton": "Δημιουργία σεζόν"
@@ -123,7 +123,7 @@
       "finishSeason": "Λήξης σεζόν",
       "fieldId": "Χωράφι",
       "fieldName": "Όνομα Χωραφιού",
-      "areaInMeters": "Μ.Μ.",
+      "areaInMeters": "Έκταση",
       "cropName": "Καλλιέργεια",
       "landUnit": "Μονάδα"
     },
@@ -136,7 +136,7 @@
       "finishSeason": "Λήξης σεζόν",
       "fieldId": "Χωράφι",
       "fieldName": "Όνομα Χωραφιού",
-      "areaInMeters": "Μ.Μ.",
+      "areaInMeters": "Έκταση",
       "cropName": "Καλλιέργεια",
       "landUnit": "Μονάδα"
     }

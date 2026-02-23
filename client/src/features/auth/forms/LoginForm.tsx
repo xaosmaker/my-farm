@@ -32,10 +32,14 @@ export default function LoginForm() {
   });
 
   async function onSubmit(data: LoginSchema) {
+    //TODO: temp fix before refactor the server
+    const intl = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     const res = await signIn("credentials", {
       redirect: false,
       email: data.email,
       password: data.password,
+      intl,
     });
 
     if (res?.error) {

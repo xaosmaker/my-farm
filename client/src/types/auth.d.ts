@@ -11,6 +11,8 @@ declare module "next-auth" {
     validity: number;
     farmId: number;
     farmName: string;
+    //TODO: TEMP FIX
+    intl: string;
   }
 
   export interface session {
