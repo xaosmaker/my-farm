@@ -1,4 +1,4 @@
-import { DateSTR } from "@/types/genetalTypes";
+import { DateSTR } from "@/types/globalTypes";
 
 interface BaseField {
   id: number;

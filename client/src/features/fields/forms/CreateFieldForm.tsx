@@ -18,9 +18,8 @@ import ControlledInput from "@/components/ControlledInput";
 import ServerError from "@/components/ServerError";
 import { fieldSchema, FieldSchema } from "../fieldSchema";
 import { useTranslations } from "next-intl";
-import { MUnit } from "@/types/genetalTypes";
 import { Field as UserField } from "../fieldTypes";
-import { UserSettings } from "@/types/globalTypes";
+import { MUnit, UserSettings } from "@/types/globalTypes";
 
 export default function CreateFieldForm({
   userSettings,
