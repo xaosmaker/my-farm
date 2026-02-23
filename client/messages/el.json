@@ -4,7 +4,10 @@
     "hectares": "Εκτάρια",
     "stremata": "Στρέμματα",
     "false": "Όχι",
-    "true": "Ναι"
+    "true": "Ναι",
+    "KG": "Κιλά",
+    "L": "Λίτρα",
+    "piece": "Τεμάχιο"
   },
   "SupplyTypes": {
     "chemicals": "Φάρμακα",

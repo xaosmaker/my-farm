@@ -4,7 +4,10 @@
     "hectares": "Hectares",
     "stremata": "Stremata",
     "false": "No",
-    "true": "Yes"
+    "true": "Yes",
+    "KG": "KG",
+    "L": "Litres",
+    "piece": "Piece"
   },
   "SupplyTypes": {
     "chemicals": "Chemicals",
