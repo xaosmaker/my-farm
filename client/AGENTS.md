@@ -6,22 +6,24 @@ This document provides coding guidelines and project information for agentic age
 
 **Type**: Next.js 16.1.6 application with TypeScript  
 **Stack**: React 19.2.3, Tailwind CSS 4, Vitest, ESLint, Prettier  
-**Features**: NextAuth.js authentication, i18n (next-intl), shadcn/ui components
+**Features**: NextAuth.js authentication, i18n (next-intl), shadcn/ui components  
+**Domain**: Agricultural farm management system (farm, fields, seasons, supplies, settings)
 
 ## Tech Stack
 - **Framework**: Next.js 16.1.6 (App Router)
-- **Language**: TypeScript 5
+- **Language**: TypeScript 5 (strict mode enabled)
 - **UI**: Tailwind CSS 4, shadcn/ui, Radix UI primitives
-- **Forms**: React Hook Form + Zod
-- **Auth**: next-auth 5.0.0-beta.30
+- **Forms**: React Hook Form + Zod (v4)
+- **Auth**: next-auth 5.0.0-beta.30 (JWT-based sessions)
 - **Styling**: class-variance-authority with cn() utility for tailwind-merge
-- **Testing**: Vitest + @testing-library/react
+- **Testing**: Vitest + @testing-library/react (V8 coverage provider)
 - **Font**: next/font with Geist
+- **Notifications**: sonner
+- **Tables**: @tanstack/react-table
 
 ## Build/Lint/Test Commands
-we use docker container the only commands you can run is
-- pnpm lint
-- pnpm check
+
+We use Docker container - only these commands are available:
 
 ```bash
 # Type checking
@@ -30,8 +32,12 @@ pnpm check
 # Linting
 pnpm lint
 
-# Testing
+# Testing - all tests
 pnpm test
+
+# Testing - single test file
+pnpm test -- --watch test-file-name.test.tsx
+pnpm test -- --testNamePattern="test name"
 ```
 
 ## Code Style Guidelines
@@ -43,28 +49,30 @@ pnpm test
 - **Target**: ES2017 with DOM and ESNext libraries
 - **JSX**: react-jsx (new transform)
 - **Module resolution**: bundler mode
+- **Never use `any` type** - always use explicit types or `unknown`
 
 ### File Organization
 
-- Features organized in `src/features/` directory
+- Features organized in `src/features/*/` (e.g., `auth`, `farm`, `fields`, `seasons`, `supplies`, `settings`)
 - Components in `src/components/` (reusable UI)
-- Shared utilities in `src/lib/`
+- Shared utilities in `src/lib/` (e.g., `baseFetch.ts`, `serverErrorDTO.ts`, `auth.ts`)
 - Types defined in `src/types/` or alongside features
 - Tests in `__tests__/*.test.tsx` with mocks in `__mocks__/`
+- Schemas in `src/features/*/schemas/`
 
 ### Naming Conventions
 
-- **Files**: PascalCase for components (e.g., `BaseForm.tsx`), camelCase for utilities (e.g., `utils.ts`)
-- **Schemas**: camelCase (e.g., `loginSchema.ts`)
-- **Actions**: camelCase with action suffix (e.g., `createFarmAction`)
-- **Types**: PascalCase with type suffix (e.g., `LoginSchema`, `Field`)
+- **Files**: PascalCase for components (e.g., `BaseForm.tsx`), camelCase for utilities (e.g., `utils.ts`, `authActions.ts`)
+- **Schemas**: camelCase with "Schema" suffix (e.g., `loginSchema.ts`, `fieldSchema.ts`)
+- **Actions**: camelCase with "Action" suffix (e.g., `createFarmAction`, `updateFieldAction`)
+- **Types**: PascalCase with descriptive suffix (e.g., `LoginSchema`, `Field`, `FieldResponse`, `Season`)
 - **Test files**: `*.test.tsx`
 
 ### Component Patterns
 
 - Use `"use client"` at top for client components
 - Prefer functional components with explicit prop typing
-- Use React hooks properly (React.* for built-ins like `useRef`, `useState`)
+- Use React hooks properly (`React.useRef`, `React.useState` or destructured)
 - Import React from 'react' or use implicit import via JSX
 
 ### Form Handling
@@ -74,6 +82,46 @@ pnpm test
 - Use `zodResolver` from `@hookform/resolvers/zod`
 - Validation mode: `mode: "onChange"`
 - Custom input components: `ControlledInput`, `ControlledPasswordInput`, `ControlledSelect`
+- For server actions with forms, pass Zod schema type as formData parameter
+
+### API Error Handling
+
+The API returns consistent error schema:
+
+```json
+{
+  "errors": [
+    {
+      "message": "Error message",
+      "appCode": "error_code_key",
+      "meta": { "key": "value" } | null
+    }
+  ]
+}
+```
+
+- Use `serverErrorDTO()` from `src/lib/serverErrorDTO.ts` to parse server errors
+- `appCode` maps to translation keys in `messages/*.json`
+- `meta` contains parameters for translation (e.g., `{ min: 10 }`, `{ name: "email" }`)
+- Error messages use `useTranslations("Global.Error")` or `getTranslations("Global.Error")`
+
+### Form Error Handling
+
+- Zod schemas define validation errors via translation function `t` from `useTranslations`
+- Form-level errors: use `setError("root", { message })`
+- Field errors: return from Zod schema or via `fieldState.error`
+- Field names in error messages use `t("required_field", { name: "fieldName" })`
+
+### Server Actions
+
+- Mark with `"use server"` directive at top
+- Use `baseFetch()` from `src/lib/baseFetch.ts` for API calls (handles auth token automatically)
+- Return `{ success: boolean, errors?: ErrorDTO[] }` or `redirect()` for successful mutations
+- Use `revalidatePath()` after mutations to invalidate cache
+- For create/update actions that redirect, return `redirect()` directly on success
+- Convert string fields to proper types before sending to API:
+  - `parseFloat()` for area/number fields
+  - `parseInt()` for ID/crop fields
 
 ### Authentication
 
@@ -82,13 +130,7 @@ pnpm test
 - Protected routes use `getAuth()` helper that redirects to `/login`
 - Server actions use `auth()` for server-side session retrieval
 - Access token stored in `session.user.access`
-
-### Error Handling
-
-- Zod schemas define validation errors via translation function `t` from `useTranslations`
-- Server errors parsed via `serverErrorDTO` from `src/lib/serverErrorDTO.ts`
-- Form-level errors: use `setError("root", { message })`
-- Field errors: return from Zod schema or via `fieldState.error`
+- Auth routes in `(auth)` route group, protected routes in `(protected)` route group
 
 ### Styling
 
@@ -104,17 +146,19 @@ pnpm test
 - Locales configured: `en`, `el`
 - Messages files: `messages/en.json`, `messages/el.json`
 - Use `useTranslations()` in client components
-- Use `getTranslations()` in server components
-- Parameterized messages with `{ name }` syntax in JSON
+- Use `getTranslations()` in server components (e.g., in server actions)
+- Parameterized messages with `{ key }` syntax in JSON
+- Error translation keys under `Global.Error` namespace
 
 ### Testing
 
 - **Framework**: Vitest with jsdom
 - **Testing library**: @testing-library/react
 - **Coverage**: V8 provider enabled
-- Mock setup in `__tests__/authSetupEnv.ts`
+- Mock setup in `__tests__/authSetupEnv.ts` (mocks auth and serverUrl)
 - Mocks in `__mocks__/next-auth/react.ts` and `__mocks__/next/navigation.ts`
 - Test file pattern: `*.test.tsx`
+- Run single test: `pnpm test -- --watch filename.test.tsx` or `--testNamePattern="pattern"`
 
 ### Import Organization
 
@@ -123,13 +167,6 @@ pnpm test
 3. Third-party libraries
 4. Feature/module imports (from `@/`)
 5. Component-specific imports
-
-### Server Actions
-
-- Mark with `"use server"` directive
-- Use `baseFetch()` for API calls (handles auth token)
-- Return `{ success: boolean, errors?: ErrorDTO[] }` or `redirect()`
-- Revalidate paths with `revalidatePath()` after mutations
 
 ### Layout Structure
 
@@ -140,7 +177,7 @@ pnpm test
 
 ### State Management
 
-- Server State: React Query alternatives not used; fetch directly
+- Server State: Fetch directly (no React Query)
 - Client State: React hooks, custom hooks in `src/hooks/`
 - Form State: React Hook Form
 - Theme: next-themes provider
@@ -149,12 +186,42 @@ pnpm test
 
 - Server URL: `SERVER_URL` from `src/lib/serverUrl.ts`
 - Storage keys: `localStorageUtils.tsx` in `src/lib/`
+- Utility functions: `cn()`, `serverErrorDTO()`, `baseFetch()`
+
+## API Guidelines
+
+Main API endpoints:
+
+- `/api/users/login`, `/api/users/create` - Authentication
+- `/api/farms` - Farm management (GET, POST)
+- `/api/fields` - Field management (GET, POST, PATCH, DELETE)
+- `/api/seasons` - Season management (GET, POST, PATCH, DELETE)
+- `/api/supplies` - Supply management (GET, POST, PATCH, DELETE)
+- `/api/settings` - User settings (GET, POST)
+
+Common error codes:
+- `required_field` - Missing required field (meta: `{ name: "fieldName" }`)
+- `invalid_email` - Invalid email format
+- `invalid_password` - Password requirements not met (meta: `{ min: "8" }`)
+- `unauthorized_error` - Authentication failed
+- `exist_error` - Resource already exists (meta: `{ name: "Resource" }`)
+- `not_found_error` - Resource not found (meta: `{ name: "Resource" }`)
+- `invalid_num_space_char` - Field must contain only letters, numbers, spaces
+- `invalid_supply_type` - Invalid enum value (meta: `{ oneof: "val1, val2" }`)
+- `invalid_season_start_date` / `invalid_season_finish_date` - Date validation (meta: `{ date: "ISO", dateLimit: "greater"|"lower" }`)
+- `invalid_season_area` - Area validation (meta: `{ area: "0.00" }`)
+- `invalid_url_param` - Invalid ID in URL path
 
 ## Rules
-- never run git commands
-- never run any pnpm command
-- never install any package
-- and never use the type any
+
+- Never run git commands
+- Never run any pnpm command (install, update, etc.)
+- Never install any package
+- Never use the type `any`
+- Always parse server errors using `serverErrorDTO()`
+- Always use `baseFetch()` for authenticated API calls
+- Always convert numeric fields to proper types (`parseFloat`, `parseInt`) before API calls
+- Use `revalidatePath()` after mutations
 
 ## Existing Linter Configuration
 
@@ -166,3 +233,6 @@ pnpm test
 - **Prettier**: config in `.prettierrc`
   - Plugin: `prettier-plugin-tailwindcss`
 
+## React Compiler
+
+- Using babel-plugin-react-compiler (1.0.0) - automatically optimizes components
