@@ -1,4 +1,9 @@
-import { DateSTR } from "./genetalTypes";
+import { Messages } from "next-intl";
+
+export type DateSTR = string;
+
+export type MUnit = keyof Messages["Units"];
+export type MSupplyType = keyof Messages["SupplyTypes"];
 
 export interface UserSettings {
   id: number;

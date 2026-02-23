@@ -36,7 +36,9 @@
       "exist_error": "Το {name} υπάρχει ήδη. Παρακαλώ επιλέξτε ένα διαφορετικό όνομα.",
       "invalid_number": "Δώστε έναν έγκυρο αριθμό για το πεδίο",
       "invalid_min": "Ο αριθμός πρέπει να είναι μεγαλύτερος από {min}",
-      "not_found_error": "Το {name} δεν βρέθηκε"
+      "not_found_error": "Το {name} δεν βρέθηκε",
+      "invalid_supply_type": "Αυτό πρέπει να περιέχει ένα από τα ακόλουθα: {oneof}",
+      "invalid_measurement_unit": "Αυτό πρέπει να περιέχει ένα από τα ακόλουθα: {oneof}"
     },
     "Language": {
       "en": "Αγγλικά",
@@ -49,8 +51,10 @@
       "dashboard": "Πίνακας Ελέγχου",
       "field": "Χωράφια",
       "settings": "Ρυθμίσεις",
-      "Seasons": "Σεζόν",
-      "supplies": "Εφόδια"
+      "seasons": "Σεζόν",
+      "supplies": "Εφόδια",
+      "createSupplies": "Δημιουργία Εφοδίων",
+      "updataSupplies": "Επεξεργασία Εφοδίων"
     },
     "Form": {
       "prevPage": "Μετάβαση στην προηγούμενη σελίδα",

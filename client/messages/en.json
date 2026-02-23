@@ -36,7 +36,9 @@
       "exist_error": "{name} already exists. Please choose a different name.",
       "invalid_number": "Provide a valid number for the field",
       "invalid_min": "The number should be greater than {min}",
-      "not_found_error": "The resource {name} not found "
+      "not_found_error": "The resource {name} not found ",
+      "invalid_supply_type": "This should contain one of {oneof}",
+      "invalid_measurement_unit": "This should contain one of {oneof}"
     },
     "Language": {
       "en": "English",
@@ -50,7 +52,9 @@
       "field": "Fields",
       "settings": "Settings",
       "seasons": "Seasons",
-      "supplies": "Supplies"
+      "supplies": "Supplies",
+      "createSupplies": "Create Supply",
+      "updataSupplies": "Update Supply"
     },
     "Form": {
       "prevPage": "Go to previous page",
