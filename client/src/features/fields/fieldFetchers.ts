@@ -1,7 +1,7 @@
 import { baseFetch } from "@/lib/baseFetch";
 import { Field } from "./fieldTypes";
 import { getTranslations } from "next-intl/server";
-import { MUnit } from "@/types/genetalTypes";
+import { MUnit } from "@/types/globalTypes";
 
 export async function getFields(translate: boolean = true) {
   const res = await baseFetch({
