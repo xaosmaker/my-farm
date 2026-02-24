@@ -60,13 +60,18 @@
       "home": "Home",
       "dashboard": "Dashboard",
       "field": "Fields",
+      "createField": "Create Field",
+      "updateField": "Update Field",
       "settings": "Settings",
       "seasons": "Seasons",
       "createSeason": "Create Season",
       "updateSeason": "Update Season",
       "supplies": "Supplies",
       "createSupplies": "Create Supply",
-      "updateSupplies": "Update Supply"
+      "updateSupplies": "Update Supply",
+      "createFarm": "Create Farm",
+      "verifyEmail": "Verify Email",
+      "resendVerifyEmail": "Resend Verification"
     },
     "Form": {
       "prevPage": "Go to previous page",

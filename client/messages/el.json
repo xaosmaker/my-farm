@@ -60,13 +60,18 @@
       "home": "Αρχική",
       "dashboard": "Πίνακας Ελέγχου",
       "field": "Χωράφια",
+      "createField": "Δημιουργία Χωραφιού",
+      "updateField": "Επεξεργασία Χωραφιού",
       "settings": "Ρυθμίσεις",
       "seasons": "Σεζόν",
       "createSeason": "Δημιουργία Σεζόν",
       "updateSeason": "Επεξεργασία Σεζόν",
       "supplies": "Εφόδια",
       "createSupplies": "Δημιουργία Εφοδίων",
-      "updateSupplies": "Επεξεργασία Εφοδίων"
+      "updateSupplies": "Επεξεργασία Εφοδίων",
+      "createFarm": "Δημιουργία Φάρμας",
+      "verifyEmail": "Επαλήθευση Email",
+      "resendVerifyEmail": "Επαναποστολή Επαλήθευσης"
     },
     "Form": {
       "prevPage": "Μετάβαση στην προηγούμενη σελίδα",
