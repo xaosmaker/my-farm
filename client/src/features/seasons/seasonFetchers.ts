@@ -89,10 +89,16 @@ export async function getSeason(
           },
         );
       }
+      data.createdAt = new Date(data.createdAt).toLocaleDateString(locale, {
+        timeZone: timezone,
+      });
+      data.updatedAt = new Date(data.updatedAt).toLocaleDateString(locale, {
+        timeZone: timezone,
+      });
     }
 
     return data;
   }
   const t = await getTranslations("Global.Error");
-  throw new Error(t("not_found_error", { name: "supply" }));
+  throw new Error(t("not_found_error", { name: "season" }));
 }

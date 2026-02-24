@@ -23,17 +23,36 @@ export default function SeasonsTable({
     {
       accessorKey: "id",
       header: t("id"),
+
+      cell: ({ row: { original } }) => (
+        <Link
+          href={`/seasons/${original.id}`}
+          className="font-medium hover:underline"
+        >
+          {original.id}
+        </Link>
+      ),
     },
     {
       accessorKey: "name",
       header: t("name"),
+      cell: ({ row: { original } }) => (
+        <Link
+          href={`/seasons/${original.id}`}
+          className="font-medium hover:underline"
+        >
+          {original.name}
+        </Link>
+      ),
     },
 
     {
       accessorKey: "fieldName",
       header: t("fieldName"),
       cell: ({ row: { original } }) => (
-        <Link href={`/fields/${original.id}`}>{original.fieldName}</Link>
+        <Link href={`/fields/${original.fieldId}`} className="hover:underline">
+          {original.fieldName}
+        </Link>
       ),
     },
     {
