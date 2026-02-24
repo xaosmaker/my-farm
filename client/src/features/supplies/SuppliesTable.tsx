@@ -8,6 +8,7 @@ import UpdateItem from "@/components/UpdateItem";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteSupplyAction } from "./suppliesActions";
 import { Supply } from "@/types/globalTypes";
+import Link from "next/link";
 
 export default function SuppliesTable({
   supplyData,
@@ -19,10 +20,26 @@ export default function SuppliesTable({
     {
       accessorKey: "id",
       header: t("id"),
+      cell: ({ row: { original } }) => (
+        <Link
+          href={`/supplies/${original.id}`}
+          className="font-medium hover:underline"
+        >
+          {original.id}
+        </Link>
+      ),
     },
     {
       accessorKey: "name",
       header: t("name"),
+      cell: ({ row: { original } }) => (
+        <Link
+          href={`/supplies/${original.id}`}
+          className="font-medium hover:underline"
+        >
+          {original.name}
+        </Link>
+      ),
     },
     {
       accessorKey: "nickname",

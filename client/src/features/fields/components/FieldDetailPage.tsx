@@ -69,6 +69,7 @@ export default function FieldDetailPage({
           label={field.name}
           formAction={deleteFieldAction}
           id={field.id.toString()}
+          redirectPath="/fields"
         />
       </DetailCard>
     </DetailPage>
