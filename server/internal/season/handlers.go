@@ -119,14 +119,10 @@ func (q seasonsQueries) updateSeason(w http.ResponseWriter, r *http.Request) {
 		}
 
 		startSeason := season.StartSeason
-		fmt.Println("change to req.body", startSeason, seasonReqBoby.StartSeason)
 		if seasonReqBoby.StartSeason != nil {
-			fmt.Println("change to req.body")
 			startSeason = *util.UnsafeStrToTimeConverter(seasonReqBoby.StartSeason)
 		}
-		fmt.Println("enter here", startSeason, reqFinishSeasonTime)
 		if startSeason.After(reqFinishSeasonTime) {
-			fmt.Println("continue")
 			httpx.ServerError(400, httpx.NewErrMessage(fmt.Sprintf("The Date to finish season must be greater of the last job: greater Than %v", startSeason.Format(time.RFC3339)),
 				apperror.INVALID_SEASON_FINISH_DATE, httpx.Meta{"date": startSeason.Format(time.RFC3339), "dateLimit": "greater"},
 			))(w, r)
