@@ -50,6 +50,7 @@ pnpm test -- --testNamePattern="test name"
 - **JSX**: react-jsx (new transform)
 - **Module resolution**: bundler mode
 - **Never use `any` type** - always use explicit types or `unknown`
+- **Use `undefined` over `null`** for optional values - more reliable with TypeScript
 
 ### File Organization
 
@@ -81,8 +82,9 @@ pnpm test -- --testNamePattern="test name"
 - Schemas located in `src/features/*/schemas/*.ts`
 - Use `zodResolver` from `@hookform/resolvers/zod`
 - Validation mode: `mode: "onChange"`
-- Custom input components: `ControlledInput`, `ControlledPasswordInput`, `ControlledSelect`
-- For server actions with forms, pass Zod schema type as formData parameter
+- Custom input components: `ControlledInput`, `ControlledPasswordInput`, `ControlledSelect`, `ControlledDateTimePicker`
+- Use `required` prop to display asterisk (*) for mandatory fields
+- Display errors using `FieldError` component from `@/components/ui/field`
 
 ### API Error Handling
 
@@ -115,13 +117,19 @@ The API returns consistent error schema:
 ### Server Actions
 
 - Mark with `"use server"` directive at top
-- Use `baseFetch()` from `src/lib/baseFetch.ts` for API calls (handles auth token automatically)
+- Use `baseFetch()` from `src/lib/baseFetch.ts` for authenticated API calls (handles auth token automatically)
+- Use direct `fetch()` for unauthenticated requests (register, verify, farm create)
 - Return `{ success: boolean, errors?: ErrorDTO[] }` or `redirect()` for successful mutations
 - Use `revalidatePath()` after mutations to invalidate cache
 - For create/update actions that redirect, return `redirect()` directly on success
+- For delete actions, return `{ success: true, errors: undefined }` and let the component handle redirect
 - Convert string fields to proper types before sending to API:
   - `parseFloat()` for area/number fields
   - `parseInt()` for ID/crop fields
+- Parameter naming conventions:
+  - Use `_previousState: unknown` when returning success/error state
+  - Use `_prevState: unknown` or `_previousState: unknown | undefined` when returning `undefined`
+- For partial updates (only dirty fields), use `formData: unknown` and validate manually
 
 ### Authentication
 
@@ -149,6 +157,12 @@ The API returns consistent error schema:
 - Use `getTranslations()` in server components (e.g., in server actions)
 - Parameterized messages with `{ key }` syntax in JSON
 - Error translation keys under `Global.Error` namespace
+- Use ICU select syntax for conditional translations (e.g., `{dateLimit, select, greater {after} lower {before}}`)
+- Page metadata keys in `Global.metaData`:
+  - Basic: `login`, `register`, `home`, `dashboard`, `field`, `settings`, `seasons`, `supplies`
+  - Create: `createField`, `createSeason`, `createSupplies`, `createFarm`
+  - Update: `updateField`, `updateSeason`, `updateSupplies`
+  - Auth: `verifyEmail`, `resendVerifyEmail`
 
 ### Testing
 
@@ -201,16 +215,33 @@ Main API endpoints:
 
 Common error codes:
 - `required_field` - Missing required field (meta: `{ name: "fieldName" }`)
+- `required_generic` - Generic required field
 - `invalid_email` - Invalid email format
 - `invalid_password` - Password requirements not met (meta: `{ min: "8" }`)
+- `invalid_password_length` - Password too short
+- `invalid_password_cap_letter` - Password missing capital letter
+- `invalid_password_number` - Password missing number
+- `password_mismatch_error` - Passwords don't match
+- `email_exist_error` - Email already registered
 - `unauthorized_error` - Authentication failed
+- `invalid_verification_token` - Invalid verification token
 - `exist_error` - Resource already exists (meta: `{ name: "Resource" }`)
 - `not_found_error` - Resource not found (meta: `{ name: "Resource" }`)
 - `invalid_num_space_char` - Field must contain only letters, numbers, spaces
-- `invalid_supply_type` - Invalid enum value (meta: `{ oneof: "val1, val2" }`)
-- `invalid_season_start_date` / `invalid_season_finish_date` - Date validation (meta: `{ date: "ISO", dateLimit: "greater"|"lower" }`)
-- `invalid_season_area` - Area validation (meta: `{ area: "0.00" }`)
+- `invalid_number` - Invalid number format
+- `invalid_min` - Number below minimum value (meta: `{ min: number }`)
+- `invalid_supply_type` - Invalid supply type (meta: `{ oneof: "val1, val2" }`)
+- `invalid_measurement_unit` - Invalid measurement unit (meta: `{ oneof: "val1, val2" }`)
+- `invalid_land_unit` - Invalid land unit (meta: `{ oneof: "val1, val2" }`)
+- `invalid_season_start_date` - Season start date validation (meta: `{ date: "ISO", dateLimit: "greater"|"lower" }`)
+- `invalid_season_finish_date` - Season finish date validation (meta: `{ date: "ISO", dateLimit: "greater"|"lower" }`)
+- `invalid_season_area` - No area to cultivate (meta: `{ area: "0.00" }`)
+- `season_finish_error` - Cannot edit finished season
+- `invalid_timestamp` - Invalid date format (meta: `{ format: "ISO" }`)
 - `invalid_url_param` - Invalid ID in URL path
+
+Common meta keys for not_found_error:
+- `Farm`, `Field`, `Season`, `Supply`
 
 ## Rules
 
