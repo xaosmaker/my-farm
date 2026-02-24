@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 
 export function seasonSchema(t: TFnError, fieldName: string) {
   return z.object({
-    name: z.string().min(1, t("required_field", { name: fieldName })),
+    name: z.string().nonempty(t("required_field", { name: fieldName })),
     startSeason: z.date(t("required_generic")),
     finishSeason: z.date().optional(),
     areaInMeters: z
