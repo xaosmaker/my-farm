@@ -18,3 +18,22 @@ export default async function FarmHomePage() {
     </div>
   );
 }
+// Great! A dashboard for a farm management system. Here are some ideas:
+//
+//      Option 1: Stats Cards
+//      - Total Fields count
+//      - Total Area (sum of all fields)
+//      - Active Seasons (currently running)
+//      - Total Supplies
+//
+//      Option 2: Farm Info + Quick Actions
+//      - Farm name card
+//      - Quick links: Add Field, Add Season, Add Supply
+//      - Recent items
+//
+//      Option 3: Full Dashboard
+//      - Stats cards row
+//      - Farm info card
+//      - Active seasons overview
+//      - Recent fields list
+//
