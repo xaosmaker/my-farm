@@ -43,7 +43,7 @@ export default function ResendVerForm() {
       isPending={isPending}
     >
       <form id="resendVerEmail" onSubmit={handleSubmit(onFormSubmit)}>
-        <ControlledInput control={control} name="email" label="email" />
+        <ControlledInput control={control} name="email" label="email" required />
         {state?.errors && <ServerError errors={state?.errors} />}
 
         {state?.success && (

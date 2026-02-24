@@ -68,7 +68,7 @@ export default function CreateFieldForm({
     >
       <form id="create-field-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
-          <ControlledInput control={control} name="name" label={t("name")} />
+          <ControlledInput control={control} name="name" label={t("name")} required />
 
           <ControlledInput
             control={control}
@@ -79,6 +79,7 @@ export default function CreateFieldForm({
             control={control}
             name="areaInMeters"
             label={`${t("areaInMeters")} ${ut(userSettings.landUnit as MUnit)}`}
+            required
           />
 
           <Controller
