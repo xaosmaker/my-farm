@@ -9,6 +9,7 @@ import UpdateItem from "@/components/UpdateItem";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteSeasonAction } from "./seasonActions";
 import { Season } from "@/types/globalTypes";
+import Link from "next/link";
 
 export default function SeasonsTable({
   seasonData,
@@ -31,6 +32,9 @@ export default function SeasonsTable({
     {
       accessorKey: "fieldName",
       header: t("fieldName"),
+      cell: ({ row: { original } }) => (
+        <Link href={`/fields/${original.id}`}>{original.fieldName}</Link>
+      ),
     },
     {
       accessorKey: "areaInMeters",

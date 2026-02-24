@@ -8,6 +8,7 @@ import EllipsisMenu from "@/components/EllipsisMenu";
 import UpdateItem from "@/components/UpdateItem";
 import DeleteItem from "@/components/DeleteItem";
 import { deleteFieldAction } from "./fieldActions";
+import Link from "next/link";
 
 export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
   const t = useTranslations("Fields.Table");
@@ -15,10 +16,16 @@ export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
     {
       accessorKey: "id",
       header: t("id"),
+      cell: ({ row: { original } }) => (
+        <Link href={`/fields/${original.id}`}>{original.id}</Link>
+      ),
     },
     {
       accessorKey: "name",
       header: t("name"),
+      cell: ({ row: { original } }) => (
+        <Link href={`/fields/${original.id}`}>{original.name}</Link>
+      ),
     },
     {
       accessorKey: "fieldLocation",
