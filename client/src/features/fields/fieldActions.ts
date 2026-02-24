@@ -80,14 +80,13 @@ export async function updateFieldAction(
 }
 
 export async function deleteFieldAction(_prevState: unknown, fieldId: string) {
-  console.log(fieldId, "delete action");
   const res = await baseFetch({
     path: `/api/fields/${fieldId}`,
     method: "DELETE",
     body: undefined,
   });
   if (res.ok) {
-    revalidatePath("/api/field:");
+    revalidatePath("/fields");
     return { success: true, errors: undefined };
   }
   const t = await getTranslations("Global.Error");

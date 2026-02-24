@@ -13,7 +13,8 @@ export async function updateSettingsAction(
   const t = await getTranslations("Global.Error");
   const res = await updateSettings(formData);
   if (res.ok) {
-    return revalidatePath("/settings");
+    revalidatePath("/settings");
+    return { success: true, errors: undefined };
   }
   const data = await res.json();
   return { success: false, errors: serverErrorDTO(data, t) };

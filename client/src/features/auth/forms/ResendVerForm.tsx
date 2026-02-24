@@ -15,9 +15,10 @@ import { resendVerifyEmailAction } from "../authActions";
 import ServerError from "@/components/ServerError";
 
 export default function ResendVerForm() {
+  const et = useTranslations("Global.Error");
   const { control, handleSubmit } = useForm<ResendVerCodeSchema>({
     mode: "all",
-    resolver: zodResolver(resendVerCodeSchema),
+    resolver: zodResolver(resendVerCodeSchema(et)),
     defaultValues: {
       email: "",
     },

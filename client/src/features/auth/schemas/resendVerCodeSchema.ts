@@ -1,7 +1,10 @@
+import { TFnError } from "@/types/TFnError";
 import { z } from "zod/v4";
 
-export const resendVerCodeSchema = z.object({
-  email: z.email("invalid_email"),
-});
+export function resendVerCodeSchema(t: TFnError) {
+  return z.object({
+    email: z.email(t("invalid_email")),
+  });
+}
 
-export type ResendVerCodeSchema = z.infer<typeof resendVerCodeSchema>;
+export type ResendVerCodeSchema = z.infer<ReturnType<typeof resendVerCodeSchema>>;

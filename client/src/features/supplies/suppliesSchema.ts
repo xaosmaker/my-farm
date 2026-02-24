@@ -9,12 +9,12 @@ export function suppliesSchema(t: TFnError, fieldName: string) {
     supplyType: z
       .string()
       .refine((val) => (SUPPLIES_TYPES as readonly string[]).includes(val), {
-        error: "invalid_supply_type",
+        error: t("invalid_supply_type", { oneof: SUPPLIES_TYPES.join(", ") }),
       }),
     measurementUnit: z
       .string()
       .refine((val) => (MEASUREMENT_UNITS as readonly string[]).includes(val), {
-        error: "invalid_measurement_unit",
+        error: t("invalid_measurement_unit", { oneof: MEASUREMENT_UNITS.join(", ") }),
       }),
   });
 }
