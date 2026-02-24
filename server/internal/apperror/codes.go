@@ -38,10 +38,12 @@ const (
 	INVALID_PASSWORD           ErrorCode = "invalid_password"           // min: min length of char *but we have to provide the other val
 	PASSWORD_MISMATCH_ERROR    ErrorCode = "password_mismatch_error"    //
 	// job errors
-	INVALID_JOB_TYPE ErrorCode = "invalid_job_type" // oneof: a string with the values we expect
+	INVALID_JOB_TYPE  ErrorCode = "invalid_job_type"  // oneof: a string with the values we expect
+	INVALID_JOB_START ErrorCode = "invalid_job_start" // max : start of job greater than date
 
 	// supply errors
 	INVALID_SUPPLY_TYPE ErrorCode = "invalid_supply_type" // oneof: a string with the values we expect
+
 	// measuremet unit errors
 	INVALID_MEASUREMENT_UNIT ErrorCode = "invalid_measurement_unit" // oneof: a string with the values we expect
 	// land unit
