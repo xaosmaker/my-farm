@@ -90,17 +90,19 @@ export default function CreateSeasonForm({
     >
       <form id="create-season-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
-          <ControlledInput control={control} name="name" label={t("name")} />
+          <ControlledInput control={control} name="name" label={t("name")} required />
 
           <ControlledInput
             control={control}
             name="areaInMeters"
             label={ut(userSettings.landUnit as MUnit)}
+            required
           />
           <ControlledDateTimePicker
             label={t("startSeason")}
             name="startSeason"
             control={control}
+            required
           />
           {season && (
             <ControlledDateTimePicker
@@ -116,6 +118,7 @@ export default function CreateSeasonForm({
             control={control}
             name="crop"
             label={t("cropName")}
+            required
           />
         </FieldGroup>
         {state?.errors && <ServerError errors={state.errors} />}

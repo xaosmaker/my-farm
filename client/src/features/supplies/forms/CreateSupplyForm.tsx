@@ -60,7 +60,7 @@ export default function CreateSupplyForm({
     >
       <form id="create-supply-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
-          <ControlledInput control={control} name="name" label={t("name")} />
+          <ControlledInput control={control} name="name" label={t("name")} required />
 
           <ControlledInput
             control={control}
@@ -77,6 +77,7 @@ export default function CreateSupplyForm({
               value: type,
               label: st(type as MSupplyType),
             }))}
+            required
           />
 
           <ControlledSelect
@@ -88,6 +89,7 @@ export default function CreateSupplyForm({
               value: unit,
               label: ut(unit as MUnit),
             }))}
+            required
           />
         </FieldGroup>
         {state?.errors && <ServerError errors={state.errors} />}
