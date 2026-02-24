@@ -19,7 +19,9 @@
     "Error": {
       "Meta": {
         "Farm": "Farm name",
-        "Field": "Field name"
+        "Field": "Field name",
+        "Season": "Season",
+        "Supply": "Supply"
       },
       "invalid_email": "Enter a valid email",
       "wrongCred": "Email or password don't match",
@@ -38,7 +40,15 @@
       "invalid_min": "The number should be greater than {min}",
       "not_found_error": "The resource {name} not found ",
       "invalid_supply_type": "This should contain one of {oneof}",
-      "invalid_measurement_unit": "This should contain one of {oneof}"
+      "invalid_measurement_unit": "This should contain one of {oneof}",
+      "unauthorized_error": "Unauthorized",
+      "invalid_url_param": "Invalid URL parameter",
+      "invalid_season_finish_date": "The season finish date must be {dateLimit, select, greater {after} lower {before} than {date}}",
+      "invalid_season_start_date": "The season start date must be {dateLimit, select, greater {after} lower {before} than {date}}",
+      "season_finish_error": "Cannot edit a finished season",
+      "invalid_season_area": "No area to cultivate, remaining area: {area}",
+      "invalid_timestamp": "Date must be in format {format}",
+      "invalid_land_unit": "This should contain one of {oneof}"
     },
     "Language": {
       "en": "English",
