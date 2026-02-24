@@ -1,4 +1,10 @@
 {
+  "DetailPage": {
+    "info": "Informations",
+    "systemInfo": "System Info",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At"
+  },
   "Units": {
     "m2": "Square Meters",
     "hectares": "Hectares",
