@@ -1,5 +1,5 @@
 import { baseFetch } from "@/lib/baseFetch";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { MSupplyType, MUnit, Supply } from "@/types/globalTypes";
 
 export async function getSupplies(translate: boolean = true) {
@@ -22,7 +22,11 @@ export async function getSupplies(translate: boolean = true) {
   return data;
 }
 
-export async function getSupply(supplyId: string, translate: boolean = true) {
+export async function getSupply(
+  supplyId: string,
+  translate: boolean = false,
+  timezone: string = "",
+) {
   const res = await baseFetch({
     path: `/api/supplies/${supplyId}`,
     method: "GET",
@@ -32,10 +36,21 @@ export async function getSupply(supplyId: string, translate: boolean = true) {
     const data: Supply = await res.json();
 
     if (translate) {
+      if (timezone === "") {
+        throw new Error("intl should be passed for translation");
+      }
       const t = await getTranslations("SupplyTypes");
       const ut = await getTranslations("Units");
+      const locale = await getLocale();
       data.supplyType = t(data.supplyType as MSupplyType);
       data.measurementUnit = ut(data.measurementUnit as MUnit);
+      data.createdAt = new Date(data.createdAt).toLocaleDateString(locale, {
+        timeZone: timezone,
+      });
+
+      data.updatedAt = new Date(data.updatedAt).toLocaleDateString(locale, {
+        timeZone: timezone,
+      });
     }
     return data;
   }
