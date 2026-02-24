@@ -3,9 +3,9 @@ import { DateSTR } from "@/types/globalTypes";
 interface BaseField {
   id: number;
   name: string;
-  epsg2100Boundary: undefined | Array<[number, number]>;
-  epsg4326Boundary: undefined | Array<[number, number]>;
-  mapLocation: undefined | Array<[number, number]>;
+  epsg2100Boundary: Array<[number, number]> | undefined;
+  epsg4326Boundary: Array<[number, number]> | undefined;
+  mapLocation: Array<[number, number]> | undefined;
   fieldLocation: string;
   areaInMeters: number;
   createdAt: DateSTR;

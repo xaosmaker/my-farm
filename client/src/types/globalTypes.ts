@@ -18,7 +18,7 @@ export interface Season {
   name: string;
   startSeason: DateSTR;
   finishSeason: DateSTR | undefined;
-  boundary: Array<[number, number]>;
+  boundary: Array<[number, number]> | undefined;
   areaInMeters: number;
   createdAt: DateSTR;
   updatedAt: DateSTR;
@@ -36,6 +36,6 @@ export interface Supply {
   nickname: string | undefined;
   name: string;
   measurementUnit: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DateSTR;
+  updatedAt: DateSTR;
 }
