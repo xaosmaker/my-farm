@@ -7,6 +7,14 @@ import { auth } from "@/lib/auth";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Global.metaData");
+  return {
+    title: t("verifyEmail"),
+  };
+}
 
 export default async function VerifyPage({
   params,
