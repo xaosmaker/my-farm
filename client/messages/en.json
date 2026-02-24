@@ -28,7 +28,7 @@
       "required_field": "{name} is required",
       "required_generic": "This Field is required",
       "invalid_password_length": "Password should be 8 chars and more",
-      "invalid_password_cap_letter": "Password should contain 1 cappital Letter",
+      "invalid_password_cap_letter": "Password should contain 1 capital Letter",
       "invalid_password_number": "Password should contain 1 number",
       "invalid_password": "Password should contain 1 capital letter 1 number and has min lenght {min}",
       "password_mismatch_error": "Passwords mismatch",
@@ -131,7 +131,7 @@
     "Table": {
       "id": "ID",
       "name": "Seasons",
-      "startSeason": "Start of  Season",
+      "startSeason": "Start of Season",
       "finishSeason": "Finish of Season",
       "fieldName": "Field Name",
       "areaInMeters": "Area",
