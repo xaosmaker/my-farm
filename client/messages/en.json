@@ -225,6 +225,38 @@
     "ariaLabel": "Change Land Measurement Unit",
     "success": "Settings updated successfully"
   },
+  "Landing": {
+    "hero": {
+      "headline": "Smart Farm Management Made Simple",
+      "subheadline": "Track your fields, seasons, and supplies all in one place",
+      "loginButton": "Login",
+      "signUpButton": "Sign Up"
+    },
+    "features": {
+      "title": "Everything You Need to Manage Your Farm",
+      "farms": {
+        "title": "Farms",
+        "description": "Organize all your farms in one dashboard"
+      },
+      "fields": {
+        "title": "Fields",
+        "description": "Monitor and manage every field with precision"
+      },
+      "seasons": {
+        "title": "Seasons",
+        "description": "Plan your growing seasons effectively"
+      },
+      "supplies": {
+        "title": "Supplies",
+        "description": "Keep track of inventory and expenses"
+      }
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Join thousands of farmers who trust My Farm to manage their operations",
+      "button": "Create Your Account"
+    }
+  },
   "Supplies": {
     "Table": {
       "id": "ID",
