@@ -219,6 +219,7 @@ Common error codes:
 - Never install any package
 - Never use the type `any`
 - Always parse server errors using `serverErrorDTO()`
+- Protected Routes ALWAYS use await getAuth
 - Always use `baseFetch()` for authenticated API calls
 - Always convert numeric fields to proper types (`parseFloat`, `parseInt`) before API calls
 - Use `revalidatePath()` after mutations

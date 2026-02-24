@@ -15,10 +15,10 @@ export function seasonSchema(t: TFnError, fieldName: string) {
         error: t("invalid_min", { min: 0 }),
       }),
     fieldId: z.number(),
-    crop: z.string(t("required_field")).refine((item) => parseInt(item) > 0, {
-      error: t("required_field"),
+    crop: z.string(t("required_generic")).refine((item) => parseInt(item) > 0, {
+      error: t("required_generic"),
     }),
   });
 }
 
-export type seasonSchemaType = z.infer<ReturnType<typeof seasonSchema>>;
+export type SeasonSchema = z.infer<ReturnType<typeof seasonSchema>>;

@@ -52,9 +52,11 @@
       "field": "Χωράφια",
       "settings": "Ρυθμίσεις",
       "seasons": "Σεζόν",
+      "createSeason": "Δημιουργία Σεζόν",
+      "updateSeason": "Επεξεργασία Σεζόν",
       "supplies": "Εφόδια",
       "createSupplies": "Δημιουργία Εφοδίων",
-      "updataSupplies": "Επεξεργασία Εφοδίων"
+      "updateSupplies": "Επεξεργασία Εφοδίων"
     },
     "Form": {
       "prevPage": "Μετάβαση στην προηγούμενη σελίδα",
