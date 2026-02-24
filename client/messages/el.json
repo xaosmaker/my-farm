@@ -19,7 +19,9 @@
     "Error": {
       "Meta": {
         "Farm": "Όνομα φάρμας",
-        "Field": "Όνομα χωραφιού"
+        "Field": "Όνομα χωραφιού",
+        "Season": "Σεζόν",
+        "Supply": "Εφόδιο"
       },
       "invalid_email": "Εισάγετε ένα έγκυρο email",
       "wrongCred": "Το email ή ο κωδικός πρόσβασης δεν ταιριάζουν",
@@ -38,7 +40,15 @@
       "invalid_min": "Ο αριθμός πρέπει να είναι μεγαλύτερος από {min}",
       "not_found_error": "Το {name} δεν βρέθηκε",
       "invalid_supply_type": "Αυτό πρέπει να περιέχει ένα από τα ακόλουθα: {oneof}",
-      "invalid_measurement_unit": "Αυτό πρέπει να περιέχει ένα από τα ακόλουθα: {oneof}"
+      "invalid_measurement_unit": "Αυτό πρέπει να περιέχει ένα από τα ακόλουθα: {oneof}",
+      "unauthorized_error": "Μη εξουσιοδοτημένη πρόσβαση",
+      "invalid_url_param": "Μη έγκυρη παράμετρος URL",
+      "invalid_season_finish_date": "Το τέλος της σεζόν πρέπει να είναι {dateLimit, select, greater {μετά} lower {πριν} από {date}}",
+      "invalid_season_start_date": "Η αρχή της σεζόν πρέπει να είναι {dateLimit, select, greater {μετά} lower {πριν} από {date}}",
+      "season_finish_error": "Δεν μπορείτε να επεξεργαστείτε μια ολοκληρωμένη σεζόν",
+      "invalid_season_area": "Δεν υπάρχει διαθέσιμη έκταση, υπόλοιπη έκταση: {area}",
+      "invalid_timestamp": "Η ημερομηνία πρέπει να είναι στη μορφή {format}",
+      "invalid_land_unit": "Αυτό πρέπει να περιέχει ένα από τα ακόλουθα: {oneof}"
     },
     "Language": {
       "en": "Αγγλικά",
