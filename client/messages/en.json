@@ -52,9 +52,11 @@
       "field": "Fields",
       "settings": "Settings",
       "seasons": "Seasons",
+      "createSeason": "Create Season",
+      "updateSeason": "Update Season",
       "supplies": "Supplies",
       "createSupplies": "Create Supply",
-      "updataSupplies": "Update Supply"
+      "updateSupplies": "Update Supply"
     },
     "Form": {
       "prevPage": "Go to previous page",

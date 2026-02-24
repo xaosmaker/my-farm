@@ -7,7 +7,7 @@ import { Metadata } from "next";
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Global.metaData");
   return {
-    title: t("updataSupplies"),
+    title: t("updateSupplies"),
   };
 }
 export default async function UpdateSupplyPage({

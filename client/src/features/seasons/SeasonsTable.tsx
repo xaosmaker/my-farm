@@ -10,7 +10,13 @@ import DeleteItem from "@/components/DeleteItem";
 import { deleteSeasonAction } from "./seasonActions";
 import { Season } from "@/types/globalTypes";
 
-export default function SeasonsTable({ seasonData }: { seasonData: Season[] }) {
+export default function SeasonsTable({
+  seasonData,
+  fieldId,
+}: {
+  seasonData: Season[];
+  fieldId?: string;
+}) {
   const t = useTranslations("Seasons.Table");
   const columns: ColumnDef<Season>[] = [
     {
@@ -31,6 +37,10 @@ export default function SeasonsTable({ seasonData }: { seasonData: Season[] }) {
       header: t("areaInMeters"),
     },
     {
+      accessorKey: "landUnit",
+      header: t("landUnit"),
+    },
+    {
       accessorKey: "cropName",
       header: t("cropName"),
     },
@@ -42,26 +52,25 @@ export default function SeasonsTable({ seasonData }: { seasonData: Season[] }) {
       accessorKey: "finishSeason",
       header: t("finishSeason"),
     },
-    {
-      accessorKey: "landUnit",
-      header: t("landUnit"),
-    },
 
     {
       id: "seasonActions",
       header: () => {
-        return (
-          <AddButtonMenu
-            href="/seasons/create"
-            label={t("createSeasonButton")}
-          />
-        );
+        if (fieldId) {
+          return (
+            <AddButtonMenu
+              href={`/fields/${fieldId}/seasons/create`}
+              label={t("createSeasonButton")}
+            />
+          );
+        }
+        return "...";
       },
       cell: ({ row: { original } }) => (
         <EllipsisMenu label={original.name}>
           <>
             <UpdateItem
-              href={`/seasons/${original.id}/update`}
+              href={`/fields/${original.fieldId}/seasons/${original.id}/update`}
               label={original.name}
             />
             <DeleteItem

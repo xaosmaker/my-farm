@@ -8,7 +8,7 @@ import { Metadata } from "next";
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Global.metaData");
   return {
-    title: t("Seasons"),
+    title: t("seasons"),
   };
 }
 
@@ -19,7 +19,7 @@ export default async function SeasonPage() {
   const seasonData = await getSeasons(session.user!.intl);
   return (
     <>
-      <H1 className="mb-10 text-center">{t("Seasons")}</H1>
+      <H1 className="mb-10 text-center">{t("seasons")}</H1>
       <SeasonsTable seasonData={seasonData} />
     </>
   );
