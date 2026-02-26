@@ -1,7 +1,6 @@
 package job
 
 import (
-	"encoding/json"
 	"net/http"
 	"slices"
 	"time"
@@ -32,90 +31,106 @@ type requestParams struct {
 	JobSupplies  []jobSupplyParams `json:"jobSupplies" validate:"required"`
 }
 
-func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q jobsQueries) deleteJob(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
-	jobId, httpErr := httpx.GetPathValueToInt64(r, "jobId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	jobId, err := httpx.GetPathValToInt(r, "jobId")
+	if err != nil {
+		return err
 	}
 	finishSeason, err := q.DB.JobExistsReturnFinishSeason(r.Context(), db.JobExistsReturnFinishSeasonParams{
 		FarmID: *user.FarmID,
 		JobID:  jobId,
 	})
 	if err != nil {
-		httpx.NewNotFoundError(404, "Job Not Found", "Job")(w, r)
-		return
+		return apperror.New404NotFoundError("Job Not Found", "Job", err)
 	}
+
 	if finishSeason != nil {
-		httpx.ServerError(400, httpx.NewErrMessage("Cannot Edit season when a season is finished", apperror.SEASON_FINISH_ERROR, nil))(w, r)
-		return
+		return apperror.New400Error([]apperror.ErrorMessage{
+			{
+				Message: "Cannot Edit season when a season is finished",
+				AppCode: apperror.SEASON_FINISH_ERROR,
+				Meta:    nil,
+			},
+		}, nil)
 	}
+
 	err = q.DB.DeleteJob(r.Context(), jobId)
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 
 	}
-	w.WriteHeader(204)
+	return httpx.WriteJSON(w, 204, nil)
 
 }
 
-func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
+func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) error {
 	hasSupplies := false
 
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
+
 	requestData := requestParams{}
-	if err := httpx.DecodeAndValidate(r, &requestData); err != nil {
-		err(w, r)
-		return
+	if err := httpx.DecodeAndVal(r, &requestData); err != nil {
+		return err
 	}
 	//TODO This
 	if slices.Contains(apptypes.JobTypesWithSupplies(), requestData.JobType) {
 		if len(requestData.JobSupplies) == 0 {
-			httpx.ServerError(400, httpx.NewErrMessage("JobSupplies us required", apperror.REQUIRED_FIELD, httpx.Meta{"name": "JobSupplies"}))(w, r)
-			return
+			return apperror.New400Error([]apperror.ErrorMessage{
+				{
+					Message: "JobSupplies us required",
+					AppCode: apperror.REQUIRED_FIELD,
+					Meta: apperror.Meta{
+						"name": "JobSupplies"},
+				}}, nil)
 
 		}
+
 		for _, job := range requestData.JobSupplies {
 
-			if err := httpx.ValidateFields(&job); err != nil {
-				httpx.ServerError(400, err)(w, r)
-				return
+			if err := apperror.ValidateFields(&job); err != nil {
+				return apperror.New400Error(err, nil)
 
 			}
 		}
 		hasSupplies = true
 	}
-	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+
+	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
 		FieldID: requestData.FieldID,
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
-		return
+		return apperror.New404NotFoundError("Field not found", "Field", err)
 	}
 
 	season, err := q.DB.GetSeasonById(r.Context(), requestData.SeasonID)
 	if err != nil {
-		httpx.NewNotFoundError(404, "Season Not found", "Season")(w, r)
-		return
+		return apperror.New404NotFoundError("Season Not found", "Season", nil)
 	}
 	if season.FinishSeason != nil {
-		httpx.ServerError(400, httpx.NewErrMessage("Cannot Edit season when a season is finished", apperror.SEASON_FINISH_ERROR, nil))(w, r)
-		return
+		return apperror.New400Error([]apperror.ErrorMessage{
+			{
+				Message: "Cannot Edit season when a season is finished",
+				AppCode: apperror.SEASON_FINISH_ERROR,
+				Meta:    nil,
+			}}, nil)
 	}
+
 	if requestData.JobDate.Before(season.StartSeason) {
-		httpx.ServerError(400, httpx.NewErrMessage("Cannot add job before the season start", apperror.INVALID_JOB_START, httpx.Meta{"max": season.StartSeason.String()}))(w, r)
-		return
+		return apperror.New400Error([]apperror.ErrorMessage{
+			{
+				Message: "Cannot add job before the season start",
+				AppCode: apperror.INVALID_JOB_START,
+				Meta: apperror.Meta{
+					"max": season.StartSeason.String()},
+			}}, nil)
 	}
 
 	job, err := q.DB.CreateJob(r.Context(), db.CreateJobParams{
@@ -126,9 +141,9 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 		AreaInMeters: requestData.AreaInMeters * float64(util.UnitConverter(user.LandUnit)),
 	})
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 	}
+
 	if hasSupplies {
 		for _, j := range requestData.JobSupplies {
 			_, err = q.DB.CreateJobSupplies(r.Context(), db.CreateJobSuppliesParams{
@@ -137,48 +152,35 @@ func (q jobsQueries) createJob(w http.ResponseWriter, r *http.Request) {
 				JobID:    &job.ID,
 			})
 			if err != nil {
-				httpx.NewDBError(err.Error())(w, r)
-				return
+				return apperror.New503DBError("DB error", err)
 			}
 		}
 	}
 
-	jData, err := json.Marshal(job)
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-
-	w.WriteHeader(201)
-	w.Write(jData)
+	return httpx.WriteJSON(w, 201, job)
 }
 
-func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
-	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) error {
+	seasonId, err := httpx.GetPathValToInt(r, "seasonId")
+	if err != nil {
+		return err
 	}
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
+
 	if farmId, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || farmId != *user.FarmID {
-		httpx.NewNotFoundError(404, "Farm not found", "Farm")(w, r)
-		return
+		return apperror.New404NotFoundError("Farm not found", "Farm", err)
 	}
 
 	if _, err := q.DB.GetSeasonById(r.Context(), seasonId); err != nil {
-		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
-
-		return
+		return apperror.New404NotFoundError("Season not found", "Season", err)
 	}
 
 	jobs, err := q.DB.GetAllJobs(r.Context(), seasonId)
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 	}
 
 	jJobs := []jobResponse{}
@@ -186,13 +188,7 @@ func (q jobsQueries) getAllJobs(w http.ResponseWriter, r *http.Request) {
 		jJobs = append(jJobs, toJobResponse(job, user.LandUnit))
 	}
 
-	data, err := json.Marshal(jJobs)
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-	w.WriteHeader(200)
-	w.Write(data)
+	return httpx.WriteJSON(w, 200, jJobs)
 
 }
 

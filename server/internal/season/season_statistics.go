@@ -1,31 +1,28 @@
 package season
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
-func (q seasonsQueries) getSeasonStatictic(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q seasonsQueries) getSeasonStatictic(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
-	seasonId, httpErr := httpx.GetPathValueToInt64(r, "seasonId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	seasonId, err := httpx.GetPathValToInt(r, "seasonId")
+	if err != nil {
+		return err
 	}
 	if s, err := q.DB.GetFarmIdFromSeasonId(r.Context(), seasonId); err != nil || s != *user.FarmID {
-		httpx.NewNotFoundError(404, "Season not found", "Season")(w, r)
-		return
+		return apperror.New404NotFoundError("Season not found", "Season", err)
 	}
+
 	stats, err := q.DB.GetSeasonStatistics(r.Context(), seasonId)
 	if err != nil {
-		httpx.NewNotFoundError(404, "Statistics not found", "Statistics")(w, r)
-		return
+		return apperror.New404NotFoundError("Statistics not found", "Statistics", err)
 	}
 	data := make([]seasonStatisticsResponse, 0, len(stats))
 	for _, s := range stats {
@@ -34,12 +31,6 @@ func (q seasonsQueries) getSeasonStatictic(w http.ResponseWriter, r *http.Reques
 		}
 		data = append(data, toSeasonStatisticsResponse(s))
 	}
-	dataEnc, err := json.Marshal(data)
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-	w.WriteHeader(200)
-	w.Write(dataEnc)
+	return httpx.WriteJSON(w, 200, data)
 
 }
