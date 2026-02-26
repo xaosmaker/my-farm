@@ -3,6 +3,8 @@ package httpx
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/xaosmaker/server/internal/apperror"
 )
 
 func DecodeBody(r *http.Request, s any) error {
@@ -16,3 +18,12 @@ func DecodeBody(r *http.Request, s any) error {
 
 }
 
+func DecodeAndVal(r *http.Request, s any) error {
+	DecodeBody(r, s)
+	err := apperror.ValidateFields(s)
+	if err != nil {
+		return apperror.New400Error(err, nil)
+	}
+
+	return nil
+}
