@@ -17,9 +17,24 @@ vi.mock("@/features/auth/authActions", () => ({
   verifyEmailAction: vi.fn(),
 }));
 
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn().mockResolvedValue((key: string) => {
+    const translations: Record<string, string> = {
+      verifyEmail: "Verify Email",
+    };
+    return translations[key] || key;
+  }),
+}));
+
 describe("Verify Email Page Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("generates correct metadata", async () => {
+    const { generateMetadata } = await import("@/app/[locale]/(auth)/verify/[token]/page");
+    const metadata = await generateMetadata();
+    expect(metadata.title).toBe("Verify Email");
   });
 
   it("redirects to / when user is authenticated", async () => {

@@ -11,12 +11,24 @@ vi.mock("@/features/fields/fieldFetchers", () => ({
 }));
 
 vi.mock("next-intl/server", () => ({
-  getTranslations: vi.fn().mockResolvedValue((key: string) => key),
+  getTranslations: vi.fn().mockResolvedValue((key: string) => {
+    const translations: Record<string, string> = {
+      field: "Field",
+      fields: "Fields",
+    };
+    return translations[key] || key;
+  }),
 }));
 
 describe("Fields Page Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("generates correct metadata", async () => {
+    const { generateMetadata } = await import("@/app/[locale]/(protected)/fields/page");
+    const metadata = await generateMetadata();
+    expect(metadata.title).toBe("Field");
   });
 
   it("calls getAuth to verify user is authenticated", async () => {

@@ -1,4 +1,4 @@
-import ResendVefifyPage from "@/app/[locale]/(auth)/verify/resend/page";
+import ResendVefifyPage, { generateMetadata } from "@/app/[locale]/(auth)/verify/resend/page";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, Mock, vi, beforeEach } from "vitest";
 import { auth } from "@/lib/auth";
@@ -9,6 +9,15 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn().mockResolvedValue((key: string) => {
+    const translations: Record<string, string> = {
+      resendVerifyEmail: "Resend Verification",
+    };
+    return translations[key] || key;
+  }),
+}));
+
 vi.mock("@/features/auth/forms/ResendVerForm", () => ({
   default: () => <div data-testid="resend-ver-form" />,
 }));
@@ -16,6 +25,11 @@ vi.mock("@/features/auth/forms/ResendVerForm", () => ({
 describe("Resend Verification Page Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("generates correct metadata", async () => {
+    const metadata = await generateMetadata();
+    expect(metadata.title).toBe("Resend Verification");
   });
 
   it("redirects to / when user is authenticated", async () => {
