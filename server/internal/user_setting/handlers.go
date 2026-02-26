@@ -41,7 +41,6 @@ func (q userSettingsQueries) updateSettings(w http.ResponseWriter, r *http.Reque
 		UserID:   user.ID,
 	})
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
 		return apperror.New503DBError("DB error", err)
 	}
 	return httpx.WriteJSON(w, 204, nil)
