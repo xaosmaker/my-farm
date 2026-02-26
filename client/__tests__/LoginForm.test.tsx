@@ -124,6 +124,7 @@ describe("Login Form Tests", () => {
       email: "test@test.com",
       password: "test",
       redirect: false,
+      intl: "Europe/Athens",
     });
     expect(router.push).toHaveBeenCalledWith("/farm");
   });
