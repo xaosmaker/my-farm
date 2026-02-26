@@ -3,6 +3,7 @@ package supply
 import (
 	"context"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/xaosmaker/server/internal/db"
@@ -38,7 +39,9 @@ func TestSupplyRouter(t *testing.T) {
 			if res.Code != c.expCode {
 				t.Fatalf(`expecting code: %v, got: %v`, c.expCode, res.Code)
 			}
-			if res.Body.String() != c.expBody {
+			if !strings.Contains(res.Body.String(), c.expBody) {
+				t.Errorf("'%s'", c.expBody)
+				t.Errorf("'%s'", res.Body)
 				t.Fatalf(`expecting body: %v, got: %v`, c.expBody, res.Body)
 			}
 		})

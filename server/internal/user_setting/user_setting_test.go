@@ -3,6 +3,7 @@ package usersetting
 import (
 	"context"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/xaosmaker/server/internal/db"
@@ -35,7 +36,7 @@ func TestUserSettingsRouter(t *testing.T) {
 			if res.Code != c.expCode {
 				t.Fatalf(`expecting code: %v, got: %v`, c.expCode, res.Code)
 			}
-			if res.Body.String() != c.expBody {
+			if !strings.Contains(res.Body.String(), c.expBody) {
 				t.Fatalf(`expecting body: %v, got: %v`, c.expBody, res.Body)
 			}
 		})

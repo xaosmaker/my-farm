@@ -1,57 +1,49 @@
 package usersetting
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
-func (q userSettingsQueries) getSettings(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q userSettingsQueries) getSettings(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
 	setting, err := q.DB.GetUserSettings(r.Context(), user.ID)
 	if err != nil {
-		httpx.NewNotFoundError(404, "Settings not found", "Settings")(w, r)
-		return
+
+		return apperror.New404NotFoundError("Settings not found", "Settings", err)
 	}
-	encodedSettings, err := json.Marshal(toSettingsResponse(setting))
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-	}
-	w.WriteHeader(200)
-	w.Write(encodedSettings)
+	return httpx.WriteJSON(w, 200, toSettingsResponse(setting))
 
 }
 
-func (q userSettingsQueries) updateSettings(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q userSettingsQueries) updateSettings(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 	settingReqBody := struct {
 		LandUnit string `json:"landUnit" validate:"required,landUnitVal"`
 	}{}
 
-	if settingsValError := httpx.DecodeAndValidate(r, &settingReqBody); settingsValError != nil {
-		settingsValError(w, r)
-		return
+	if err := httpx.DecodeAndVal(r, &settingReqBody); err != nil {
+		return err
 	}
 
-	_, err := q.DB.UpdateSettings(r.Context(), db.UpdateSettingsParams{
+	_, err = q.DB.UpdateSettings(r.Context(), db.UpdateSettingsParams{
 		LandUnit: settingReqBody.LandUnit,
 		UserID:   user.ID,
 	})
 	if err != nil {
 		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 	}
-	w.WriteHeader(204)
+	return httpx.WriteJSON(w, 204, nil)
 
 }

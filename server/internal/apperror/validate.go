@@ -1,105 +1,103 @@
-package httpx
+package apperror
 
 import (
 	"fmt"
-	"net/http"
 	"reflect"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/apptypes"
 )
 
-func formatValidator(f validator.FieldError) errorMessage {
+func formatFields(f validator.FieldError) ErrorMessage {
 	switch strings.ToLower(f.Tag()) {
 
 	case "required":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v is Required!", f.Field()),
-			apperror.REQUIRED_FIELD,
+			REQUIRED_FIELD,
 			Meta{"name": f.Field()},
 		}
 	case "min":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v < %v", f.Field(), f.Param()),
-			apperror.INVALID_MIN,
+			INVALID_MIN,
 			Meta{"min": f.Param()},
 		}
 	case "max":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v > %v", f.Field(), f.Param()),
-			apperror.INVALID_MAX,
+			INVALID_MAX,
 			Meta{"max": f.Param()},
 		}
 	case "email":
-		return errorMessage{"Please provide a valid email",
-			apperror.INVALID_EMAIL,
+		return ErrorMessage{"Please provide a valid email",
+			INVALID_EMAIL,
 			nil,
 		}
 	case "alphanumspace":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v should contain only chars spaces and number", f.Field()),
-			apperror.INVALID_NUM_SPACE_CHAR,
+			INVALID_NUM_SPACE_CHAR,
 			nil,
 		}
 	case "jobtype":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(apptypes.JobTypes(), ", ")),
-			apperror.INVALID_JOB_TYPE,
+			INVALID_JOB_TYPE,
 			Meta{"oneof": strings.Join(apptypes.JobTypes(), ", ")},
 		}
 	case "strongpassword":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v should contains Capital letters, digits and has length greater than %v", f.Field(), f.Param()),
-			apperror.INVALID_PASSWORD,
+			INVALID_PASSWORD,
 			Meta{"min": f.Param()},
 		}
 	case "eqfield":
 		if f.Field() == "ConfirmPassword" {
 
-			return errorMessage{
+			return ErrorMessage{
 
 				fmt.Sprintf("%v mismatch %v", f.Field(), f.Param()),
-				apperror.PASSWORD_MISMATCH_ERROR,
+				PASSWORD_MISMATCH_ERROR,
 				nil,
 			}
 
 		}
-		return errorMessage{
+		return ErrorMessage{
 
 			fmt.Sprintf("%v mismatch %v", f.Field(), f.Param()),
-			apperror.INVALID_EQUAL_FIELDS,
+			INVALID_EQUAL_FIELDS,
 			Meta{"fieldA": f.Field(), "fieldB": f.Param()},
 		}
 
 	case "supplytypeval":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(apptypes.SuppliesTypes(), ", ")),
-			apperror.INVALID_SUPPLY_TYPE,
+			INVALID_SUPPLY_TYPE,
 			Meta{"oneof": strings.Join(apptypes.SuppliesTypes(), ", ")},
 		}
 	case "measurementunitsval":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(apptypes.MeasurementUnits(), ", ")),
-			apperror.INVALID_MEASUREMENT_UNIT,
+			INVALID_MEASUREMENT_UNIT,
 			Meta{"oneof": strings.Join(apptypes.MeasurementUnits(), ", ")},
 		}
 	case "landunitval":
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("%v should contain one of '%v'", f.Field(), strings.Join(apptypes.LandMeasurementUnit(), ", ")),
-			apperror.INVALID_LAND_UNIT,
+			INVALID_LAND_UNIT,
 			Meta{"oneof": strings.Join(apptypes.LandMeasurementUnit(), ", ")},
 		}
 	case "istimestamptz":
-		return errorMessage{fmt.Sprintf("%v should be of format '2026-01-13T02:12:00.000Z'", f.Field()),
-			apperror.INVALID_TIMESTAMP,
+		return ErrorMessage{fmt.Sprintf("%v should be of format '2026-01-13T02:12:00.000Z'", f.Field()),
+			INVALID_TIMESTAMP,
 			Meta{"format": "'2026-01-13T02:12:00.000Z'"},
 		}
 	default:
-		return errorMessage{
+		return ErrorMessage{
 			fmt.Sprintf("format Validator uknown format %v", f.Error()),
-			apperror.UNKNOWN_ERROR,
+			UNKNOWN_ERROR,
 			nil,
 		}
 	}
@@ -132,7 +130,7 @@ func getFieldJsonTag(s any, field string) string {
 	return f.Name
 }
 
-func ValidateFields(s any) *ErrMessage {
+func ValidateFields(s any) []ErrorMessage {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	validate.RegisterValidation("jobtype", jobTypeValidator)
 	validate.RegisterValidation("alphanumspace", alphaNumSpacesGreek)
@@ -144,40 +142,20 @@ func ValidateFields(s any) *ErrMessage {
 
 	err := validate.Struct(s)
 
-	fieldErrors := ErrMessage{}
+	fieldErrors := make([]ErrorMessage, 0)
 
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			errMess := formatValidator(e)
-			if errMess.AppCode == apperror.REQUIRED_FIELD {
+			errMess := formatFields(e)
+			if errMess.AppCode == REQUIRED_FIELD {
 				errMess.Meta["name"] = getFieldJsonTag(s, e.Field())
 			}
 			errMess.Message = fmt.Sprintf("%v: %v", getFieldJsonTag(s, e.Field()), errMess.Message)
-			fieldErrors.Errors = append(fieldErrors.Errors, errMess)
+			fieldErrors = append(fieldErrors, errMess)
 		}
-		return &fieldErrors
+		return fieldErrors
 	}
 
 	return nil
 
-}
-
-func DecodeAndVal(r *http.Request, s any) error {
-	DecodeBody(r, s)
-	err := apperror.ValidateFields(s)
-	if err != nil {
-		return apperror.New400Error(err, nil)
-	}
-
-	return nil
-}
-
-func DecodeAndValidate(r *http.Request, s any) ServerErrorResponse {
-	DecodeBody(r, s)
-	err := ValidateFields(s)
-	if err != nil {
-		return ServerError(400, err)
-	}
-
-	return nil
 }
