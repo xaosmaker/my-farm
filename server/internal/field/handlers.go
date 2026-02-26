@@ -5,30 +5,28 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 	"github.com/xaosmaker/server/internal/util"
 )
 
-func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
-	id, httpErr := httpx.GetPathValueToInt64(r, "id")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	id, err := httpx.GetPathValToInt(r, "id")
+	if err != nil {
+		return err
 	}
 	//  validate the field exist for the current user
-	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
 		FieldID: id,
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
-		return
+		return apperror.New404NotFoundError("Field not found", "Field", nil)
 	}
 
 	fieldReqBody := struct {
@@ -41,10 +39,10 @@ func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
 		IsOwned          *bool            `json:"isOwned" validate:"omitnil,boolean"`
 	}{}
 
-	if fieldValidateError := httpx.DecodeAndValidate(r, &fieldReqBody); fieldValidateError != nil {
-		fieldValidateError(w, r)
-		return
+	if err := httpx.DecodeAndVal(r, &fieldReqBody); err != nil {
+		return err
 	}
+
 	if fieldReqBody.AreaInMeters != nil {
 		*fieldReqBody.AreaInMeters *= float64(util.UnitConverter(user.LandUnit))
 	}
@@ -63,28 +61,19 @@ func (q fieldQueries) updateField(w http.ResponseWriter, r *http.Request) {
 	field, err := q.DB.UpdateField(r.Context(), fieldBody)
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpx.NewExistError(409, "Field already exist", "Field")(w, r)
-			return
+			return apperror.New409ExistError("Field already exist", "Field", err)
 		}
-		httpx.NewDBError(err.Error())(w, r)
-		return
+
+		return apperror.New503DBError("DB error", err)
 	}
 
-	fieldEnc, err := json.Marshal(toFieldResponse(field, user.LandUnit))
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-
-	w.WriteHeader(200)
-	w.Write(fieldEnc)
+	return httpx.WriteJSON(w, 200, toFieldResponse(field, user.LandUnit))
 }
 
-func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
 	fieldReqBody := struct {
@@ -97,9 +86,8 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 		IsOwned          bool             `json:"isOwned" validate:"boolean"`
 	}{}
 
-	if fieldValError := httpx.DecodeAndValidate(r, &fieldReqBody); fieldValError != nil {
-		fieldValError(w, r)
-		return
+	if err := httpx.DecodeAndVal(r, &fieldReqBody); err != nil {
+		return err
 	}
 
 	fieldData := db.CreateFieldParams{
@@ -116,64 +104,51 @@ func (q fieldQueries) createField(w http.ResponseWriter, r *http.Request) {
 	field, err := q.DB.CreateField(r.Context(), fieldData)
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpx.NewExistError(409, "Field already exist", "Field")(w, r)
-			return
+			return apperror.New409ExistError("Field already exist", "Field", err)
 		}
 
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 	}
-	fieldEnc, err := json.Marshal(toFieldResponse(field, user.LandUnit))
-
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-	w.WriteHeader(201)
-	w.Write(fieldEnc)
+	return httpx.WriteJSON(w, 201, toFieldResponse(field, user.LandUnit))
 
 }
 
-func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
-	}
-	id, httpErr := httpx.GetPathValueToInt64(r, "id")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q fieldQueries) deleteField(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
-	_, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
+	id, err := httpx.GetPathValToInt(r, "id")
+	if err != nil {
+		return err
+	}
+
+	_, err = q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
 		FieldID: id,
 		UserID:  user.ID,
 	})
 	if err != nil {
-		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
-		return
+		return apperror.New404NotFoundError("Field not found", "Field", err)
 	}
+
 	err = q.DB.DeleteField(r.Context(), id)
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 	}
-	w.WriteHeader(204)
+	return httpx.WriteJSON(w, 204, nil)
 
 }
 
-func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
-	id, httpErr := httpx.GetPathValueToInt64(r, "id")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) error {
+	id, err := httpx.GetPathValToInt(r, "id")
+	if err != nil {
+		return err
 	}
 
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
 	data, err := q.DB.GetFieldByIdAndUser(r.Context(), db.GetFieldByIdAndUserParams{
@@ -182,31 +157,22 @@ func (q fieldQueries) getFieldById(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
-		return
+		return apperror.New404NotFoundError("Field not found", "Field", err)
 	}
 
-	jData, err := json.Marshal(toFieldResponse(data, user.LandUnit))
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-	w.WriteHeader(200)
-	w.Write(jData)
+	return httpx.WriteJSON(w, 200, toFieldResponse(data, user.LandUnit))
 
 }
 
-func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
+func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) error {
 
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 	data, err := q.DB.GetAllFields(r.Context(), user.ID)
 	if err != nil {
-		httpx.NewNotFoundError(404, "Field not found", "Field")(w, r)
-		return
+		return apperror.New404NotFoundError("Field not found", "Field", err)
 
 	}
 
@@ -215,14 +181,6 @@ func (q fieldQueries) getAllFields(w http.ResponseWriter, r *http.Request) {
 		listData = append(listData, toFieldResponse(field, user.LandUnit))
 	}
 
-	jData, err := json.Marshal(listData)
-
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-
-	w.WriteHeader(200)
-	w.Write(jData)
+	return httpx.WriteJSON(w, 200, listData)
 
 }
