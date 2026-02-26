@@ -31,7 +31,6 @@ func (q AuthQueries) LoginUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := q.DB.GetUserByEmail(r.Context(), reqUser.Email)
 	if err != nil {
-		httpx.ServerError(401, nil)(w, r)
 		return apperror.New401UnauthorizedError("", err)
 	}
 
@@ -144,7 +143,6 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) error {
 
 	userIdNumber, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
 		return apperror.New500Error(err)
 	}
 
