@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
@@ -21,7 +22,7 @@ func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 		val, err := GetCookie(r, "access")
 		if err != nil {
 			fmt.Println("auth Error 1", err)
-			httpx.ServerError(401, nil)(w, r)
+			httpx.ServerErrorResponse(apperror.New401UnauthorizedError("", err))(w, r)
 			return
 		}
 		jwtKey := os.Getenv("JWT_KEY")
@@ -29,20 +30,20 @@ func (q AuthQueries) AuthMiddleware(next http.Handler) http.Handler {
 
 		if err != nil {
 			fmt.Println("auth Error 2", err)
-			httpx.ServerError(401, nil)(w, r)
+			httpx.ServerErrorResponse(apperror.New401UnauthorizedError("", err))(w, r)
 			return
 		}
 		id, err := strconv.ParseInt(strId, 10, 64)
 
 		if err != nil {
 			fmt.Println("auth Error 3", err)
-			httpx.ServerError(401, nil)(w, r)
+			httpx.ServerErrorResponse(apperror.New401UnauthorizedError("", err))(w, r)
 			return
 		}
 		user, err := q.DB.GetUserByIdWithSettings(r.Context(), id)
 		if err != nil {
 			fmt.Println("auth Error 4", err)
-			httpx.ServerError(401, nil)(w, r)
+			httpx.ServerErrorResponse(apperror.New401UnauthorizedError("", err))(w, r)
 			return
 		}
 		ctx := context.WithValue(r.Context(), "user", user)

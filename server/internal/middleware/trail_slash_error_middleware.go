@@ -12,7 +12,20 @@ func TrailSlashErrorMiddleware(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, "/") {
-			httpx.ServerError(404, httpx.NewErrMessage("Url cannot end on /", apperror.ROUTE_NOT_FOUND, nil))(w, r)
+			newErr := apperror.AppError{
+				StatusCode: 404,
+				Err:        nil,
+				Severity:   apperror.SEVERITY_WARN,
+				Errors: []apperror.ErrorMessage{
+					{
+						Message: "Url cannot end on /",
+						AppCode: apperror.ROUTE_NOT_FOUND,
+						Meta:    nil,
+					},
+				},
+			}
+
+			httpx.ServerErrorResponse(newErr)(w, r)
 			return
 		}
 

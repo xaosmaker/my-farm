@@ -43,7 +43,28 @@ func MainRouter(con *pgxpool.Pool) *chi.Mux {
 	r.Mount("/api/supplies", supply.SuppliesRouter(con))
 	r.Mount("/api/settings", usersetting.UserSettingsRouter(con))
 	r.Mount("/api/seasons", season.SeasonsRouter(con))
-	r.NotFound(http.HandlerFunc(httpx.ServerError(404, httpx.NewErrMessage("Route not found", apperror.ROUTE_NOT_FOUND, nil))))
-	r.MethodNotAllowed(http.HandlerFunc(httpx.ServerError(405, httpx.NewErrMessage("Method not found", apperror.METHOD_NOT_FOUND, nil))))
+
+	r.NotFound(http.HandlerFunc(httpx.ServerErrorResponse(
+		apperror.AppError{
+			StatusCode: 404,
+			Err:        nil,
+			Severity:   apperror.SEVERITY_WARN,
+			Errors: []apperror.ErrorMessage{
+				{
+					Message: "Route not found",
+					AppCode: apperror.ROUTE_NOT_FOUND,
+					Meta:    nil}}},
+	)))
+
+	r.MethodNotAllowed(http.HandlerFunc(httpx.ServerErrorResponse(
+		apperror.AppError{
+			StatusCode: 405,
+			Err:        nil,
+			Severity:   apperror.SEVERITY_WARN,
+			Errors: []apperror.ErrorMessage{{
+				Message: "Method not found",
+				AppCode: apperror.METHOD_NOT_FOUND,
+				Meta:    nil,
+			}}})))
 	return r
 }
