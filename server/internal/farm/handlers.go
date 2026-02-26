@@ -1,73 +1,52 @@
 package farm
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
-func (q farmQeuries) createFarm(w http.ResponseWriter, r *http.Request) {
+func (q farmQeuries) createFarm(w http.ResponseWriter, r *http.Request) error {
 
 	farmFields := struct {
 		Name string `json:"name" validate:"required,alphanumspace"`
 	}{}
 
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
-	if httpErr := httpx.DecodeAndValidate(r, &farmFields); httpErr != nil {
-		httpErr(w, r)
-		return
+	if err := httpx.DecodeAndVal(r, &farmFields); err != nil {
+		return err
 	}
 
-	_, err := q.DB.GetFarm(r.Context(), user.ID)
+	_, err = q.DB.GetFarm(r.Context(), user.ID)
 	if err == nil {
-		httpx.NewExistError(409, "Farm already exist", "Farm")(w, r)
-		return
+		return apperror.New409ExistError("Farm already exist", "Farm", err)
 	}
 	f, err := q.DB.CreateFarm(r.Context(), db.CreateFarmParams{Name: farmFields.Name, ID: user.ID})
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 	}
 
-	data, err := json.Marshal(toFarmResponse(db.Farm(f)))
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-
-	}
-
-	w.WriteHeader(201)
-	w.Write(data)
+	return httpx.WriteJSON(w, 201, toFarmResponse(db.Farm(f)))
 
 }
 
-func (q farmQeuries) getFarm(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q farmQeuries) getFarm(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
 	farm, err := q.DB.GetFarm(r.Context(), user.ID)
 	if err != nil {
 		//this code never run it is validated in the middleware
-		httpx.NewNotFoundError(404, "Farm not found", "Farm")(w, r)
-		return
-	}
-	data, err := json.Marshal(toFarmResponse(farm))
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
+		return apperror.New404NotFoundError("Farm not found", "Farm", err)
 	}
 
-	w.WriteHeader(200)
-	w.Write(data)
-
+	return httpx.WriteJSON(w, 200, toFarmResponse(farm))
 }
