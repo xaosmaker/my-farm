@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import en from "../messages/en.json";
@@ -28,20 +28,7 @@ describe("CreateSupplyForm Tests", () => {
     expect(screen.getByLabelText(en.Supplies.Create.measurementUnit + " *")).toBeDefined();
   });
 
-  it("Name required error - click empty form", async () => {
-    render(
-      <NextIntlClientProvider messages={en} locale="en">
-        <CreateSupplyForm />
-      </NextIntlClientProvider>,
-    );
-
-    const submitButton = screen.getByRole("button", { name: en.Supplies.Create.submitButton });
-    await userEvent.click(submitButton);
-
-    expect(screen.queryByText(/is required/)).toBeNull();
-  });
-
-  it("Valid form with all fields", async () => {
+  it("Name required error - clear name field", async () => {
     render(
       <NextIntlClientProvider messages={en} locale="en">
         <CreateSupplyForm />
@@ -49,11 +36,12 @@ describe("CreateSupplyForm Tests", () => {
     );
 
     const nameInput = screen.getByLabelText(en.Supplies.Create.name + " *");
-    await userEvent.type(nameInput, "Test Supply");
+    await userEvent.type(nameInput, "Supply Name");
+    await userEvent.clear(nameInput);
 
-    const nicknameInput = screen.getByLabelText(en.Supplies.Create.nickname);
-    await userEvent.type(nicknameInput, "My Supply");
-
-    expect(screen.queryByText(en.Global.Error.invalid_number)).toBeNull();
+    await waitFor(() => {
+      expect(nameInput.getAttribute("aria-invalid")).toBe("true");
+    });
+    expect(screen.getByText(en.Supplies.Create.name + " is required")).toBeDefined();
   });
 });

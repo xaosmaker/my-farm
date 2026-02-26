@@ -12,14 +12,14 @@ vi.mock("@/features/auth/forms/LoginForm", () => ({
 }));
 
 describe("Login Page Tests", () => {
-  it("Login Page Redirect on user", async () => {
+  it("redirects to /farm when user is authenticated", async () => {
     (auth as Mock).mockResolvedValue({ user: {} });
     const comp = await LoginPage();
     render(comp);
     expect(redirect).toHaveBeenCalledWith("/farm");
   });
 
-  it("Login Page Render form", async () => {
+  it("renders login form when user is not authenticated", async () => {
     (auth as Mock).mockResolvedValue({ user: undefined });
     const comp = await LoginPage();
     render(comp);
