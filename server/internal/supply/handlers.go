@@ -1,24 +1,25 @@
 package supply
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
+	"github.com/xaosmaker/server/internal/apperror"
 	"github.com/xaosmaker/server/internal/db"
 	"github.com/xaosmaker/server/internal/httpx"
 )
 
-func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
-	supplyId, httpErr := httpx.GetPathValueToInt64(r, "supplyId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) error {
+	supplyId, err := httpx.GetPathValToInt(r, "supplyId")
+
+	if err != nil {
+		return err
 	}
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
 	supplyReqbody := struct {
@@ -27,42 +28,41 @@ func (q suppliesQueries) updateSupply(w http.ResponseWriter, r *http.Request) {
 		Name            *string `json:"name" validate:"omitnil"`
 		MeasurementUnit *string `json:"measurementUnit" validate:"omitnil,measurementUnitsVal"`
 	}{}
-	if httpErr := httpx.DecodeAndValidate(r, &supplyReqbody); httpErr != nil {
-		httpErr(w, r)
-		return
+
+	if err := httpx.DecodeAndVal(r, &supplyReqbody); err != nil {
+		return err
 	}
 	if _, err := q.DB.GetSupplyDetails(r.Context(), db.GetSupplyDetailsParams{
 		FarmID: *user.FarmID,
 		ID:     supplyId,
 	}); err != nil {
-		httpx.NewNotFoundError(404, "Supply not found", "Supply")(w, r)
-		return
+
+		return apperror.New404NotFoundError("Supply not found", "Supply", err)
 	}
-	err := q.DB.UpdateSupply(r.Context(), db.UpdateSupplyParams{
+
+	err = q.DB.UpdateSupply(r.Context(), db.UpdateSupplyParams{
 		ID:              supplyId,
 		SupplyType:      supplyReqbody.SupplyType,
 		Name:            supplyReqbody.Name,
 		Nickname:        supplyReqbody.Nickname,
 		MeasurementUnit: supplyReqbody.MeasurementUnit,
 	})
+
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpx.NewExistError(409, "Supply already exist", "Supply")(w, r)
-			return
+			return apperror.New409ExistError("Supply already exist", "Supply", err)
 		}
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB errror", err)
 	}
 
-	w.WriteHeader(204)
+	return httpx.WriteJSON(w, 204, nil)
 
 }
 
-func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
 	supplyReqBody := struct {
@@ -71,9 +71,8 @@ func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
 		Name            string  `json:"name" validate:"required"`
 		MeasurementUnit string  `json:"measurementUnit" validate:"required,measurementUnitsVal"`
 	}{}
-	if err := httpx.DecodeAndValidate(r, &supplyReqBody); err != nil {
-		err(w, r)
-		return
+	if err := httpx.DecodeAndVal(r, &supplyReqBody); err != nil {
+		return err
 	}
 	supply, err := q.DB.CreateSupplies(r.Context(), db.CreateSuppliesParams{
 		SupplyType:      supplyReqBody.SupplyType,
@@ -84,68 +83,47 @@ func (q suppliesQueries) createSupply(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if strings.Contains(err.Error(), "23505") {
-			httpx.NewExistError(409, "Supply already exist", "Supply")(w, r)
-			return
+			return apperror.New409ExistError("Supply already exist", "Supply", err)
 		}
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB Error", err)
 	}
-	data, err := json.Marshal(toSupplyResponse(supply))
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-	w.WriteHeader(201)
-	w.Write(data)
+
+	return httpx.WriteJSON(w, 201, toSupplyResponse(supply))
 }
 
-func (q suppliesQueries) getSupplyDetails(w http.ResponseWriter, r *http.Request) {
+func (q suppliesQueries) getSupplyDetails(w http.ResponseWriter, r *http.Request) error {
 
-	supplyId, httpErr := httpx.GetPathValueToInt64(r, "supplyId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	supplyId, err := httpx.GetPathValToInt(r, "supplyId")
+	if err != nil {
+		return err
 	}
 
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
+	fmt.Println("Here")
 
 	supply, err := q.DB.GetSupplyDetails(r.Context(), db.GetSupplyDetailsParams{
 		FarmID: *user.FarmID,
 		ID:     supplyId,
 	})
 	if err != nil {
-		httpx.NewNotFoundError(404, "Supply dont exist", "Supply")(w, r)
-		return
+		return apperror.New404NotFoundError("Supply dont exist", "Supply", err)
 	}
-
-	supplyEnc, err := json.Marshal(toSupplyResponse(supply))
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-
-	w.WriteHeader(200)
-	w.Write(supplyEnc)
-
+	return httpx.WriteJSON(w, 200, toSupplyResponse(supply))
 }
 
-func (q suppliesQueries) getAllSupplies(w http.ResponseWriter, r *http.Request) {
+func (q suppliesQueries) getAllSupplies(w http.ResponseWriter, r *http.Request) error {
 
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
 	supplies, err := q.DB.GetAllSupplies(r.Context(), *user.FarmID)
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
-
-		return
+		return apperror.New503DBError("DB error", err)
 
 	}
 
@@ -154,36 +132,27 @@ func (q suppliesQueries) getAllSupplies(w http.ResponseWriter, r *http.Request) 
 		suppliesResponse = append(suppliesResponse, toSupplyResponse(supply))
 	}
 
-	suppliesResponseEncoded, err := json.Marshal(suppliesResponse)
-	if err != nil {
-		httpx.ServerError(500, nil)(w, r)
-		return
-	}
-
-	w.WriteHeader(200)
-	w.Write(suppliesResponseEncoded)
+	return httpx.WriteJSON(w, 200, suppliesResponse)
 
 }
-func (q suppliesQueries) deleteSupply(w http.ResponseWriter, r *http.Request) {
-	user, httpErr := httpx.GetUserFromContext(r)
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+func (q suppliesQueries) deleteSupply(w http.ResponseWriter, r *http.Request) error {
+	user, err := httpx.GetUserFromCtx(r)
+	if err != nil {
+		return err
 	}
 
-	supplyId, httpErr := httpx.GetPathValueToInt64(r, "supplyId")
-	if httpErr != nil {
-		httpErr(w, r)
-		return
+	supplyId, err := httpx.GetPathValToInt(r, "supplyId")
+	if err != nil {
+		return err
 	}
 
-	_, err := q.DB.GetSupplyDetails(r.Context(), db.GetSupplyDetailsParams{
+	_, err = q.DB.GetSupplyDetails(r.Context(), db.GetSupplyDetailsParams{
 		FarmID: *user.FarmID,
 		ID:     supplyId,
 	})
+
 	if err != nil {
-		httpx.NewNotFoundError(404, "Supply dont exists", "Supply")(w, r)
-		return
+		return apperror.New404NotFoundError("Supply dont exists", "Supply", err)
 	}
 
 	err = q.DB.DeleteSupply(r.Context(), db.DeleteSupplyParams{
@@ -191,10 +160,9 @@ func (q suppliesQueries) deleteSupply(w http.ResponseWriter, r *http.Request) {
 		ID:     supplyId,
 	})
 	if err != nil {
-		httpx.NewDBError(err.Error())(w, r)
-		return
+		return apperror.New503DBError("DB error", err)
 	}
 
-	w.WriteHeader(204)
+	return httpx.WriteJSON(w, 204, nil)
 
 }
