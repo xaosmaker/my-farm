@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import en from "../messages/en.json";
@@ -72,5 +72,21 @@ describe("UpdateSupplyForm Tests", () => {
     await userEvent.type(nicknameInput, "New Nickname");
 
     expect(screen.getByDisplayValue("New Nickname")).toBeDefined();
+  });
+
+  it("Name required error - clear name field", async () => {
+    render(
+      <NextIntlClientProvider messages={en} locale="en">
+        <CreateSupplyForm userSupply={mockSupply} />
+      </NextIntlClientProvider>,
+    );
+
+    const nameInput = screen.getByDisplayValue("Test Supply");
+    await userEvent.clear(nameInput);
+
+    await waitFor(() => {
+      expect(nameInput.getAttribute("aria-invalid")).toBe("true");
+    });
+    expect(screen.getByText(en.Supplies.Update.name + " is required")).toBeDefined();
   });
 });

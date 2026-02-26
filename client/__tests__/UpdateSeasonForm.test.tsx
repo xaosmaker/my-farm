@@ -1,11 +1,15 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import en from "../messages/en.json";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import CreateSeasonForm from "@/features/seasons/forms/CreateSeasonForm";
+import { updateSeasonAction } from "@/features/seasons/seasonActions";
 import { UserSettings, Supply, Season } from "@/types/globalTypes";
 
+vi.mock("@/features/seasons/seasonActions", () => ({
+  updateSeasonAction: vi.fn(),
+}));
 vi.mock("next/navigation");
 
 const mockUserSettings: UserSettings = {
@@ -84,5 +88,21 @@ describe("UpdateSeasonForm Tests", () => {
     await userEvent.type(nameInput, "Updated Season");
 
     expect(screen.getByDisplayValue("Updated Season")).toBeDefined();
+  });
+
+  it("Name required error - clear name field", async () => {
+    render(
+      <NextIntlClientProvider messages={en} locale="en">
+        <CreateSeasonForm fieldId="1" season={mockSeason} userSettings={mockUserSettings} supplies={mockSupplies} />
+      </NextIntlClientProvider>,
+    );
+
+    const nameInput = screen.getByDisplayValue("Test Season");
+    await userEvent.clear(nameInput);
+
+    await waitFor(() => {
+      expect(nameInput.getAttribute("aria-invalid")).toBe("true");
+    });
+    expect(screen.getByText(en.Seasons.Update.name + " is required")).toBeDefined();
   });
 });

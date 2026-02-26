@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import en from "../messages/en.json";
@@ -66,6 +66,22 @@ describe("UpdateFieldForm Tests", () => {
     expect(screen.getByDisplayValue("Test Field")).toBeDefined();
     expect(screen.getByDisplayValue("Test Location")).toBeDefined();
     expect(screen.getByDisplayValue("100")).toBeDefined();
+  });
+
+  it("Name required error - clear name field", async () => {
+    render(
+      <NextIntlClientProvider messages={en} locale="en">
+        <CreateFieldForm userSettings={mockUserSettings} userField={mockUserField} />
+      </NextIntlClientProvider>,
+    );
+
+    const nameInput = screen.getByLabelText(en.Fields.Update.name + " *");
+    await userEvent.clear(nameInput);
+
+    await waitFor(() => {
+      expect(nameInput.getAttribute("aria-invalid")).toBe("true");
+    });
+    expect(screen.getByText(en.Fields.Update.name + " is required")).toBeDefined();
   });
 
   it("Area invalid number error", async () => {

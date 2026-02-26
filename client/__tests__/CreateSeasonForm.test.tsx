@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import en from "../messages/en.json";
@@ -47,16 +47,33 @@ describe("CreateSeasonForm Tests", () => {
     expect(screen.getByLabelText(en.Units.stremata + " *")).toBeDefined();
   });
 
-  it("Name required error - click empty form", async () => {
+  it("Name required error - clear name field", async () => {
     render(
       <NextIntlClientProvider messages={en} locale="en">
         <CreateSeasonForm fieldId="1" userSettings={mockUserSettings} supplies={mockSupplies} />
       </NextIntlClientProvider>,
     );
 
-    const submitButton = screen.getByRole("button", { name: en.Seasons.Create.submitButton });
-    await userEvent.click(submitButton);
+    const nameInput = screen.getByLabelText(en.Seasons.Create.name + " *");
+    await userEvent.type(nameInput, "Season Name");
+    await userEvent.clear(nameInput);
 
-    expect(screen.queryByText(/is required/)).toBeNull();
+    await waitFor(() => {
+      expect(nameInput.getAttribute("aria-invalid")).toBe("true");
+    });
+    expect(screen.getByText(en.Seasons.Create.name + " is required")).toBeDefined();
+  });
+
+  it("Area invalid number error", async () => {
+    render(
+      <NextIntlClientProvider messages={en} locale="en">
+        <CreateSeasonForm fieldId="1" userSettings={mockUserSettings} supplies={mockSupplies} />
+      </NextIntlClientProvider>,
+    );
+
+    const areaInput = screen.getByLabelText(en.Units.stremata + " *");
+    await userEvent.type(areaInput, "abc");
+
+    expect(screen.getByText(en.Global.Error.invalid_number)).toBeDefined();
   });
 });

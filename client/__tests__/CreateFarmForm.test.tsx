@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import en from "../messages/en.json";
@@ -33,17 +33,21 @@ describe("CreateFarmForm Tests", () => {
     expect(screen.getByLabelText(en.Farm.Create.name + " *")).toBeDefined();
   });
 
-  it("Name required error - click empty form", async () => {
+  it("Name required error - clear name field", async () => {
     render(
       <NextIntlClientProvider messages={en} locale="en">
         <CreateFarmForm />
       </NextIntlClientProvider>,
     );
 
-    const submitButton = screen.getByRole("button", { name: en.Farm.Create.submitButton });
-    await userEvent.click(submitButton);
+    const nameInput = screen.getByLabelText(en.Farm.Create.name + " *");
+    await userEvent.type(nameInput, "Farm Name");
+    await userEvent.clear(nameInput);
 
-    expect(screen.queryByText(en.Global.Error.required_generic)).toBeNull();
+    await waitFor(() => {
+      expect(nameInput.getAttribute("aria-invalid")).toBe("true");
+    });
+    expect(screen.getByText(en.Global.Error.required_generic)).toBeDefined();
   });
 
   it("Name invalid characters error", async () => {

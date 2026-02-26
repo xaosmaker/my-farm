@@ -15,7 +15,7 @@ afterEach(() => {
   cleanup();
 });
 describe("Login Form Tests", () => {
-  it("Text render correct", () => {
+  it("renders all form text elements", () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
         <LoginForm />
@@ -36,7 +36,7 @@ describe("Login Form Tests", () => {
     expect(screen.getByRole("button", { name: "show password" })).toBeDefined();
   });
 
-  it("Email error render correct and hide after", async () => {
+  it("shows email validation error and hides after valid input", async () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
         <LoginForm />
@@ -51,7 +51,7 @@ describe("Login Form Tests", () => {
     await userEvent.type(emailInput, "test@test.com");
     expect(screen.queryByText("Enter a valid email")).toBeNull();
   });
-  it("Password Error render Correctly", async () => {
+  it("shows password required error when cleared", async () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
         <LoginForm />
@@ -72,7 +72,7 @@ describe("Login Form Tests", () => {
     expect(screen.queryByText("Enter a valid Email")).toBeNull();
     expect(screen.queryByText("This Field is required")).toBeNull();
   });
-  it("Show Password on screen", async () => {
+  it("toggling password visibility shows and hides password", async () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
         <LoginForm />
@@ -87,7 +87,7 @@ describe("Login Form Tests", () => {
     await userEvent.click(showPass);
     expect(screen.queryByText("testX")).toBeDefined();
   });
-  it("Login wrong credentials", async () => {
+  it("shows error on failed login", async () => {
     signIn.mockReturnValue({ error: true });
     render(
       <NextIntlClientProvider locale="en" messages={en}>
@@ -105,7 +105,7 @@ describe("Login Form Tests", () => {
     expect(screen.getByText("Email or password don't match")).toBeDefined();
   });
 
-  it("Login success", async () => {
+  it("redirects to /farm on successful login", async () => {
     signIn.mockReturnValue({});
     const router = useRouter();
     render(

@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import en from "../messages/en.json";
@@ -48,10 +48,14 @@ describe("CreateFieldForm Tests", () => {
       </NextIntlClientProvider>,
     );
 
-    const submitButton = screen.getByRole("button", { name: en.Fields.Create.submitButton });
-    await userEvent.click(submitButton);
+    const nameInput = screen.getByLabelText(en.Fields.Create.name + " *");
+    await userEvent.type(nameInput, "My Field");
+    await userEvent.clear(nameInput);
 
-    expect(screen.queryByText(/is required/)).toBeNull();
+    await waitFor(() => {
+      expect(nameInput.getAttribute("aria-invalid")).toBe("true");
+    });
+    expect(screen.getByText(en.Fields.Create.name + " is required")).toBeDefined();
   });
 
   it("Area invalid number error", async () => {
@@ -83,8 +87,7 @@ describe("CreateFieldForm Tests", () => {
     const areaInput = screen.getByLabelText(new RegExp(en.Fields.Create.areaInMeters));
     await userEvent.type(areaInput, "0");
 
-    const fieldElement = screen.getByLabelText(new RegExp(en.Fields.Create.areaInMeters));
-    expect(fieldElement).toBeDefined();
+    expect(screen.getByText("The number should be greater than 0")).toBeDefined();
   });
 
   it("Valid form passes validation", async () => {
