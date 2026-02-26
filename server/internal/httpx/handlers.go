@@ -7,7 +7,7 @@ import (
 	"github.com/xaosmaker/server/internal/apperror"
 )
 
-type SendError struct {
+type sendError struct {
 	Errors []apperror.ErrorMessage `json:"errors"`
 }
 
@@ -17,13 +17,13 @@ func Handler(fn func(w http.ResponseWriter, r *http.Request) error) http.Handler
 
 			if err, ok := err.(apperror.AppError); ok {
 
-				WriteJSON(w, err.StatusCode, SendError{Errors: err.Errors})
+				WriteJSON(w, err.StatusCode, sendError{Errors: err.Errors})
 				return
 
 			} else {
 
 				serverError := apperror.New500Error(nil)
-				WriteJSON(w, serverError.StatusCode, SendError{Errors: serverError.Errors})
+				WriteJSON(w, serverError.StatusCode, sendError{Errors: serverError.Errors})
 				return
 			}
 

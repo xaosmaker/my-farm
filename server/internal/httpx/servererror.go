@@ -8,7 +8,6 @@ import (
 	"github.com/xaosmaker/server/internal/apperror"
 )
 
-type ServerErrorResponse = http.HandlerFunc
 type Meta = map[string]string
 
 type errorMessage struct {
@@ -42,7 +41,18 @@ func filterStatusCodes(statusCode int, message *ErrMessage) ErrMessage {
 
 }
 
-func ServerError(statusCode int, message *ErrMessage) ServerErrorResponse {
+func ServerErrorResponse(appError apperror.AppError) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := WriteJSON(w, appError.StatusCode, sendError{Errors: appError.Errors})
+		if err != nil {
+			w.WriteHeader(500)
+
+		}
+
+	}
+}
+
+func ServerError(statusCode int, message *ErrMessage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		m := filterStatusCodes(statusCode, message)
