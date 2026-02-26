@@ -67,7 +67,7 @@ func New401UnauthorizedError(message string, err error) AppError {
 	}
 	return AppError{
 		StatusCode: 401,
-		Severity:   SEVERITY_WARN,
+		Severity:   SEVERITY_CRITICAL,
 		Err:        err,
 		Errors: []ErrorMessage{
 			{
