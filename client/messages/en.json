@@ -77,7 +77,8 @@
       "updateSupplies": "Update Supply",
       "createFarm": "Create Farm",
       "verifyEmail": "Verify Email",
-      "resendVerifyEmail": "Resend Verification"
+      "resendVerifyEmail": "Resend Verification",
+      "createJob": "Create Job"
     },
     "Form": {
       "prevPage": "Go to previous page",
@@ -148,7 +149,8 @@
       "areaInMeters": "Area",
       "cropName": "Crop",
       "landUnit": "Unit",
-      "createSeasonButton": "Create Season"
+      "createSeasonButton": "Create Season",
+      "jobs": "Jobs"
     },
     "Update": {
       "title": "Edit season",
@@ -289,6 +291,30 @@
       "nickname": "Nickname",
       "supplyType": "Type",
       "measurementUnit": "Unit"
+    }
+  },
+  "Jobs": {
+    "Table": {
+      "id": "ID",
+      "jobType": "Job Type",
+      "jobDate": "Date",
+      "description": "Description",
+      "supplies": "Supplies",
+      "actions": "Actions",
+      "createJobButton": "Create Job"
+    },
+    "Create": {
+      "title": "Create Job",
+      "desc": "Create a new job for this season",
+      "submitButton": "Create Job",
+      "jobType": "Job Type",
+      "description": "Description",
+      "areaInMeters": "{unit}",
+      "jobDate": "Job Date",
+      "suppliesTitle": "Supplies",
+      "supply": "Supply",
+      "quantity": "Quantity",
+      "addSupply": "Add Supply"
     }
   }
 }

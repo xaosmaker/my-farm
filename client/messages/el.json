@@ -77,7 +77,8 @@
       "updateSupplies": "Επεξεργασία Εφοδίων",
       "createFarm": "Δημιουργία Φάρμας",
       "verifyEmail": "Επαλήθευση Email",
-      "resendVerifyEmail": "Επαναποστολή Επαλήθευσης"
+      "resendVerifyEmail": "Επαναποστολή Επαλήθευσης",
+      "createJob": "Δημιουργία Εργασίας"
     },
     "Form": {
       "prevPage": "Μετάβαση στην προηγούμενη σελίδα",
@@ -149,7 +150,8 @@
       "areaInMeters": "Έκταση",
       "cropName": "Καλλιέργεια",
       "landUnit": "Μονάδα",
-      "createSeasonButton": "Δημιουργία σεζόν"
+      "createSeasonButton": "Δημιουργία σεζόν",
+      "jobs": "Εργασίες"
     },
     "Update": {
       "title": "Επεξεργασία σεζόν",
@@ -290,6 +292,30 @@
       "nickname": "Ψευδώνυμο",
       "supplyType": "Τύπος",
       "measurementUnit": "Μονάδα"
+    }
+  },
+  "Jobs": {
+    "Table": {
+      "id": "ID",
+      "jobType": "Τύπος Εργασίας",
+      "jobDate": "Ημερομηνία",
+      "description": "Περιγραφή",
+      "supplies": "Εφόδια",
+      "actions": "Ενέργειες",
+      "createJobButton": "Δημιουργία Εργασίας"
+    },
+    "Create": {
+      "title": "Δημιουργία Εργασίας",
+      "desc": "Δημιουργήστε μια νέα εργασία για αυτή τη σεζόν",
+      "submitButton": "Δημιουργία Εργασίας",
+      "jobType": "Τύπος Εργασίας",
+      "description": "Περιγραφή",
+      "areaInMeters": "{unit}",
+      "jobDate": "Ημερομηνία Εργασίας",
+      "suppliesTitle": "Εφόδια",
+      "supply": "Εφόδιο",
+      "quantity": "Ποσότητα",
+      "addSupply": "Προσθήκη Εφοδίου"
     }
   }
 }
