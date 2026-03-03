@@ -29,22 +29,6 @@ type ErrorMessage struct {
 	Meta    Meta   `json:"meta"`
 }
 
-func NewAppErrorConstructor(statusCode int, severity string, message string, appCode string, meta Meta, err error) AppError {
-	return AppError{
-		StatusCode: statusCode,
-		Severity:   severity,
-		Err:        err,
-		Errors: []ErrorMessage{
-			{
-				Message: message,
-				AppCode: appCode,
-				Meta:    meta,
-			},
-		},
-	}
-
-}
-
 func New500Error(err error) AppError {
 
 	return AppError{

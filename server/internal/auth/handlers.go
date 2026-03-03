@@ -146,9 +146,10 @@ func (q AuthQueries) VerifyUser(w http.ResponseWriter, r *http.Request) error {
 		return apperror.New500Error(err)
 	}
 
+	te := true
 	err = q.DB.UpdateUser(r.Context(), db.UpdateUserParams{
 		ID:       userIdNumber,
-		IsActive: util.ToPtr(true),
+		IsActive: &te,
 	})
 
 	if err != nil {
