@@ -1,6 +1,9 @@
 # API
 
 
+responses like 201 or for creted updated are not transform to dto 
+and maybe removed in the future
+
 ## Errors Response 
 
 Server errors always return the same schema.
@@ -1306,6 +1309,7 @@ or `[]`
 
 ### <span style="color:red">DELETE</span> /api/seasons/{seasonId}
 
+<details>
 <span style="color:red">400</span>
 ```json
 {
@@ -1341,4 +1345,182 @@ or `[]`
     ]
 }
 ```
+</details>
+
+---
+---
+
+### <span style="color:blue">GET</span> /api/jobs/{seasonId}
+<details>
+
+#### body `null`
+
+
+<span style="color:red">400</span>
+```json
+
+    "errors":[
+        {
+            "message":"Invalid url param expect number",
+            "appCode":"invalid_url_param",
+            "meta":null
+        }
+    ]
+}
+
+```
+
+<span style="color:red">404</span>
+```json
+{
+    "errors":[
+        {
+            "message":"Farm not found",
+            "appCode":"not_found_error",
+            "meta":
+            {
+                "name":"Farm"
+            }
+        }
+    ]
+}
+```
+
+<span style="color:green">200</span>
+```json
+
+ [
+     {
+         "id":5,
+         "jobType":"harvesting",
+         "description":"fertilizing one or many doent mater",
+         "seasonId":1,
+         "jobDate":"2025-09-11T22:00:00Z",
+         "areaInMeters":35000,
+         "boundary":null,
+         "landUnit":"m2",
+         "createdAt":"2026-03-03T12:49:18.879909Z",
+         "updatedAt":"2026-03-03T12:49:18.879909Z",
+         "jobsSupplies":
+         [
+             {
+                 "id":9,
+                 "quantity":35040,
+                 "jobId":5,
+                 "createdAt":"2026-03-03T12:49:18.879909+00:00",
+                 "updatedAt":"2026-03-03T12:49:18.879909+00:00",
+                 "supplyName":"DIVA",
+                 "supplyAlias":null,
+                 "supplyId":10,
+                 "supplyMeasurementUnit":"KG"
+             }
+         ]
+     }
+ ]
+```
+
+
+
+</details>
+
+###  <span style="color:green">POST</span> /api/jobs
+
+<!-- <details> -->
+
+#### body:
+```json 
+{
+    "fieldId":1,
+    "seasonId":1,
+    "areaInMeters": 22,
+    "jobDate":"2025-05-11T23:11:11Z",
+    "jobType":"spraying",
+    "jobSupplies":[
+        {
+            "quantity": 200,
+            "supplyId": 3
+        },
+        {
+            "quantity": 0.2,
+            "supplyId": 1
+        }
+    ]
+}
+```
+
+<span style="color:green">201</span>
+
+
+```json
+{
+    "ID":6,
+    "JobType":"spraying",
+    "Description":null,
+    "JobDate":"2025-05-11T23:11:11Z",
+    "AreaInMeters":22,
+    "Boundary":null,
+    "SeasonID":1,
+    "CreatedAt":"2026-03-03T14:37:58.7859Z",
+    "UpdatedAt":"2026-03-03T14:37:58.7859Z",
+    "DeletedAt":null}
+```
+<span style="color:red">400</span>
+```json
+{
+    "errors":
+    [
+
+        {
+            "message":"jobType: JobType is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"jobType"
+            }
+        },
+        {
+            "message":"jobDate: JobDate is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"jobDate"
+            }
+        },
+        {
+            "message":"seasonId: SeasonID is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"seasonId"
+            }
+        },
+        {
+            "message":"fieldId: FieldID is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"fieldId"
+            }
+        },
+        {
+            "message":"areaInMeters: AreaInMeters is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"areaInMeters"
+            }
+        },
+        {
+            "message":"jobSupplies: JobSupplies is Required!",
+            "appCode":"required_field",
+            "meta":
+            {
+                "name":"jobSupplies"
+            }
+        }
+    ]
+}
+```
+</details>
 <!-- <span style="color:red"></span> -->
+
