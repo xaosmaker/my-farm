@@ -1425,7 +1425,7 @@ or `[]`
 
 ###  <span style="color:green">POST</span> /api/jobs
 
-<!-- <details> -->
+<details>
 
 #### body:
 ```json 
@@ -1467,60 +1467,121 @@ or `[]`
 <span style="color:red">400</span>
 ```json
 {
+  "errors": [
+    {
+            "message":"Cannot Edit season when a season is finished",
+            "appCode":"season_finish_error",
+            "meta":null
+    },
+    {
+      "message": "jobType: JobType is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "jobType"
+      }
+    },
+    {
+      "message": "jobDate: JobDate is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "jobDate"
+      }
+    },
+    {
+      "message": "seasonId: SeasonID is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "seasonId"
+      }
+    },
+    {
+      "message": "fieldId: FieldID is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "fieldId"
+      }
+    },
+    {
+      "message": "areaInMeters: AreaInMeters is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "areaInMeters"
+      }
+    },
+    {
+      "message": "jobSupplies: JobSupplies is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "jobSupplies"
+      }
+    },
+    {
+      "message": "quantity: Quantity is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "quantity"
+      }
+    },
+    {
+      "message": "supplyId: SupplyID is Required!",
+      "appCode": "required_field",
+      "meta": {
+        "name": "supplyId"
+      }
+    },
+    {
+      "message": "Cannot add job before the season start",
+      "appCode": "invalid_job_start",
+      "meta": {
+        "max": "2025-05-11 22:00:00 +0000 UTC"
+      }
+    }
+  ]
+}
+```
+</details>
+
+### <span style="color:red">DELETE</span> /api/jobs/{jobId}
+
+<details>
+
+#### body: `null`
+
+
+<span style="color:green">204</span>
+`null`
+
+
+<span style="color:red">404</span>
+```json
+{
     "errors":
     [
-
         {
-            "message":"jobType: JobType is Required!",
-            "appCode":"required_field",
+            "message":"Job Not Found",
+            "appCode":"not_found_error",
             "meta":
             {
-                "name":"jobType"
-            }
-        },
-        {
-            "message":"jobDate: JobDate is Required!",
-            "appCode":"required_field",
-            "meta":
-            {
-                "name":"jobDate"
-            }
-        },
-        {
-            "message":"seasonId: SeasonID is Required!",
-            "appCode":"required_field",
-            "meta":
-            {
-                "name":"seasonId"
-            }
-        },
-        {
-            "message":"fieldId: FieldID is Required!",
-            "appCode":"required_field",
-            "meta":
-            {
-                "name":"fieldId"
-            }
-        },
-        {
-            "message":"areaInMeters: AreaInMeters is Required!",
-            "appCode":"required_field",
-            "meta":
-            {
-                "name":"areaInMeters"
-            }
-        },
-        {
-            "message":"jobSupplies: JobSupplies is Required!",
-            "appCode":"required_field",
-            "meta":
-            {
-                "name":"jobSupplies"
+                "name":"Job"
             }
         }
     ]
 }
 ```
+<span style="color:red">404</span>
+```json
+{
+    "errors":
+    [
+        {
+            "message":"Cannot Edit season when a season is finished",
+            "appCode":"season_finish_error",
+            "meta":null
+        }
+    ]
+}
+```
+
 </details>
 <!-- <span style="color:red"></span> -->
 

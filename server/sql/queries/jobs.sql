@@ -2,14 +2,16 @@
 DELETE FROM jobs
 WHERE id = $1;
 -- name: JobExistsReturnFinishSeason :one
+
 SELECT seasons.finish_season FROM jobs
 JOIN seasons
 ON season_id = seasons.id
-AND jobs.id = sqlc.arg('job_id')
 JOIN fields
 ON fields.id = seasons.field_id
 JOIN farms
-ON farms.id = sqlc.arg('farm_id');
+ON farms.id = fields.farm_id
+WHERE jobs.id = sqlc.arg('job_id')
+AND farms.id = sqlc.arg('farm_id');
 
 -- name: CreateJob :one
 INSERT INTO jobs(

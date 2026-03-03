@@ -57,6 +57,8 @@ func TestSeaonsGetAllActive(t *testing.T) {
 		{"Delete not existing season should fail", "DELETE", "/api/seasons/2", noFieldUserCookie, ``, 404, []string{`{"errors":[{"message":"Season not found","appCode":"not_found_error","meta":{"name":"Season"}}]}`}},
 		{"Delete season should succeed", "DELETE", "/api/seasons/2", cookie, ``, 204, []string{``}},
 		{"Delete finished season should fail", "DELETE", "/api/seasons/1", cookie, ``, 400, []string{`{"errors":[{"message":"Cannot delete season when a season is finished","appCode":"season_finish_error","meta":null}]}`}},
+
+		{"Create season should succeed", "POST", "/api/seasons/1", cookie, `{"name":"test","startSeason":"2025-12-03T22:00:00Z","crop":1,"areaInMeters":35000}`, 201, []string{``}},
 	}
 
 	for _, c := range cases {

@@ -301,14 +301,16 @@ func (q *Queries) GetLastJobBySeasonId(ctx context.Context, seasonID int64) (Job
 }
 
 const jobExistsReturnFinishSeason = `-- name: JobExistsReturnFinishSeason :one
+
 SELECT seasons.finish_season FROM jobs
 JOIN seasons
 ON season_id = seasons.id
-AND jobs.id = $1
 JOIN fields
 ON fields.id = seasons.field_id
 JOIN farms
-ON farms.id = $2
+ON farms.id = fields.farm_id
+WHERE jobs.id = $1
+AND farms.id = $2
 `
 
 type JobExistsReturnFinishSeasonParams struct {
