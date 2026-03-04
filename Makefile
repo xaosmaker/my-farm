@@ -1,7 +1,7 @@
 run:
 	docker compose -f local.yaml --env-file=.env up -d --remove-orphans
 run-prod:
-	docker compose -f prod.yaml --env-file=.env up -d --remove-orphans
+	docker compose -f prod.yaml --env-file=.prod.env up -d --remove-orphans
 
 run-watch:
 	docker compose -f local.yaml --env-file=.env up --remove-orphans --watch
@@ -9,7 +9,7 @@ run-watch:
 build:
 	docker compose -f local.yaml --env-file=.env build --no-cache
 build-prod:
-	docker compose -f prod.yaml --env-file=.env build --no-cache
+	docker compose -f prod.yaml --env-file=.prod.env build --no-cache
 
 django-inspectdb:
 	docker exec -it farm-orm /py/bin/python3 manage.py inspectdb > orm/ui/models.py
