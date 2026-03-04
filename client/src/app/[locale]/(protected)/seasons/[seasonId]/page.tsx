@@ -21,7 +21,8 @@ export default async function SeasonPage({
   const session = await getAuth();
   const { seasonId } = await params;
   const season = await getSeason(seasonId, session.user!.intl);
-  const jobs = await getJobs(seasonId);
+  // const jobs = await getJobs(seasonId, true, session.user!.intl);
+  const jobs = await getJobs(seasonId, true, session.user!.intl);
 
   return (
     <div className="flex flex-col gap-10">
