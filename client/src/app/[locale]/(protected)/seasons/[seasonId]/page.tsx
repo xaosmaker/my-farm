@@ -1,5 +1,5 @@
 import SeasonDetailPage from "@/features/seasons/components/SeasonDetailPage";
-import { getSeason } from "@/features/seasons/seasonFetchers";
+import { getSeason, getSeasonStatistics } from "@/features/seasons/seasonFetchers";
 import { getJobs } from "@/features/jobs/jobsFetchers";
 import { getAuth } from "@/lib/getAuth";
 import { Metadata } from "next";
@@ -21,12 +21,12 @@ export default async function SeasonPage({
   const session = await getAuth();
   const { seasonId } = await params;
   const season = await getSeason(seasonId, session.user!.intl);
-  // const jobs = await getJobs(seasonId, true, session.user!.intl);
   const jobs = await getJobs(seasonId, true, session.user!.intl);
+  const seasonStatistics = await getSeasonStatistics(seasonId);
 
   return (
     <div className="flex flex-col gap-10">
-      <SeasonDetailPage season={season} />
+      <SeasonDetailPage season={season} statistics={seasonStatistics} />
       <JobsTable jobs={jobs} seasonId={parseInt(seasonId)} />
     </div>
   );
