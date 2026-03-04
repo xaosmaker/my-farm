@@ -1,6 +1,6 @@
 import { baseFetch } from "@/lib/baseFetch";
 import { getLocale, getTranslations } from "next-intl/server";
-import { MUnit, Season } from "@/types/globalTypes";
+import { MUnit, Season, SeasonStatistics } from "@/types/globalTypes";
 
 export async function getSeasonsByFieldId(
   fieldId: string,
@@ -101,4 +101,14 @@ export async function getSeason(
   }
   const t = await getTranslations("Global.Error");
   throw new Error(t("not_found_error", { name: "season" }));
+}
+
+export async function getSeasonStatistics(seasonId: string) {
+  const res = await baseFetch({
+    path: `/api/seasons/statistics/${seasonId}`,
+    method: "GET",
+    body: undefined,
+  });
+  const data: SeasonStatistics[] = await res.json();
+  return data;
 }

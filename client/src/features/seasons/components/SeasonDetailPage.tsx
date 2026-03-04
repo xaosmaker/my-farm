@@ -4,14 +4,20 @@ import DetailPage from "@/components/DetailPage";
 import { DetailCard } from "@/components/DetailCard";
 import { DetailRow } from "@/components/DetailRow";
 import { Calendar, Clock, Leaf, MapPin, Ruler } from "lucide-react";
-import { Season } from "@/types/globalTypes";
+import { Season, SeasonStatistics } from "@/types/globalTypes";
 import { useTranslations } from "next-intl";
 import DeleteItem from "@/components/DeleteItem";
 import UpdateItem from "@/components/UpdateItem";
 import { deleteSeasonAction } from "../seasonActions";
 import Link from "next/link";
 
-export default function SeasonDetailPage({ season }: { season: Season }) {
+export default function SeasonDetailPage({
+  season,
+  statistics,
+}: {
+  season: Season;
+  statistics: SeasonStatistics[];
+}) {
   const t = useTranslations("Seasons.Table");
   const dpt = useTranslations("DetailPage");
   return (
@@ -60,6 +66,25 @@ export default function SeasonDetailPage({ season }: { season: Season }) {
           icon={Clock}
         />
       </DetailCard>
+
+      <DetailCard title="Statistics">
+        {statistics.length > 0 ? (
+          statistics.map((stat) => (
+            <DetailRow
+              key={stat.supplyId}
+              label={stat.supplyName}
+              value={`Used: ${stat.totalQuantity} ${
+                stat.harvestQuantity
+                  ? ` - Harvested: ${stat.harvestQuantity}`
+                  : ""
+              } ${stat.measurementUnit}`}
+            />
+          ))
+        ) : (
+          <p className="text-muted-foreground text-sm">No statistics available</p>
+        )}
+      </DetailCard>
+
       <DetailCard title="Actions">
         <UpdateItem
           label={season.name}
