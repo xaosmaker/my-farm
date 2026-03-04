@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/accordion";
 import AddButtonMenu from "@/components/AddButtonMenu";
 import EllipsisMenu from "@/components/EllipsisMenu";
+import { Button } from "@/components/ui/button";
 
 interface JobsTableProps {
   jobs: Job[];
@@ -107,5 +108,5 @@ export default function JobsTable({ jobs, seasonId }: JobsTableProps) {
     },
   ];
 
-  return <DataTable columns={columns} data={jobs} />;
+  return <DataTable columns={columns} data={jobs} translation="Jobs.Table" />;
 }

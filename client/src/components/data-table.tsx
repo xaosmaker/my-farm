@@ -28,23 +28,27 @@ import {
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
 import { getFromLocalStorage } from "@/lib/localStorageUtils";
-import { useTranslations } from "next-intl";
+import { NamespaceKeys, NestedKeyOf, useTranslations } from "next-intl";
 import { Separator } from "./ui/separator";
+import { Messages } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  translation: NamespaceKeys<Messages, NestedKeyOf<Messages>>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  translation,
 }: DataTableProps<TData, TValue>) {
   const path = usePathname();
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [firstMount, setFirstMount] = useState<boolean>(false);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const t = useTranslations("Columns");
+  const tc = useTranslations(translation);
 
   const table = useReactTable({
     data,
@@ -105,7 +109,9 @@ export function DataTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {translation
+                      ? tc(column.id as Parameters<typeof tc>[0])
+                      : column.id}
                   </DropdownMenuCheckboxItem>
                 );
               })}

@@ -118,7 +118,8 @@
       "createField": "Actions",
       "comingSoon": "σύντομα κοντά σας",
       "createFieldButton": "Δημιουργία Χωραφιού",
-      "isOwned": "Ιδιόκτητο"
+      "isOwned": "Ιδιόκτητο",
+      "fieldActions": "Field Actions"
     },
     "Update": {
       "title": "Επεξεργασία χωραφιού",
@@ -151,7 +152,8 @@
       "cropName": "Καλλιέργεια",
       "landUnit": "Μονάδα",
       "createSeasonButton": "Δημιουργία σεζόν",
-      "jobs": "Εργασίες"
+      "jobs": "Εργασίες",
+      "seasonActions": "Season Actions"
     },
     "Update": {
       "title": "Επεξεργασία σεζόν",
@@ -273,7 +275,8 @@
       "nickname": "Ψευδώνυμο",
       "supplyType": "Τύπος",
       "measurementUnit": "Μονάδα",
-      "createSupplyButton": "Δημιουργία Εφοδίου"
+      "createSupplyButton": "Δημιουργία Εφοδίου",
+      "supplyActions": "Supply Actions"
     },
     "Create": {
       "title": "Δημιουργία Εφοδίου",
@@ -321,7 +324,9 @@
       "description": "Περιγραφή",
       "supplies": "Εφόδια",
       "actions": "Ενέργειες",
-      "createJobButton": "Δημιουργία Εργασίας"
+      "createJobButton": "Δημιουργία Εργασίας",
+      "jobsSupplies": "Εφόδια",
+      "jobActions": "Job Actions"
     },
     "Create": {
       "title": "Δημιουργία Εργασίας",
