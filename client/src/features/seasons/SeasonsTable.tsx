@@ -107,5 +107,11 @@ export default function SeasonsTable({
       ),
     },
   ];
-  return <DataTable columns={columns} data={seasonData} />;
+  return (
+    <DataTable
+      columns={columns}
+      data={seasonData}
+      translation="Seasons.Table"
+    />
+  );
 }

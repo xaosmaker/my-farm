@@ -68,5 +68,7 @@ export default function FieldTable({ fieldData }: { fieldData: Field[] }) {
       ),
     },
   ];
-  return <DataTable columns={columns} data={fieldData} />;
+  return (
+    <DataTable columns={columns} data={fieldData} translation="Fields.Table" />
+  );
 }

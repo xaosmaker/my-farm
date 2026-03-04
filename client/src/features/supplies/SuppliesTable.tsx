@@ -81,5 +81,11 @@ export default function SuppliesTable({
       ),
     },
   ];
-  return <DataTable columns={columns} data={supplyData} />;
+  return (
+    <DataTable
+      columns={columns}
+      data={supplyData}
+      translation="Supplies.Table"
+    />
+  );
 }

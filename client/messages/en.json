@@ -118,7 +118,8 @@
       "createField": "Actions",
       "comingSoon": "Coming Soon",
       "createFieldButton": "Create Field",
-      "isOwned": "Owned"
+      "isOwned": "Owned",
+      "fieldActions": "Field Actions"
     },
     "Update": {
       "title": "Edit field",
@@ -150,7 +151,8 @@
       "cropName": "Crop",
       "landUnit": "Unit",
       "createSeasonButton": "Create Season",
-      "jobs": "Jobs"
+      "jobs": "Jobs",
+      "seasonActions": "Season Actions"
     },
     "Update": {
       "title": "Edit season",
@@ -272,7 +274,8 @@
       "nickname": "Nickname",
       "supplyType": "Type",
       "measurementUnit": "Unit",
-      "createSupplyButton": "Create Supply"
+      "createSupplyButton": "Create Supply",
+      "supplyActions": "Supply Actions"
     },
     "Create": {
       "title": "Create Supply",
@@ -320,7 +323,9 @@
       "description": "Description",
       "supplies": "Supplies",
       "actions": "Actions",
-      "createJobButton": "Create Job"
+      "createJobButton": "Create Job",
+      "jobsSupplies": "Supplies",
+      "jobActions": "Job Actions"
     },
     "Create": {
       "title": "Create Job",
