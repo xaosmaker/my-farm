@@ -294,6 +294,25 @@
     }
   },
   "Jobs": {
+    "Job": {
+      "spraying": "Spraying",
+      "drone spraying": "Drone spraying",
+      "fertilizing": "Fertilizing",
+      "sowing": "Sowning",
+      "harvesting": "harvesting",
+      "planting": "planting",
+      "irrigation": "irrigation",
+      "pruning": "pruning",
+      "hoeing": "hoeing",
+      "preparation": "preparation",
+      "plowing": "plowing",
+      "leveling": "leveling",
+      "tilling": "tilling",
+      "cultivator": "cultivator",
+      "rotary cultivator": "rotary cultivator",
+      "subsoiler": "subsoiler",
+      "harrowing": "harrowing"
+    },
     "Table": {
       "id": "ID",
       "jobType": "Job Type",

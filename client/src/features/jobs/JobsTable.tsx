@@ -36,10 +36,6 @@ export default function JobsTable({ jobs, seasonId }: JobsTableProps) {
     {
       accessorKey: "jobDate",
       header: t("jobDate"),
-      cell: ({ row }) => {
-        const date = new Date(row.original.jobDate);
-        return date.toLocaleDateString();
-      },
     },
     {
       accessorKey: "description",
@@ -71,7 +67,11 @@ export default function JobsTable({ jobs, seasonId }: JobsTableProps) {
                 {supplies.map((supply) => (
                   <div key={supply.id} className="text-xs">
                     <span>{supply.supplyName}: </span>
-                    <span>{roundTo6(supply.quantity / row.original.areaInMeters)} </span>
+                    <span>
+                      {roundTo6(
+                        supply.quantity / row.original.areaInMeters,
+                      )}{" "}
+                    </span>
                     <span>{supply.supplyMeasurementUnit}</span>
                     <span>/{row.original.landUnit}</span>
                     <br />
