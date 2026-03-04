@@ -14,14 +14,20 @@ export const jobSupplySchema = (t: TFnError) =>
       .refine((value) => parseFloat(value) > 0, {
         error: t("invalid_min", { min: 0 }),
       }),
-    supplyId: z
+    quantityPerUnit: z
       .string()
-      .refine((val) => parseInt(val) > 0, {
-        error: t("required_generic"),
+      .refine((value) => value.match(/^(\d+)(\.\d+)?$/), {
+        error: t("invalid_number"),
+      })
+      .refine((value) => parseFloat(value) >= 0, {
+        error: t("invalid_min", { min: 0 }),
       }),
+    supplyId: z.string().refine((val) => parseInt(val) > 0, {
+      error: t("required_generic"),
+    }),
   });
 
-export function jobSchema(t: TFnError) {
+export function jobSchema(t: TFnError, supplyName: string) {
   return z
     .object({
       seasonId: z.number(),
@@ -48,7 +54,7 @@ export function jobSchema(t: TFnError) {
       ) {
         ctx.addIssue({
           path: ["jobSupplies"],
-          message: t("required_generic"),
+          message: t("required_field", { name: supplyName }),
           code: "custom",
         });
       }
