@@ -1,5 +1,7 @@
 # AI-Farm
-
+## Archived
+This repo is archived for the reason that the need for this app in the greek farming community is not needed and the marker has already apps who is connected 
+directly to the greek GOV.gr taking from there the data for the farmer
 ## Description
 
 AI-Farm is an application built to help farmers efficiently manage their farm fields through a structured and reliable logging system.  
